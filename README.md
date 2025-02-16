@@ -14,18 +14,51 @@
  
 ## Introduction
 
-  Our project aims to develop a comprehensive job portal website using **Ruby on Rails** for both front-end and back-end development, with **SQL** as the core database management system. The platform is designed to connect **students seeking job opportunities** with **companies looking for potential candidates**, while also facilitating **interview management**.  
+  Our project aims to develop a comprehensive job portal website using **Ruby on Rails** for both front-end and back-end development, with **SQL** as the core database management system.
+  The platform is designed to connect **students seeking job opportunities** with **companies looking for potential candidates**, while also facilitating **interview management**.  
 
 ## Features
+
   
- -  **Student Registration & Profile Management** : Feature allows students to create accounts and enter their personal, academic, and professional details. They can upload resumes, enhance their profiles based on skills, and search for relevant job openings. SQL is used to efficiently store and manage student data, ensuring quick retrieval and secure access.  
+  <details>
+    <summary><strong>1. Student Registration & Profile Management</strong></summary>
 
-- **Company Registration & Job Posting** : Module enables companies to create accounts and manage job postings. Employers can search for potential candidates based on qualifications and skills, view student profiles, and shortlist suitable applicants. SQL is utilized to manage company profiles, job listings, and candidate applications while maintaining data integrity and optimized query performance.  
+  - Students can create accounts and enter their personal, academic, and professional details.  
+  - Resume upload and skill-based profile enhancement.  
+  - Search and apply for relevant job openings.  
+  - SQL is used to efficiently store and manage student data, ensuring quick retrieval and secure access.  
 
--  **Interview Management System** : Facilitates seamless scheduling of interviews between companies and shortlisted candidates. Automated notifications and reminders ensure that both parties are informed about upcoming interviews. The system also tracks interview status and final hiring decisions. SQL plays a key role in structuring interview scheduling, maintaining interview history, and keeping organized logs for better management.  
+  </details>  
 
--  **User-Friendly Interface & Security** : Ensures a responsive and intuitive design for an enhanced user experience. Secure authentication mechanisms protect user data, while efficient database management enables smooth handling of multiple user requests simultaneously.  
+  <details>
+    <summary><strong>2. Company Registration & Job Posting</strong></summary>
 
+  - Companies can create accounts and manage job postings.  
+  - Search for potential candidates based on qualifications and skills.  
+  - View student profiles and shortlist candidates.  
+  - SQL is utilized for managing company profiles, job listings, and candidate applications, ensuring data integrity and optimized query performance.  
+
+  </details>  
+
+  <details>
+    <summary><strong>3. Interview Management System</strong></summary>
+
+  - Companies can schedule interviews with shortlisted candidates.  
+  - Automated notifications and reminders for scheduled interviews.  
+  - Tracking interview status and final hiring decisions.  
+  - SQL enables structured interview scheduling, tracking interview history, and maintaining logs for better organization.  
+
+  </details>  
+
+  <details>
+    <summary><strong>4. User-Friendly Interface & Security</strong></summary>
+
+  - Responsive and intuitive design for seamless user experience.  
+  - Secure authentication and data protection measures.  
+  - Efficient database management to handle multiple user requests.  
+
+  </details> 
+  
 ## Tech Stack
  
 <p>
