@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast';
 import axios from "axios";
 // import "./OrgAuth.css";
 
@@ -24,10 +25,10 @@ const OrgAuth = () => {
       localStorage.setItem("orgName", org.name);
       localStorage.setItem("orgEmail", org.email);
 
-      alert("Registration successful!");
+      toast.success("Registration successful!");
       navigate("/dashboard");
     } catch (error) {
-      alert(error.response?.data?.message || "Registration failed");
+      toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 
@@ -42,10 +43,10 @@ const OrgAuth = () => {
       localStorage.setItem("orgName", org.name);
       localStorage.setItem("orgEmail", org.email);
 
-      alert("Login successful!");
+      toast.success("Login successful!");
       navigate("/dashboard");
     } catch (error) {
-      alert(error.response?.data?.message || "Login failed");
+      toast.error(error.response?.data?.message || "Login failed");
     }
   };
 

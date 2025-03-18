@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
 import LandingPage from "./LandingPage";
 import ExplorePage from "./ExplorePage";
 import UserAuth from "./UserAuth";
@@ -18,6 +19,7 @@ const ProtectedRoute = ({ element }) => {
 function App() {
   return (
     <Router>
+      <Toaster/>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/explore" element={<ExplorePage />} />
