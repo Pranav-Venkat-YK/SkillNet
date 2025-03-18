@@ -1,0 +1,355 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Critical additions for full window coverage */
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  
+  #root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+  }
+  
+  .epskillnet-app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+  }
+  
+  /* Header styles */
+  .epheader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    background-color: #f8f9fa;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  
+  .eplogo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #6e23ff; /* Purple color from the image */
+    text-decoration: none;
+  }
+  
+  nav ul {
+    display: flex;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+  
+  nav ul li {
+    margin-left: 2rem;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  nav ul li a:hover {
+    color: #6e23ff;
+  }
+  
+  /* Main content styles */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    background-color: #f8f9fa;
+    width: 100%;
+  }
+  
+  .epchoice-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    max-width: 700px;
+    padding: 0 1rem;
+    width: 100%;
+  }
+  
+  .epchoice-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .epchoice-header h1 .ephighlight {
+    color: #6e23ff; /* Purple color */
+  }
+  
+  .epchoice-header p {
+    color: #666;
+    font-size: 1.2rem;
+    line-height: 1.6;
+  }
+  
+  /* Options container styles */
+  .epoptions-container {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 1rem;
+  }
+  
+  .epoption-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 450px;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .epoption-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  }
+  
+  .epoption-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .epoption-card.organization .epoption-icon {
+    background-color: rgba(112, 48, 160, 0.1); /* Light purple */
+    color: #6e23ff; /* Purple color */
+  }
+  
+  .epoption-card.student .epoption-icon {
+    background-color: rgba(255, 193, 7, 0.1); /* Light yellow */
+    color: #ffc107; /* Yellow color */
+  }
+  
+  .epoption-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .epoption-card p {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+  
+  .epoption-features {
+    text-align: left;
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+  
+  .epfeature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+  
+  .epfeature-icon {
+    color: #6e23ff;
+    margin-right: 0.8rem;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  
+  .epbtn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-weight: 500;
+    border:none;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: auto;
+  }
+  
+  .epbtn-primary {
+    background-color: #ffc107; /* Yellow color from the button */
+    color: #333;
+  }
+  
+  .epbtn-primary:hover {
+    background-color: #e6b000;
+  }
+  
+  .epbtn-secondary {
+    background-color: #6e23ff; /* Purple color */
+    color: white;
+  }
+  
+  .epbtn-secondary:hover {
+    background-color: #5b2883;
+  }
+  
+  .epback-link {
+    margin-top: 2rem;
+    color: #666;
+    border:none;
+    background-color: #f8f9fa;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .epback-link:hover {
+    color: #333;
+  }
+  
+  /* Footer styles */
+  footer {
+    background-color: #333;
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    width: 100%;
+  }
+  
+  /* Media queries */
+  @media (max-width: 992px) {
+    .epoptions-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+  
+    .epoption-card {
+      max-width: 550px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    header {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+    }
+  
+    nav {
+      width: 100%;
+    }
+  
+    nav ul {
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+  
+    nav ul li {
+      margin: 0.5rem 1rem;
+    }
+  
+    .epchoice-header h1 {
+      font-size: 2rem;
+    }
+  
+    .epchoice-header p {
+      font-size: 1rem;
+    }
+  
+    .epoption-card {
+      padding: 1.5rem;
+    }
+  
+    .epoption-icon {
+      width: 70px;
+      height: 70px;
+      font-size: 2rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .eplogo {
+      font-size: 1.8rem;
+    }
+  
+    .epchoice-header h1 {
+      font-size: 1.8rem;
+    }
+  
+    .epoption-card h2 {
+      font-size: 1.6rem;
+    }
+  
+    .epbtn {
+      padding: 0.7rem 1.5rem;
+      font-size: 0.9rem;
+    }
+  
+    .epoption-icon {
+      width: 60px;
+      height: 60px;
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+    }
+  
+    .epoption-features {
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Hamburger menu for very small screens */
+  .epmenu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 600px) {
+    .epmenu-toggle {
+      display: block;
+    }
+  
+    nav ul {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      text-align: center;
+    }
+  
+    nav ul.epactive {
+      display: flex;
+    }
+  
+    nav ul li {
+      margin: 0.5rem 0;
+    }
+  }

@@ -1,0 +1,211 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  }
+  
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+  }
+  
+  body {
+    
+    color: #333;
+  }
+  
+  /* Login page container */
+  .uaauth-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+   
+  }
+  
+  /* Header styles */
+  header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background-color: white;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .uaback-icon {
+    position: absolute;
+    left: 20px;
+    font-size: 2.5rem;
+    background-color: white;
+    border: none;
+    color: #6e23ff; /* Purple color */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+  
+  .uaback-icon:hover {
+    color: #a23aff; /* Darker purple on hover */
+  }
+  
+  .ualogo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #6e23ff; /* Purple color from the image */
+    text-decoration: none;
+  }
+  
+  /* Main content styles */
+  main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+    background-color: #f8f9fa;
+  }
+  
+  /* Login form styles */
+  .ualogin-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 400px;
+    
+    margin:0 auto;
+    padding: 2rem;
+  }
+  
+  .ualogin-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .ualogin-header h2 {
+    font-size: 1.75rem;
+    color: #333;
+    margin-bottom: 0.25rem;
+  }
+  
+  .ualogin-header p {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .uaform-group {
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  
+  .uaform-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  
+  .uaform-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    background-color: #fff; /* Explicitly set to white */
+    color: #333; /* Dark text color */
+  }
+  
+  .uaform-group input:focus {
+    outline: none;
+    border-color: #7030a0;
+    box-shadow: 0 0 0 2px rgba(112, 48, 160, 0.1);
+  }
+  
+  .uaerror-message {
+    color: #dc3545;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: none;
+  }
+  
+  .uaerror-message.uavisible {
+    display: block;
+  }
+  
+  .uabtn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0.75rem;
+  }
+  
+  .uabtn-primary {
+    background-color: #6e23ff; /* Purple color */
+    color: white;
+  }
+  
+  .uabtn-primary:hover {
+    background-color: #a23aff;
+  }
+  
+  .uabtn-secondary {
+    background-color: #ffc107;
+    color: #ffffff;
+    border: 1px solid #ffc107;
+  }
+  
+  .uabtn-secondary:hover {
+    background-color: #e69b00;
+  }
+  
+  /* Footer styles */
+  footer {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+
+  .ualogin-p{
+  
+    font-weight: 500;
+    display: inline;
+    margin-right: 6px;
+  }
+
+ .para{
+  text-align: center;
+  margin-top: 1rem;
+ }
+
+.ualogin-link  {
+    text-align: center;
+    margin-top: 1rem;
+    color: #7030a0;
+    text-decoration: none;
+    font-weight: 500;
+    display:inline;
+    transition: color 0.3s ease;
+    
+}
+
+  
+  /* Media queries */
+  @media (max-width: 768px) {
+    .ualogin-container {
+      padding: 1.5rem;
+    }
+  }

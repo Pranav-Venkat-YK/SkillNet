@@ -1,0 +1,142 @@
+/* Dashboard.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  
+  body {
+    background-color: #f9f9f9;
+  }
+  
+  .dashboard-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dashboard-header {
+    background-color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-title {
+    color: #6e23ff;
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+  
+  .dashboard-logout-btn {
+    background-color: transparent;
+    color: #6e23ff;
+    border: 1px solid #6e23ff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .dashboard-logout-btn:hover {
+    background-color: #6e23ff;
+    color: white;
+  }
+  
+  .dashboard-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  
+  .dashboard-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .dashboard-welcome {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-info {
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .dashboard-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .dashboard-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  
+  .dashboard-btn.primary {
+    background-color: #6e23ff;
+    color: white;
+  }
+  
+  .dashboard-btn.primary:hover {
+    background-color: #6a25a6;
+  }
+  
+  .dashboard-btn.secondary {
+    background-color: white;
+    color: #6e23ff;
+    border: 1px solid #6e23ff;
+  }
+  
+  .dashboard-btn.secondary:hover {
+    background-color: #f8f2fd;
+  }
+  
+  .dashboard-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.2rem;
+    color: #6e23ff;
+  }
+  
+  .dashboard-footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 768px) {
+    .dashboard-card {
+      padding: 1.5rem;
+    }
+    
+    .dashboard-actions {
+      flex-direction: column;
+    }
+    
+    .dashboard-btn {
+      width: 100%;
+    }
+  }
