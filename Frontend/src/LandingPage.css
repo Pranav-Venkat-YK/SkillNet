@@ -5,7 +5,10 @@
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
-
+.logo img{
+  height: 70px;
+  width:150px;
+}
 /* Body Styling */
 body {
   width: 100%;

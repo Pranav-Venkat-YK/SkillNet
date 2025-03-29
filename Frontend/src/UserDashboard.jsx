@@ -1,30 +1,28 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Dashboard.css";
 import axios from "axios";
+import "./Dashboard.css";
 
-const Dashboard = () => {
+const UserDashboard = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const userType = localStorage.getItem("userType");
 
-    if (!token || !userType) {
+    if (!token) {
       navigate("/");
       return;
     }
 
     const fetchUserData = async () => {
       try {
-        const endpoint = userType === "user" ? "user/me" : "org/me";
-        const response = await axios.get(`http://localhost:5000/api/${endpoint}`, {
+        const response = await axios.get("http://localhost:5000/api/user/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        setUserData(response.data.user || response.data.org);
+        setUserData(response.data.user);
       } catch (error) {
         alert("Session expired, please log in again.");
         localStorage.clear();
@@ -42,6 +40,10 @@ const Dashboard = () => {
     navigate("/");
   };
 
+  const addDetails = () => {
+    navigate("/");
+  };
+
   if (loading) return <div className="dashboard-loading">Loading...</div>;
 
   return (
@@ -55,12 +57,12 @@ const Dashboard = () => {
 
       <div className="dashboard-content">
         <div className="dashboard-card">
-          <h2 className="dashboard-welcome">
-            Welcome, {userData ? userData.name : "User"}!
-          </h2>
+          <h2 className="dashboard-welcome">Welcome, {userData?.name || "User"}!</h2>
           <p className="dashboard-info">Email: {userData?.email || "N/A"}</p>
           <div className="dashboard-actions">
-            <button className="dashboard-btn primary">Edit Profile</button>
+            <button className="dashboard-btn primary" onClick={addDetails}>
+              Add Details
+            </button>
             <button className="dashboard-btn secondary">View Settings</button>
           </div>
         </div>
@@ -73,4 +75,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default UserDashboard;
