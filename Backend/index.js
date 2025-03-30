@@ -117,47 +117,38 @@ app.post("/api/org/register", async (req, res) => {
   }
 });
 
-// Organization Details 
-app.post("/api/organisations", async (req, res) => {
+// 🔹 Update Organization Details (Protected)
+app.put("/api/organisations", authenticate, async (req, res) => {
+  const id = req.user.orgId; // Extracted from authentication middleware
+  if (!id) {
+    return res.status(403).json({ message: "Unauthorized access" });
+  }
+
+  const { name, bio, foundeddate, headquarters_address, city, state, country } = req.body;
+
   try {
-      const {
-          name,
-          email,
-          password,
-          description,
-          industry,
-          founded_date,
-          headquarters_address,
-          pincode,
-          city,
-          state,
-          country,
-          website_url
-      } = req.body;
+    const existingOrg = await knex("organisations").where({ id }).first();
+    if (!existingOrg) {
+      return res.status(404).json({ error: "Organization not found" });
+    }
 
-      // Insert into database
-      await knex("organisations").insert({
-          name,
-          email,
-          password,
-          description,
-          industry,
-          founded_date,
-          headquarters_address,
-          pincode,
-          city,
-          state,
-          country,
-          website_url,
-      });
+    await knex("organisations").where({ id }).update({
+      name,
+      Description: bio,
+      founded_date: foundeddate,
+      headquarters_address,
+      city,
+      state,
+      country,
+      updated_at: knex.fn.now(),
+    });
 
-      res.status(201).json({ message: "Organisation added successfully!" });
+    res.status(200).json({ message: "Organization details updated successfully!" });
   } catch (error) {
-      console.error("Error inserting data:", error);
-      res.status(500).json({ error: "Database insertion failed" });
+    console.error("Database update error:", error);
+    res.status(500).json({ error: "Failed to update organization details." });
   }
 });
-
 
 // 🔹 Login Organization
 app.post("/api/org/login", async (req, res) => {
@@ -182,7 +173,7 @@ app.post("/api/org/login", async (req, res) => {
   }
 });
 
-// 🔹 Get Organization Profile
+// 🔹 Get Organization Profile (Protected)
 app.get("/api/org/me", authenticate, async (req, res) => {
   try {
     if (req.user.userType !== "org") {

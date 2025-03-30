@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./OrgDashboard.css";
 
 const OrgDashboard = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const orgName = localStorage.getItem("orgName");
 
   const [formData, setFormData] = useState({
     bio: "",
@@ -15,6 +15,34 @@ const OrgDashboard = () => {
     state: "",
     country: "",
   });
+
+  const [orgData, setOrgData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
+    const fetchOrgData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/org/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setOrgData(response.data.org);
+      } catch (error) {
+        alert("Session expired, please log in again.");
+        localStorage.clear();
+        navigate("/");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrgData();
+  }, [navigate, token]);
 
   const handleChange = (e) => {
     setFormData({
@@ -26,14 +54,14 @@ const OrgDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/student/details", formData, {
+      await axios.put("http://localhost:5000/api/organisations", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      alert("Details added successfully!");
+      alert("Details updated successfully!");
       navigate("/dashboard");
     } catch (error) {
-      console.error("Error adding details:", error);
-      alert("Failed to add details. Try again.");
+      console.error("Error updating details:", error);
+      alert("Failed to update details. Try again.");
     }
   };
 
@@ -41,6 +69,8 @@ const OrgDashboard = () => {
     localStorage.clear();
     navigate("/");
   };
+
+  if (loading) return <div className="dashboard-loading">Loading...</div>;
 
   return (
     <div className="org-dashboard">
@@ -55,67 +85,19 @@ const OrgDashboard = () => {
         <form onSubmit={handleSubmit} className="org-details-form">
           <h2>Organization Details</h2>
 
-          <label htmlFor="bio">Bio:</label>
-          <textarea
-            name="bio"
-            id="bio"
-            value={formData.bio}
-            onChange={handleChange}
-            placeholder="Tell us about your organization..."
-          ></textarea>
+          <label>Bio:</label>
+          <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Tell us about your organization..." />
 
-          <label htmlFor="foundeddate">Founded Date:</label>
-          <input
-            type="date"
-            name="foundeddate"
-            id="foundeddate"
-            value={formData.foundeddate}
-            onChange={handleChange}
-          />
+          <label>Founded Date:</label>
+          <input type="date" name="foundeddate" value={formData.foundeddate} onChange={handleChange} />
 
-          <label htmlFor="headquarters_address">Headquarters Address:</label>
-          <textarea
-            name="headquarters_address"
-            id="headquarters_address"
-            value={formData.headquarters_address}
-            onChange={handleChange}
-            placeholder="Enter your main office address..."
-          ></textarea>
+          <label>Headquarters Address:</label>
+          <textarea name="headquarters_address" value={formData.headquarters_address} onChange={handleChange} placeholder="Enter your main office address..." />
 
           <div className="form-grid">
-            <div>
-              <label htmlFor="city">City:</label>
-              <input
-                type="text"
-                name="city"
-                id="city"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="City"
-              />
-            </div>
-            <div>
-              <label htmlFor="state">State:</label>
-              <input
-                type="text"
-                name="state"
-                id="state"
-                value={formData.state}
-                onChange={handleChange}
-                placeholder="State"
-              />
-            </div>
-            <div>
-              <label htmlFor="country">Country:</label>
-              <input
-                type="text"
-                name="country"
-                id="country"
-                value={formData.country}
-                onChange={handleChange}
-                placeholder="Country"
-              />
-            </div>
+            <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" />
+            <input type="text" name="state" value={formData.state} onChange={handleChange} placeholder="State" />
+            <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Country" />
           </div>
 
           <button type="submit">Submit Details</button>
