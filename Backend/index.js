@@ -117,6 +117,48 @@ app.post("/api/org/register", async (req, res) => {
   }
 });
 
+// Organization Details 
+app.post("/api/organisations", async (req, res) => {
+  try {
+      const {
+          name,
+          email,
+          password,
+          description,
+          industry,
+          founded_date,
+          headquarters_address,
+          pincode,
+          city,
+          state,
+          country,
+          website_url
+      } = req.body;
+
+      // Insert into database
+      await knex("organisations").insert({
+          name,
+          email,
+          password,
+          description,
+          industry,
+          founded_date,
+          headquarters_address,
+          pincode,
+          city,
+          state,
+          country,
+          website_url,
+      });
+
+      res.status(201).json({ message: "Organisation added successfully!" });
+  } catch (error) {
+      console.error("Error inserting data:", error);
+      res.status(500).json({ error: "Database insertion failed" });
+  }
+});
+
+
 // 🔹 Login Organization
 app.post("/api/org/login", async (req, res) => {
   try {

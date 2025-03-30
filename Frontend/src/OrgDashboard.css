@@ -1,0 +1,177 @@
+/* Reset & Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+  }
+  
+  body {
+    background-color: #f4f7fc;
+    color: #333;
+  }
+  
+  /* Dashboard Container */
+  .org-dashboard {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Header */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: linear-gradient(90deg, #6e23ff, #a23aff);
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+  
+  .dashboard-logout-btn {
+    background: white;
+    color: #6e23ff;
+    border: 2px solid white;
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+  
+  .dashboard-logout-btn:hover {
+    background: #fff5;
+    color: white;
+  }
+  
+  /* Content */
+  .dashboard-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+  }
+  
+  /* Form */
+  .org-details-form {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+  }
+  
+  .org-details-form h2 {
+    font-size: 1.75rem;
+    color: #6e23ff;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .org-details-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  
+  .org-details-form input,
+  .org-details-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    background: #f9f9f9;
+    color: #333;
+    transition: border-color 0.3s ease;
+  }
+  
+  .org-details-form input:focus,
+  .org-details-form textarea:focus {
+    outline: none;
+    border-color: #6e23ff;
+    box-shadow: 0 0 5px rgba(110, 35, 255, 0.2);
+  }
+  
+  /* Grid Layout */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+  
+  /* Submit Button */
+  .org-details-form button {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s ease;
+    background: #6e23ff;
+    color: white;
+    margin-top: 1rem;
+  }
+  
+  .org-details-form button:hover {
+    background: #a23aff;
+  }
+  
+  /* Footer */
+  .dashboard-footer {
+    background: #333;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dashboard-content {
+      padding: 1rem;
+    }
+  
+    .org-details-form {
+      padding: 1.5rem;
+    }
+  }
+  
+  /* Center the form */
+.dashboard-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center both horizontally & vertically */
+    padding: 2rem;
+  }
+  
+  /* Organization details form */
+  .org-details-form {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    text-align: left; /* Align text properly */
+  }

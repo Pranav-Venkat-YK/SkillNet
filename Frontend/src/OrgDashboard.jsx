@@ -1,69 +1,129 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Dashboard.css";
 
 const OrgDashboard = () => {
   const navigate = useNavigate();
-  const [orgData, setOrgData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
+  const orgName = localStorage.getItem("orgName");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  const [formData, setFormData] = useState({
+    bio: "",
+    foundeddate: "",
+    headquarters_address: "",
+    city: "",
+    state: "",
+    country: "",
+  });
 
-    if (!token) {
-      navigate("/");
-      return;
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:5000/api/student/details", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert("Details added successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error adding details:", error);
+      alert("Failed to add details. Try again.");
     }
-
-    const fetchOrgData = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/org/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setOrgData(response.data.org);
-      } catch (error) {
-        alert("Session expired, please log in again.");
-        localStorage.clear();
-        navigate("/");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrgData();
-  }, [navigate]);
+  };
 
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
   };
 
-  if (loading) return <div className="dashboard-loading">Loading...</div>;
-
   return (
-    <div className="dashboard-container">
+    <div className="org-dashboard">
       <header className="dashboard-header">
-        <h1 className="dashboard-title">SkillNet</h1>
+        <div className="dashboard-logo">SkillNet</div>
         <button className="dashboard-logout-btn" onClick={handleLogout}>
           Logout
         </button>
       </header>
 
-      <div className="dashboard-content">
-        <div className="dashboard-card">
-          <h2 className="dashboard-welcome">Welcome, {orgData?.name || "Organization"}!</h2>
-          <p className="dashboard-info">Email: {orgData?.email || "N/A"}</p>
-          <div className="dashboard-actions">
-            <button className="dashboard-btn secondary">Manage Listings</button>
-            <button className="dashboard-btn secondary">View Settings</button>
+      <main className="dashboard-content">
+        <form onSubmit={handleSubmit} className="org-details-form">
+          <h2>Organization Details</h2>
+
+          <label htmlFor="bio">Bio:</label>
+          <textarea
+            name="bio"
+            id="bio"
+            value={formData.bio}
+            onChange={handleChange}
+            placeholder="Tell us about your organization..."
+          ></textarea>
+
+          <label htmlFor="foundeddate">Founded Date:</label>
+          <input
+            type="date"
+            name="foundeddate"
+            id="foundeddate"
+            value={formData.foundeddate}
+            onChange={handleChange}
+          />
+
+          <label htmlFor="headquarters_address">Headquarters Address:</label>
+          <textarea
+            name="headquarters_address"
+            id="headquarters_address"
+            value={formData.headquarters_address}
+            onChange={handleChange}
+            placeholder="Enter your main office address..."
+          ></textarea>
+
+          <div className="form-grid">
+            <div>
+              <label htmlFor="city">City:</label>
+              <input
+                type="text"
+                name="city"
+                id="city"
+                value={formData.city}
+                onChange={handleChange}
+                placeholder="City"
+              />
+            </div>
+            <div>
+              <label htmlFor="state">State:</label>
+              <input
+                type="text"
+                name="state"
+                id="state"
+                value={formData.state}
+                onChange={handleChange}
+                placeholder="State"
+              />
+            </div>
+            <div>
+              <label htmlFor="country">Country:</label>
+              <input
+                type="text"
+                name="country"
+                id="country"
+                value={formData.country}
+                onChange={handleChange}
+                placeholder="Country"
+              />
+            </div>
           </div>
-        </div>
-      </div>
+
+          <button type="submit">Submit Details</button>
+        </form>
+      </main>
 
       <footer className="dashboard-footer">
-        <p>© 2025 SkillNet. All rights reserved.</p>
+        <p>&copy; 2025 SkillNet. All rights reserved.</p>
       </footer>
     </div>
   );

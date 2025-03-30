@@ -48,7 +48,7 @@ function App() {
             ) : (
               <Navigate to="/org-dashboard" />
             )
-          }
+          } 
         />
       </Routes>
     </Router>
