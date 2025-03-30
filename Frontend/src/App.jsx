@@ -6,6 +6,8 @@ import UserAuth from "./UserAuth";
 import OrgAuth from "./OrgAuth";
 import UserDashboard from "./UserDashboard";
 import OrgDashboard from "./OrgDashboard";
+import StdPersonal from "./StdPersonal";
+import StdAccount from "./StdAccount";
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -34,6 +36,9 @@ function App() {
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/user-auth" element={<AuthRoute element={<UserAuth />} />} />
         <Route path="/org-auth" element={<AuthRoute element={<OrgAuth />} />} />
+        
+        <Route path="/StdPersonal" element={<ProtectedRoute element={<StdPersonal />} />} />
+        <Route path="/StdAccount" element={<ProtectedRoute element={<StdAccount />} />} />
         
         {/* Separate dashboards */}
         <Route path="/user-dashboard" element={<ProtectedRoute element={<UserDashboard />} role="user" />} />

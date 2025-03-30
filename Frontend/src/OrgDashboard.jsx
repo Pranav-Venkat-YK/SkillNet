@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {toast} from "react-hot-toast";
 import axios from "axios";
 import "./OrgDashboard.css";
 
@@ -33,7 +34,7 @@ const OrgDashboard = () => {
 
         setOrgData(response.data.org);
       } catch (error) {
-        alert("Session expired, please log in again.");
+        toast.error("Session expired, please log in again.");
         localStorage.clear();
         navigate("/");
       } finally {
@@ -57,11 +58,11 @@ const OrgDashboard = () => {
       await axios.put("http://localhost:5000/api/organisations", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      alert("Details updated successfully!");
+      toast.success("Details updated successfully!");
       navigate("/dashboard");
     } catch (error) {
       console.error("Error updating details:", error);
-      alert("Failed to update details. Try again.");
+      toast.error("Failed to update details. Try again.");
     }
   };
 

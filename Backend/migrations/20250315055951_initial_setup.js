@@ -22,6 +22,38 @@ exports.up = function (knex) {
             table.string("country");
             table.string("website_url");
             table.timestamps(true, true);
+        })
+        .createTable("student", function (table) {
+            table.integer("user_id").unsigned().primary().references("id").inTable("users").onDelete("CASCADE");
+            table.text("bio");
+            table.date("date_of_birth");
+            table.string("phone_number");
+            table.string("city");
+            table.string("country");
+            table.string("postal_code");
+            table.enu("availability_status", ["not_looking", "actively_looking"]).defaultTo("not_looking");
+            table.string("resume_url");
+            table.string("linkedin_url");
+            table.string("github_url");
+            table.timestamps(true, true);
+        })
+        .createTable("workingprofessional",function (table){
+            table.integer("user_id").unsigned().primary().references("id").inTable("users").onDelete("CASCADE");
+            table.text("bio");
+            table.date("date_of_birth");
+            table.string("phone_number");
+            table.string("city");
+            table.string("country");
+            table.string("postal_code");
+            table.string("current_position");
+            table.string("company_name");
+            table.string("industry");
+            table.integer("years_of_experience");
+            table.enu("availability_status", ["not_looking", "actively_looking"]).defaultTo("not_looking");
+            table.string("resume_url");
+            table.string("linkedin_url");
+            table.string("github_url");
+            table.timestamps(true, true);
         });
 };
 

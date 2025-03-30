@@ -192,6 +192,34 @@ app.get("/api/org/me", authenticate, async (req, res) => {
   }
 });
 
+app.post("/api/student/details", authenticate, async (req, res) => {
+  try {
+    const studentData = { user_id: req.user.userId, ...req.body };
+    await knex("student").insert(studentData).onConflict("user_id").merge();
+    res.status(200).json({ message: "Student details added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding student details" });
+  }
+});
+
+// GET Student Details (Server Side)
+app.get("/api/student/details", authenticate, async (req, res) => {
+  try {
+    const studentDetails = await knex("student")
+      .where({ user_id: req.user.userId })
+      .first();
+    if (studentDetails) {
+      res.json({ details: studentDetails });
+    } else {
+      res.status(404).json({ message: "Student details not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching student details" });
+  }
+});
+
 // 🔹 Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

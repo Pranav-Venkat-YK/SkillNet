@@ -40,8 +40,12 @@ const UserDashboard = () => {
     navigate("/");
   };
 
-  const addDetails = () => {
-    navigate("/");
+  const redirectToDetails = (type) => {
+    if (type === "student") {
+      navigate("/StdPersonal");
+    } else {
+      navigate("/WorDetails");
+    }
   };
 
   if (loading) return <div className="dashboard-loading">Loading...</div>;
@@ -60,10 +64,12 @@ const UserDashboard = () => {
           <h2 className="dashboard-welcome">Welcome, {userData?.name || "User"}!</h2>
           <p className="dashboard-info">Email: {userData?.email || "N/A"}</p>
           <div className="dashboard-actions">
-            <button className="dashboard-btn primary" onClick={addDetails}>
-              Add Details
+            <button className="dashboard-btn primary" onClick={() => redirectToDetails("student")}>
+              I'm a Student
             </button>
-            <button className="dashboard-btn secondary">View Settings</button>
+            <button className="dashboard-btn secondary" onClick={() => redirectToDetails("working")}>
+              I'm a Working Professional
+            </button>
           </div>
         </div>
       </div>
