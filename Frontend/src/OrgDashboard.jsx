@@ -15,6 +15,8 @@ const OrgDashboard = () => {
     city: "",
     state: "",
     country: "",
+    website_url:"",
+    industry:"",
   });
   const [orgData, setOrgData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -60,6 +62,9 @@ const OrgDashboard = () => {
           const hasAddress = details.headquarters_address && details.headquarters_address.trim() !== "";
           const hasCity = details.city && details.city.trim() !== "";
           const hasCountry = details.country && details.country.trim() !== "";
+          const hasState = details.state && details.state.trim() !=="";
+          const hasUrl = details.website_url && details.website_url.trim() !=="";
+          const hasIndustry = details.industry && details.industry.trim() !=="";
           
           // Log the check results for debugging
           console.log("Fields check:", {
@@ -67,10 +72,13 @@ const OrgDashboard = () => {
             hasFoundedDate,
             hasAddress,
             hasCity,
-            hasCountry
+            hasCountry,
+            hasState,
+            hasUrl,
+            hasIndustry,
           });
           
-          const isComplete = hasDescription && hasFoundedDate && hasAddress && hasCity && hasCountry;
+          const isComplete = hasDescription && hasFoundedDate && hasAddress && hasCity && hasCountry && hasState && hasUrl && hasIndustry;
           
           console.log("Details complete:", isComplete);
           
@@ -83,6 +91,8 @@ const OrgDashboard = () => {
             city: details.city || "",
             state: details.state || "",
             country: details.country || "",
+            website_url: details.website_url || "",
+            industry: details.industry || ""
           });
           
           // Mark that we've checked for details
@@ -157,6 +167,14 @@ const OrgDashboard = () => {
             onChange={handleChange} 
             placeholder="Organization name" 
           />
+          <label>Industry :</label>
+          <input 
+          type="text" 
+          name="industry" 
+          value={formData.industry} 
+          onChange={handleChange} 
+          placeholder="industry"
+          />
           <label>Bio:</label>
           <textarea 
             name="bio" 
@@ -178,6 +196,7 @@ const OrgDashboard = () => {
             onChange={handleChange} 
             placeholder="Enter your main office address..." 
           />
+          <label >Company Address:</label>
           <div className="form-grid">
             <input 
               type="text" 
@@ -201,6 +220,14 @@ const OrgDashboard = () => {
               placeholder="Country" 
             />
           </div>
+          <label>Website URL:</label>
+          <input 
+            type="url" 
+            name="website_url" 
+            value={formData.website_url} 
+            onChange={handleChange} 
+            placeholder="Enter your organization's website" 
+          />
           <button type="submit">Submit Details</button>
         </form>
       </main>

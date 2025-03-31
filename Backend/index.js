@@ -124,7 +124,7 @@ app.put("/api/organisations", authenticate, async (req, res) => {
     return res.status(403).json({ message: "Unauthorized access" });
   }
 
-  const { name, bio, foundeddate, headquarters_address, city, state, country } = req.body;
+  const { name, bio, foundeddate, headquarters_address, city, state, country, website_url, industry} = req.body;
 
   try {
     const existingOrg = await knex("organisations").where({ id }).first();
@@ -140,6 +140,8 @@ app.put("/api/organisations", authenticate, async (req, res) => {
       city,
       state,
       country,
+      website_url,
+      industry,
       updated_at: knex.fn.now(),
     });
 
@@ -220,12 +222,33 @@ app.get("/api/student/details", authenticate, async (req, res) => {
   }
 });
 
+app.put("/api/student/details", authenticate, async (req, res) => {
+  try {
+    const userId = req.user.userId; // Extract user ID from the token
+    const updatedData = req.body; // Get updated fields from request body
+
+    const student = await knex("student").where({ user_id: userId }).first();
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    await knex("student").where({ user_id: userId }).update(updatedData);
+
+    const updatedStudent = await knex("student").where({ user_id: userId }).first(); // Fetch updated record
+
+    res.status(200).json({ message: "Details updated successfully", details: updatedStudent });
+  } catch (error) {
+    console.error("Error updating student details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
 // 🔹 Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 
-// Get Organization Details (Protected)
 // Get Organization Details (Protected)
 app.get("/api/org/details", authenticate, async (req, res) => {
   try {
