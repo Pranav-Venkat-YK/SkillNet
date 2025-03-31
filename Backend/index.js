@@ -223,3 +223,28 @@ app.get("/api/student/details", authenticate, async (req, res) => {
 // 🔹 Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+// Get Organization Details (Protected)
+// Get Organization Details (Protected)
+app.get("/api/org/details", authenticate, async (req, res) => {
+  try {
+    if (req.user.userType !== "org") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const details = await knex("organisations")
+      .where({ id: req.user.orgId })
+      .select("*")
+      .first();
+      
+    if (!details) {
+      return res.status(404).json({ message: "Organization details not found" });
+    }
+
+    res.json({ details });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching organization details" });
+  }
+});
