@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {toast} from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import axios from "axios";
 import "./StdAccount.css"; // Import updated CSS file
 
 const StdAccount = () => {
   const navigate = useNavigate();
+  
+  // Form state for student account details
   const [formData, setFormData] = useState({
     availability_status: "not_looking",
     resume_url: "",
@@ -13,20 +15,37 @@ const StdAccount = () => {
     github_url: "",
   });
 
+  // Form state for education details (grades as decimal values)
+  const [formData1, setFormData1] = useState({
+    tenth_grade: null,  // Keep as empty string initially, which will be validated later
+    tenth_board: "",
+    tenth_school: "",
+    twelveth_grade: null,
+    twelveth_course_combination: "",
+    twelveth_college: "",
+    degree_grade: null,
+    degree_course: "",
+    degree_university: "",
+    postdegree_grade: null,
+    postdegree_course: "",
+    postdegree_university: "",
+  });
+
   const token = localStorage.getItem("token");
 
+  // Fetch student details on component mount
   useEffect(() => {
     if (!token) {
       navigate("/");
       return;
     }
-
+  
     const fetchStudentDetails = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/student/details", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
+  
         if (res.data.details) {
           setFormData({
             availability_status: res.data.details.availability_status || "not_looking",
@@ -34,31 +53,84 @@ const StdAccount = () => {
             linkedin_url: res.data.details.linkedin_url || "",
             github_url: res.data.details.github_url || "",
           });
-
-          if (res.data.details.resume_url) {
+  
+          // Only navigate if the resume_url is not empty
+          if (res.data.details.resume_url && res.data.details.resume_url.trim() !== "") {
             navigate("/user/main");
           }
+        }
+  
+        // Fetch Education Details
+        const educationRes = await axios.get("http://localhost:5000/api/student/education", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+  
+        if (educationRes.data.educationDetails) {
+          setFormData1({
+            tenth_grade: educationRes.data.educationDetails.tenth_grade || null,
+            tenth_board: educationRes.data.educationDetails.tenth_board || "",
+            tenth_school: educationRes.data.educationDetails.tenth_school || "",
+            twelveth_grade: educationRes.data.educationDetails.twelveth_grade || null,
+            twelveth_course_combination: educationRes.data.educationDetails.twelveth_course_combination || "",
+            twelveth_college: educationRes.data.educationDetails.twelveth_college || "",
+            degree_grade: educationRes.data.educationDetails.degree_grade || null,
+            degree_course: educationRes.data.educationDetails.degree_course || "",
+            degree_university: educationRes.data.educationDetails.degree_university || "",
+            postdegree_grade: educationRes.data.educationDetails.postdegree_grade || null,
+            postdegree_course: educationRes.data.educationDetails.postdegree_course || "",
+            postdegree_university: educationRes.data.educationDetails.postdegree_university || "",
+          });
         }
       } catch (error) {
         console.error("Error fetching student details:", error);
       }
     };
-
+  
     fetchStudentDetails();
   }, [token, navigate]);
+  
+  
+  
 
+  // Handle change in student account form data
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle change in education form data, with validation for decimal values
+  const handleChange1 = (e) => {
+    const { name, value } = e.target;
+    
+    // Convert empty strings to null for grade values
+    if (["tenth_grade", "twelveth_grade", "degree_grade", "postdegree_grade"].includes(name)) {
+      setFormData1((prev) => ({
+        ...prev,
+        [name]: value === "" ? null : parseFloat(value), // Store as null or float value
+      }));
+    } else {
+      setFormData1((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Send StudentDetails data
       await axios.post("http://localhost:5000/api/student/details", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      // Send EducationDetails data
+      await axios.post("http://localhost:5000/api/student/education", formData1, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       toast.success("Details added successfully!");
-      navigate("/dashboard");
+      navigate("/user/main");
     } catch (error) {
       console.error("Error adding details:", error);
       toast.error("Failed to add details. Try again.");
@@ -69,7 +141,13 @@ const StdAccount = () => {
     <div className="std-account-container">
       <header className="std-account-header">
         <div className="std-account-logo">SkillNet</div>
-        <button className="std-account-logout-btn" onClick={() => { localStorage.clear(); navigate("/"); }}>
+        <button
+          className="std-account-logout-btn"
+          onClick={() => {
+            localStorage.clear();
+            navigate("/");
+          }}
+        >
           Logout
         </button>
       </header>
@@ -78,6 +156,120 @@ const StdAccount = () => {
         <form onSubmit={handleSubmit} className="std-account-form">
           <h2>Student Account Details</h2>
 
+          {/* Education Details Form */}
+          <label htmlFor="tenth_grade">Tenth Percentage:</label>
+          <input
+            type="number"
+            id="tenth_grade"
+            name="tenth_grade"
+            value={formData1.tenth_grade || ""}
+            onChange={handleChange1}
+            step="0.01" // Allows decimal input for percentage
+          />
+
+          <label htmlFor="tenth_board">Tenth Board:</label>
+          <input
+            type="text"
+            id="tenth_board"
+            name="tenth_board"
+            value={formData1.tenth_board}
+            onChange={handleChange1}
+          />
+
+          <label htmlFor="tenth_school">Tenth School:</label>
+          <input
+            type="text"
+            id="tenth_school"
+            name="tenth_school"
+            value={formData1.tenth_school}
+            onChange={handleChange1}
+          />
+
+          <label htmlFor="twelveth_grade">Twelveth Percentage:</label>
+          <input
+            type="number"
+            id="twelveth_grade"
+            name="twelveth_grade"
+            value={formData1.twelveth_grade || ""}
+            onChange={handleChange1}
+            step="0.01"
+          />
+
+          <label htmlFor="twelveth_course_combination">Twelveth Course Combination:</label>
+          <input
+            type="text"
+            id="twelveth_course_combination"
+            name="twelveth_course_combination"
+            value={formData1.twelveth_course_combination}
+            onChange={handleChange1}
+          />
+
+          <label htmlFor="twelveth_college">Twelveth College:</label>
+          <input
+            type="text"
+            id="twelveth_college"
+            name="twelveth_college"
+            value={formData1.twelveth_college}
+            onChange={handleChange1}
+          />
+
+          <label htmlFor="degree_grade">Degree Grade:</label>
+          <input
+            type="number"
+            id="degree_grade"
+            name="degree_grade"
+            value={formData1.degree_grade || ""}
+            onChange={handleChange1}
+            step="0.01"
+          />
+
+          <label htmlFor="degree_course">Degree Course:</label>
+          <input
+            type="text"
+            id="degree_course"
+            name="degree_course"
+            value={formData1.degree_course}
+            onChange={handleChange1}
+          />
+
+          <label htmlFor="degree_university">Degree University:</label>
+          <input
+            type="text"
+            id="degree_university"
+            name="degree_university"
+            value={formData1.degree_university}
+            onChange={handleChange1}
+          />
+
+          <label htmlFor="postdegree_grade">Post Graduation Grade:</label>
+          <input
+            type="number"
+            id="postdegree_grade"
+            name="postdegree_grade"
+            value={formData1.postdegree_grade || ""}
+            onChange={handleChange1}
+            step="0.01"
+          />
+
+          <label htmlFor="postdegree_course">Post Graduation Course:</label>
+          <input
+            type="text"
+            id="postdegree_course"
+            name="postdegree_course"
+            value={formData1.postdegree_course}
+            onChange={handleChange1}
+          />
+
+          <label htmlFor="postdegree_university">Post Graduation University:</label>
+          <input
+            type="text"
+            id="postdegree_university"
+            name="postdegree_university"
+            value={formData1.postdegree_university}
+            onChange={handleChange1}
+          />
+
+          {/* Account Availability and URLs */}
           <label htmlFor="availability_status">Availability Status:</label>
           <select
             name="availability_status"
@@ -116,7 +308,9 @@ const StdAccount = () => {
             onChange={handleChange}
           />
 
-          <button type="submit" className="std-account-submit">Submit</button>
+          <button type="submit" className="std-account-submit">
+            Submit
+          </button>
         </form>
       </div>
 

@@ -56,14 +56,22 @@ exports.up = function (knex) {
             table.string("github_url");
             table.timestamps(true, true);
         })
-        .createTable("education",function(table){
+        .createTable("education", function(table) {
             table.integer("user_id").unsigned().primary().references("id").inTable("users").onDelete("CASCADE");
-            table.string("level");
-            table.integer("grade");
-            table.string("course");
-            table.string("from_where");
-
+            table.decimal("tenth_grade", 5, 2);  
+            table.string("tenth_board");
+            table.string("tenth_school");
+            table.decimal("twelveth_grade", 5, 2);  
+            table.string("twelveth_course_combination");
+            table.string("twelveth_college");
+            table.decimal("degree_grade", 5, 2); 
+            table.string("degree_course");
+            table.string("degree_university");
+            table.decimal("postdegree_grade", 5, 2); 
+            table.string("postdegree_course");
+            table.string("postdegree_university");
         });
+        
 };
 
 exports.down = function (knex) {

@@ -89,7 +89,7 @@ const StdPersonal = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Details added successfully!");
-      navigate("/dashboard");
+      navigate("/StdAccount");
     } catch (error) {
       console.error("Error adding details:", error);
       toast.error("Failed to add details. Try again.");
@@ -109,7 +109,7 @@ const StdPersonal = () => {
         <h2>Student Details</h2>
         <form onSubmit={handleSubmit} className="std-details-form">
           <label htmlFor="name">Name:</label>
-          <textarea name="name" id="name" value={formData.name} onChange={handleChange} />
+          <input name="name" id="name" value={formData.name} onChange={handleChange} />
 
           <label htmlFor="bio">Bio:</label>
           <textarea name="bio" id="bio" value={formData.bio} onChange={handleChange} />

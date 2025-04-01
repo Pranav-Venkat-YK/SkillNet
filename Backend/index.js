@@ -205,6 +205,16 @@ app.post("/api/student/details", authenticate, async (req, res) => {
   }
 });
 
+app.post("/api/student/education", authenticate, async (req, res) => {
+  try {
+    const studentData = { user_id: req.user.userId, ...req.body };
+    await knex("education").insert(studentData).onConflict("user_id").merge();
+    res.status(200).json({ message: "Education details added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding education details" });
+  }
+});
 // GET Student Details (Server Side)
 app.get("/api/student/details", authenticate, async (req, res) => {
   try {
@@ -221,6 +231,26 @@ app.get("/api/student/details", authenticate, async (req, res) => {
     res.status(500).json({ message: "Error fetching student details" });
   }
 });
+
+
+app.get("/api/student/education", authenticate, async (req, res) => {
+  try {
+    // Fetch education details using knex, assuming education table has a column `user_id`
+    const educationDetails = await knex("education")
+      .where({ user_id: req.user.userId }) // Match user_id from authenticated user
+      .first(); // Get the first result (as each user has one record)
+
+    if (educationDetails) {
+      res.json({ educationDetails });
+    } else {
+      res.status(404).json({ message: "Education details not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching education details" });
+  }
+});
+
 
 app.put("/api/student/details", authenticate, async (req, res) => {
   try {
@@ -244,9 +274,26 @@ app.put("/api/student/details", authenticate, async (req, res) => {
 });
 
 
-// 🔹 Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.put("/api/student/education", authenticate, async (req, res) => {
+  try {
+    const userId = req.user.userId; // Extract user ID from the token
+    const updatedData = req.body; // Get updated fields from request body
+
+    const student = await knex("education").where({ user_id: userId }).first();
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    await knex("education").where({ user_id: userId }).update(updatedData);
+
+    const updatedStudent = await knex("education").where({ user_id: userId }).first(); // Fetch updated record
+
+    res.status(200).json({ message: "Details updated successfully", details: updatedStudent });
+  } catch (error) {
+    console.error("Error updating student details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 
 // Get Organization Details (Protected)
@@ -271,3 +318,8 @@ app.get("/api/org/details", authenticate, async (req, res) => {
     res.status(500).json({ message: "Error fetching organization details" });
   }
 });
+
+
+// 🔹 Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
