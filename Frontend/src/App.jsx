@@ -9,6 +9,7 @@ import OrgDashboard from "./OrgDashboard";
 import StdPersonal from "./StdPersonal";
 import StdAccount from "./StdAccount";
 import UserMain from "./UserMain";
+import OrgMain from "./OrgMain";
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -45,6 +46,7 @@ function App() {
         <Route path="/user-dashboard" element={<ProtectedRoute element={<UserDashboard />} role="user" />} />
         <Route path="/org-dashboard" element={<ProtectedRoute element={<OrgDashboard />} role="org" />} />
         <Route path="/user/main" element={<ProtectedRoute element={<UserMain />} />} />
+        <Route path="/org/main" element={<ProtectedRoute element={<OrgMain />} />} />
         
         {/* General dashboard route redirects based on user type */}
         <Route

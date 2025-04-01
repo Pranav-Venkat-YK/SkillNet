@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import {toast} from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-// import "./UserMain.css";
+import "./OrgMain.css";
 
 const OrgMain = () => {
   const navigate = useNavigate();
@@ -29,15 +29,13 @@ const OrgMain = () => {
 
     const fetchStudentDetails = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/student/details", {
+        const res = await axios.get("http://localhost:5000/api/org/details", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
+        console.log(res);
         if (res.data.details) {
           const details = res.data.details;
-          if (details.date_of_birth) {
-            details.date_of_birth = details.date_of_birth.split("T")[0];
-          }
+          
 
           setFormData(details);
         }
@@ -56,7 +54,7 @@ const OrgMain = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put("http://localhost:5000/api/student/details", formData, {
+      await axios.put("http://localhost:5000/api/organisations", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Details updated successfully!");
@@ -68,10 +66,10 @@ const OrgMain = () => {
   };
 
   return (
-    <div className="std-details-container">
-      <header className="dashboard-header">
-        <div className="dashboard-logo">SkillNet</div>
-        <button className="dashboard-logout-btn" onClick={() => { localStorage.clear(); navigate("/"); }}>
+    <div className="org-details-container">
+      <header className="org-dashboard-header">
+        <div className="org-dashboard-logo">SkillNet</div>
+        <button className="org-dashboard-logout-btn" onClick={() => { localStorage.clear(); navigate("/"); }}>
           Logout
         </button>
       </header>
@@ -79,20 +77,20 @@ const OrgMain = () => {
       <h2>Your Details</h2>
 
       {!editMode ? (
-        <div className="details-view">
+        <div className="org-details-view">
           <p><strong>Name:</strong> {formData.name}</p>
           <p><strong>Industry:</strong> {formData.industry}</p>
-          <p><strong>Bio:</strong> {formData.bio}</p>
-          <p><strong>Founded Date:</strong> {formData.foundeddate}</p>
+          <p><strong>Bio:</strong> {formData.Description}</p>
+          <p><strong>Founded Date:</strong> {formData.founded_date}</p>
           <p><strong>Headquarters Address:</strong> {formData.headquarters_address}</p>
           <p><strong>City:</strong> {formData.city}</p>
-          <p><strong>State:</strong> {formData.availability_status.state}</p>
-          <p><strong>Country:</strong> <a href={formData.country} target="_blank" rel="noopener noreferrer">{formData.resume_url}</a></p>
-          <p><strong>Website URL:</strong> <a href={formData.website_url} target="_blank" rel="noopener noreferrer">{formData.linkedin_url}</a></p>
-          <button className="edit-btn" onClick={() => setEditMode(true)}>Edit</button>
+          <p><strong>State:</strong> {formData.state}</p>
+          <p><strong>Country:</strong> {formData.country}</p>
+          <p><strong>Website URL:</strong> <a href={formData.website_url}>{formData.website_url}</a></p>
+          <button className="org-edit-btn" onClick={() => setEditMode(true)}>Edit</button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="std-details-form">
+        <form onSubmit={handleSubmit} className="org-details-form">
           <label htmlFor="name">Name:</label>
           <input type="text" name="name" id="name" value={formData.name} onChange={handleChange} />
 
@@ -100,10 +98,10 @@ const OrgMain = () => {
           <input type="text" name="industry" id="industry" value={formData.industry} onChange={handleChange} />
 
           <label htmlFor="bio">Bio:</label>
-          <textarea name="bio" id="bio" value={formData.bio} onChange={handleChange} />
+          <textarea name="bio" id="bio" value={formData.Description} onChange={handleChange} />
           
           <label htmlFor="foundeddate">Founded Date:</label>
-          <input type="date" name="foundeddate" id="foundeddate" value={formData.foundeddate} onChange={handleChange} />
+          <input type="date" name="foundeddate" id="foundeddate" value={formData.founded_date} onChange={handleChange} />
 
           <label htmlFor="headquarters_address">Headquarters Address:</label>
           <textarea name="headquarters_address" id="headquarters_address" value={formData.headquarters_address} onChange={handleChange} />
@@ -117,7 +115,7 @@ const OrgMain = () => {
           <label htmlFor="country">Country:</label>
           <input type="text" name="country" id="country" value={formData.country} onChange={handleChange} />
 
-          <label htmlFor="website_url">Websitee URL:</label>
+          <label htmlFor="website_url">Website URL:</label>
           <input type="text" name="website_url" id="website_url" value={formData.website_url} onChange={handleChange} />
 
           <button className="save-btn" type="submit">Save</button>
@@ -125,7 +123,7 @@ const OrgMain = () => {
         </form>
       )}
 
-      <footer className="dashboard-footer">
+      <footer className="org-dashboard-footer">
         <p>&copy; 2025 SkillNet. All rights reserved.</p>
       </footer>
     </div>
