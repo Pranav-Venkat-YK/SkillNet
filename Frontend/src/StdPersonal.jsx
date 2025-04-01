@@ -7,6 +7,7 @@ import "./StdPersonal.css";
 const StdPersonal = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    name:"",
     bio: "",
     date_of_birth: "",
     phone_number: "",
@@ -50,6 +51,7 @@ const StdPersonal = () => {
 
           const details = res.data.details;
           const updatedFormData = {
+            name:details.name||"",
             bio: details.bio || "",
             date_of_birth: formatDateToLocal(details.date_of_birth), // ✅ Fixes date shift
             phone_number: details.phone_number || "",
@@ -106,6 +108,9 @@ const StdPersonal = () => {
       <div className="std-details-container">
         <h2>Student Details</h2>
         <form onSubmit={handleSubmit} className="std-details-form">
+          <label htmlFor="name">Name:</label>
+          <textarea name="name" id="name" value={formData.name} onChange={handleChange} />
+
           <label htmlFor="bio">Bio:</label>
           <textarea name="bio" id="bio" value={formData.bio} onChange={handleChange} />
 

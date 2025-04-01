@@ -213,25 +213,25 @@ html, body, #root {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .dashboard-header {
+  .org-dashboard-header {
       padding: 1rem;
   }
   
-  .dashboard-logo {
+  .org-dashboard-logo {
       font-size: 1.5rem;
   }
   
-  .details-view,
+  .org-details-view,
   .org-details-form {
       width: 95%;
       padding: 1.5rem;
   }
   
-  .details-view p {
+  .org-details-view p {
       flex-direction: column;
   }
   
-  .details-view p strong {
+  .org-details-view p strong {
       width: 100%;
       margin-bottom: 0.25rem;
   }

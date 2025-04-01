@@ -4,9 +4,9 @@ const db = knex({
   client: "pg",
   connection: {
     host: "127.0.0.1", // or "localhost"
-    user: "admin",
-    password: "@Nit000001", // Update with your actual password
-    database: "skillnet",
+    user: "myuser",
+    password: "password", // Update with your actual password
+    database: "mydatabase",
   },
 });
 

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import "./UserMain.css";
+import "./UserMain.css";
 
 const UserMain = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    name:"",
     bio: "",
     date_of_birth: "",
     phone_number: "",
@@ -68,10 +69,10 @@ const UserMain = () => {
   };
 
   return (
-    <div className="std-details-container">
-      <header className="dashboard-header">
-        <div className="dashboard-logo">SkillNet</div>
-        <button className="dashboard-logout-btn" onClick={() => { localStorage.clear(); navigate("/"); }}>
+    <div className="std-details-containers">
+      <header className="std-dashboard-header">
+        <div className="std-dashboard-logo">SkillNet</div>
+        <button className="std-dashboard-logout-btn" onClick={() => { localStorage.clear(); navigate("/"); }}>
           Logout
         </button>
       </header>
@@ -79,7 +80,8 @@ const UserMain = () => {
       <h2>Your Details</h2>
 
       {!editMode ? (
-        <div className="details-view">
+        <div className="std-details-view">
+          <p><strong>Name:</strong>{formData.name}</p>
           <p><strong>Bio:</strong> {formData.bio}</p>
           <p><strong>Date of Birth:</strong> {formData.date_of_birth}</p>
           <p><strong>Phone Number:</strong> {formData.phone_number}</p>
@@ -90,10 +92,13 @@ const UserMain = () => {
           <p><strong>Resume URL:</strong> <a href={formData.resume_url} target="_blank" rel="noopener noreferrer">{formData.resume_url}</a></p>
           <p><strong>LinkedIn URL:</strong> <a href={formData.linkedin_url} target="_blank" rel="noopener noreferrer">{formData.linkedin_url}</a></p>
           <p><strong>GitHub URL:</strong> <a href={formData.github_url} target="_blank" rel="noopener noreferrer">{formData.github_url}</a></p>
-          <button className="edit-btn" onClick={() => setEditMode(true)}>Edit</button>
+          <button className="std-edit-btn" onClick={() => setEditMode(true)}>Edit</button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="std-details-form">
+          <label htmlFor="name">Name:</label>
+          <textarea name="name" id="name" value={formData.name} onChange={handleChange} />
+
           <label htmlFor="bio">Bio:</label>
           <textarea name="bio" id="bio" value={formData.bio} onChange={handleChange} />
 
@@ -127,12 +132,12 @@ const UserMain = () => {
           <label htmlFor="github_url">GitHub URL:</label>
           <input type="text" name="github_url" id="github_url" value={formData.github_url} onChange={handleChange} />
 
-          <button className="save-btn" type="submit">Save</button>
-          <button className="cancel-btn" type="button" onClick={() => setEditMode(false)}>Cancel</button>
+          <button className="std-save-btn" type="submit">Save</button>
+          <button className="std-cancel-btn" type="button" onClick={() => setEditMode(false)}>Cancel</button>
         </form>
       )}
 
-      <footer className="dashboard-footer">
+      <footer className="std-dashboard-footer">
         <p>&copy; 2025 SkillNet. All rights reserved.</p>
       </footer>
     </div>
