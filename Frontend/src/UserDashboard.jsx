@@ -44,7 +44,7 @@ const UserDashboard = () => {
     if (type === "student") {
       navigate("/StdPersonal");
     } else {
-      navigate("/WorDetails");
+      navigate("/WpPersonal");
     }
   };
 

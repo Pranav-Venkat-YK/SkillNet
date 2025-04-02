@@ -205,6 +205,17 @@ app.post("/api/student/details", authenticate, async (req, res) => {
   }
 });
 
+app.post("/api/workingprofessional/details", authenticate, async (req, res) => {
+  try {
+    const workingprofessionalData = { user_id: req.user.userId, ...req.body };
+    await knex("workingprofessional").insert(workingprofessionalData).onConflict("user_id").merge();
+    res.status(200).json({ message: "Working Professional details added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding Working Professional details" });
+  }
+});
+
 app.post("/api/student/education", authenticate, async (req, res) => {
   try {
     const studentData = { user_id: req.user.userId, ...req.body };
@@ -229,6 +240,22 @@ app.get("/api/student/details", authenticate, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching student details" });
+  }
+});
+
+app.get("/api/workingprofessional/details", authenticate, async (req, res) => {
+  try {
+    const workingprofessionalDetails = await knex("workingprofessional")
+      .where({ user_id: req.user.userId })
+      .first();
+    if (workingprofessionalDetails) {
+      res.json({ details: workingprofessionalDetails });
+    } else {
+      res.status(404).json({ message: "Working Professional details not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching Working Professional details" });
   }
 });
 

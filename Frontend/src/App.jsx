@@ -8,7 +8,10 @@ import UserDashboard from "./UserDashboard";
 import OrgDashboard from "./OrgDashboard";
 import StdPersonal from "./StdPersonal";
 import StdAccount from "./StdAccount";
+import WpPersonal from "./WpPersonal";
+import WpAccount from "./WpAccount";
 import UserMain from "./UserMain";
+import WpMain from "./WpMain";
 import OrgMain from "./OrgMain";
 
 const AuthRoute = ({ element }) => {
@@ -41,11 +44,15 @@ function App() {
         
         <Route path="/StdPersonal" element={<ProtectedRoute element={<StdPersonal />} />} />
         <Route path="/StdAccount" element={<ProtectedRoute element={<StdAccount />} />} />
+
+        <Route path="/WpPersonal" element={<ProtectedRoute element={<WpPersonal />} />} />
+        <Route path="/WpAccount" element={<ProtectedRoute element={<WpAccount />} />} />
         
         {/* Separate dashboards */}
         <Route path="/user-dashboard" element={<ProtectedRoute element={<UserDashboard />} role="user" />} />
         <Route path="/org-dashboard" element={<ProtectedRoute element={<OrgDashboard />} role="org" />} />
         <Route path="/user/main" element={<ProtectedRoute element={<UserMain />} />} />
+        <Route path="/Wp/main" element={<ProtectedRoute element={<WpMain />} />} />
         <Route path="/org/main" element={<ProtectedRoute element={<OrgMain />} />} />
         
         {/* General dashboard route redirects based on user type */}

@@ -40,6 +40,7 @@ exports.up = function (knex) {
         })
         .createTable("workingprofessional",function (table){
             table.integer("user_id").unsigned().primary().references("id").inTable("users").onDelete("CASCADE");
+            table.text("name");
             table.text("bio");
             table.date("date_of_birth");
             table.string("phone_number");
@@ -75,5 +76,5 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-    return knex.schema.dropTableIfExists("organisations").dropTableIfExists("users");
+    return knex.schema.dropTableIfExists("education").dropTableIfExists("workingprofessional").dropTableIfExists("student").dropTableIfExists("organisations").dropTableIfExists("users");
 };
