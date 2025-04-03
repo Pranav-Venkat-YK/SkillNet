@@ -345,6 +345,88 @@ app.get("/api/org/details", authenticate, async (req, res) => {
     res.status(500).json({ message: "Error fetching organization details" });
   }
 });
+// Place this code in your server file (e.g., index.js or a dedicated routes file)
+
+app.post("/api/org/jobs", authenticate, async (req, res) => {
+  // Ensure that only organisation users can post jobs
+  if (req.user.userType !== "org") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  // Destructure job details from the request body
+  const {
+    title,
+    description,
+    requirements,
+    responsibilities,
+    location,
+    is_remote,
+    salary_min,
+    salary_max,
+    salary_currency,
+    employment_type,
+    experience_level,
+    education_level,
+    domain_of_study,
+    application_deadline,
+    status,
+    orgId, // optional if you want to pass it explicitly; you can also use req.user.orgId
+  } = req.body;
+
+  try {
+    // Use the organisation ID from the token to ensure data integrity
+    const organisationId = req.user.orgId;
+
+    // Insert the new job into the jobs table using Knex
+    const newJob = await knex("jobs")
+  .insert({
+    id: req.user.orgId, // using "id" as defined in your migration
+    title,
+    description,
+    requirements,
+    responsibilities,
+    location,
+    is_remote,
+    salary_min,
+    salary_max,
+    salary_currency,
+    employment_type,
+    experience_level,
+    education_level,
+    domain_of_study,
+    application_deadline,
+    status,
+    created_at: knex.fn.now(),
+    updated_at: knex.fn.now()
+  })
+  .returning("*");
+
+    res.status(201).json({ message: "Job posted successfully!", job: newJob[0] });
+  } catch (error) {
+    console.error("Error posting job:", error);
+    res.status(500).json({ message: "Failed to post job." });
+  }
+});
+
+// In your Express server file (e.g., index.js or routes file)
+
+// GET jobs for the logged-in organization
+app.get("/api/org/jobs", authenticate, async (req, res) => {
+  // Ensure that only organization users can fetch jobs
+  if (req.user.userType !== "org") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  try {
+    // "id" column in jobs table references the organisation's id
+    const jobs = await knex("jobs").where({ id: req.user.orgId });
+    res.status(200).json({ jobs });
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    res.status(500).json({ message: "Error fetching jobs." });
+  }
+});
+
 
 
 // 🔹 Start server

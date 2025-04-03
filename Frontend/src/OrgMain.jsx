@@ -88,6 +88,7 @@ const OrgMain = () => {
           <p><strong>Country:</strong> {formData.country}</p>
           <p><strong>Website URL:</strong> <a href={formData.website_url}>{formData.website_url}</a></p>
           <button className="org-edit-btn" onClick={() => setEditMode(true)}>Edit</button>
+          <button className="org-goback-btn" onClick={() => navigate("/org/main")}>Go Back</button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="org-details-form">

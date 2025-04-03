@@ -12,7 +12,9 @@ import WpPersonal from "./WpPersonal";
 import WpAccount from "./WpAccount";
 import UserMain from "./UserMain";
 import WpMain from "./WpMain";
+import Org from "./Org";
 import OrgMain from "./OrgMain";
+import OrgJob from "./OrgJob";
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -53,7 +55,10 @@ function App() {
         <Route path="/org-dashboard" element={<ProtectedRoute element={<OrgDashboard />} role="org" />} />
         <Route path="/user/main" element={<ProtectedRoute element={<UserMain />} />} />
         <Route path="/Wp/main" element={<ProtectedRoute element={<WpMain />} />} />
-        <Route path="/org/main" element={<ProtectedRoute element={<OrgMain />} />} />
+        <Route path="/org/main" element={<ProtectedRoute element={<Org />} />} />
+        <Route path="/org/profile" element={<ProtectedRoute element={<OrgMain />} />} />
+        <Route path="/org/job" element={<ProtectedRoute element={<OrgJob />} />} />
+
         
         {/* General dashboard route redirects based on user type */}
         <Route
