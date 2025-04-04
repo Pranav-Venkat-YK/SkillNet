@@ -101,7 +101,7 @@ const OrgDashboard = () => {
           // If details are complete, immediately navigate to main
           if (isComplete) {
             console.log("Redirecting to main page...");
-            navigate("/org/main");
+            navigate("/org");
             return; // Exit early
           }
         }
@@ -133,7 +133,7 @@ const OrgDashboard = () => {
       // Clear the check flag so we recheck on next load
       localStorage.removeItem("detailsChecked");
       // Navigate to the main dashboard after successful submission
-      navigate("/org/main");
+      navigate("/org");
     } catch (error) {
       console.error("Error updating details:", error);
       toast.error("Failed to update details. Try again.");

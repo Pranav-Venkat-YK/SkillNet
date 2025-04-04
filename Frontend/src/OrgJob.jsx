@@ -54,7 +54,7 @@ const OrgJob = ({ organisationId }) => {
       );
       toast.success("Job posted successfully!");
       // Optionally refresh job list or redirect
-      navigate("/org/main");
+      navigate("/org");
     } catch (error) {
       console.error('Error posting job:', error);
       toast.error("Failed to post job. Please try again.");
@@ -66,7 +66,7 @@ const OrgJob = ({ organisationId }) => {
       <div className="modal">
         <div className="modal-header">
           <h2>Post New Job</h2>
-          <button className="close-btn" onClick={() => navigate("/org/main")}>&times;</button>
+          <button className="close-btn" onClick={() => navigate("/org")}>&times;</button>
         </div>
         
         <div className="modal-body">
@@ -266,7 +266,7 @@ const OrgJob = ({ organisationId }) => {
         </div>
         
         <div className="modal-footer">
-          <button className="btn btn-cancel" onClick={() => navigate("/org/main")}>Cancel</button>
+          <button className="btn btn-cancel" onClick={() => navigate("/org")}>Cancel</button>
           <button className="btn btn-primary" onClick={handleSubmit}>Post Job</button>
         </div>
       </div>

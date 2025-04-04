@@ -12,7 +12,7 @@ const LandingPage = () => {
 
   return (
     <div className="container">
-      <div className="header">
+      <div className="lpheader">
         <div className="logo">SkillNet</div>
         <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
         <div className="mobile-menu-toggle" onClick={toggleMenu}>

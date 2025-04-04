@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import {toast} from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import "./OrgMain.css";
+import "./OrgProfile.css";
 
-const OrgMain = () => {
+const OrgProfile = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -88,7 +88,7 @@ const OrgMain = () => {
           <p><strong>Country:</strong> {formData.country}</p>
           <p><strong>Website URL:</strong> <a href={formData.website_url}>{formData.website_url}</a></p>
           <button className="org-edit-btn" onClick={() => setEditMode(true)}>Edit</button>
-          <button className="org-goback-btn" onClick={() => navigate("/org/main")}>Go Back</button>
+          <button className="org-goback-btn" onClick={() => navigate("/org")}>Go Back</button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="org-details-form">
@@ -131,4 +131,4 @@ const OrgMain = () => {
   );
 };
 
-export default OrgMain;
+export default OrgProfile;

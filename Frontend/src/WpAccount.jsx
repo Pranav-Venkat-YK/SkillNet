@@ -64,7 +64,7 @@ const WpAccount = () => {
   
           // Only navigate to /wp/main if the resume_url is not empty
           if (res.data.details.resume_url && res.data.details.resume_url.trim() !== "") {
-            navigate("/Wp/main");
+            navigate("/wp/profile");
           }
         }
   
@@ -134,7 +134,7 @@ const WpAccount = () => {
       });
 
       toast.success("Details added successfully!");
-      navigate("/Wp/main");
+      navigate("/wp/profile");
     } catch (error) {
       console.error("Error adding details:", error);
       toast.error("Failed to add details. Try again.");

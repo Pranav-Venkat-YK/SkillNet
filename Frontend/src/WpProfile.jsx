@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "./UserMain.css";
+import "./StdProfile.css";
 
-const UserMain = () => {
+const WpProfile = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -18,6 +18,10 @@ const UserMain = () => {
     resume_url: "",
     linkedin_url: "",
     github_url: "",
+    current_position: "",
+    company_name: "",
+    industry: "",
+    years_of_experience: "",
   });
 
   const [formData1, setFormData1] = useState({
@@ -47,7 +51,7 @@ const UserMain = () => {
 
     const fetchStudentDetails = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/student/details", {
+        const res = await axios.get("http://localhost:5000/api/workingprofessional/details", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -67,13 +71,17 @@ const UserMain = () => {
             resume_url: details.resume_url || "",
             linkedin_url: details.linkedin_url || "",
             github_url: details.github_url || "",
+            current_position: details.current_position || "",
+            company_name: details.company_name || "",
+            industry: details.industry || "",
+            years_of_experience: details.years_of_experience || "",
           });
 
           if (details.resume_url && details.resume_url.trim() !== "") {
-            navigate("/user/main");
+            navigate("/wp/profile");
           }
         } else {
-          console.error("Student details are missing or invalid in the response.");
+          console.error("Working professional details are missing or invalid in the response.");
         }
 
         const educationRes = await axios.get("http://localhost:5000/api/student/education", {
@@ -102,7 +110,7 @@ const UserMain = () => {
           console.error("Education details are missing or invalid in the response.");
         }
       } catch (error) {
-        console.error("Error fetching student details:", error.response || error.message);
+        console.error("Error fetching working professional details:", error.response || error.message);
       }
     };
     fetchStudentDetails();
@@ -159,7 +167,7 @@ const UserMain = () => {
       // Log sanitized data before making the request
      
   
-      await axios.put("http://localhost:5000/api/student/details", sanitizedFormData, {
+      await axios.put("http://localhost:5000/api/workingprofessional/details", sanitizedFormData, {
         headers: { Authorization: `Bearer ${token}` },
       });
   
@@ -169,7 +177,7 @@ const UserMain = () => {
       
       console.log("Sanitized Form Data:", sanitizedFormData);
       console.log("Sanitized Form Data 1:", sanitizedFormData1);
-      navigate("/user/main");
+      navigate("/wp/profile");
       setEditMode(false)
       toast.success("Details added successfully!");
       
@@ -195,12 +203,10 @@ const UserMain = () => {
         </button>
       </header>
 
-      
-
       {!editMode ? (<>
         <h2>Personal Details</h2>
         <div className="std-details-view">
-          <p><strong>Name:</strong>{formData.name}</p>
+          <p><strong>Name:</strong> {formData.name}</p>
           <p><strong>Bio:</strong> {formData.bio}</p>
           <p><strong>Date of Birth:</strong> {formData.date_of_birth}</p>
           <p><strong>Phone Number:</strong> {formData.phone_number}</p>
@@ -208,12 +214,16 @@ const UserMain = () => {
           <p><strong>Country:</strong> {formData.country}</p>
           <p><strong>Postal Code:</strong> {formData.postal_code}</p>
           <p><strong>Availability Status:</strong> {formData.availability_status.replace("_", " ")}</p>
+          <p><strong>Current Position:</strong> {formData.current_position}</p>
+          <p><strong>Company Name:</strong> {formData.company_name}</p>
+          <p><strong>Industry:</strong> {formData.industry}</p>
+          <p><strong>Years of Experience:</strong> {formData.years_of_experience}</p>
           <p><strong>Resume URL:</strong> <a href={formData.resume_url} target="_blank" rel="noopener noreferrer">{formData.resume_url}</a></p>
           <p><strong>LinkedIn URL:</strong> <a href={formData.linkedin_url} target="_blank" rel="noopener noreferrer">{formData.linkedin_url}</a></p>
           <p><strong>GitHub URL:</strong> <a href={formData.github_url} target="_blank" rel="noopener noreferrer">{formData.github_url}</a></p>
-          </div>
-            <h2>Education Details</h2>
-          <div className="std-details-view">
+        </div>
+        <h2>Education Details</h2>
+        <div className="std-details-view">
           <p><strong>10th Grade:</strong> {formData1.tenth_grade}</p>
           <p><strong>10th Board:</strong> {formData1.tenth_board}</p>
           <p><strong>10th School:</strong> {formData1.tenth_school}</p>
@@ -234,92 +244,103 @@ const UserMain = () => {
           
           <h2>Personal Details</h2>
           <div className="">
-          <label htmlFor="name">Name:</label>
-          <input name="name" id="name" value={formData.name} onChange={handleChange} />
+            <label htmlFor="name">Name:</label>
+            <input name="name" id="name" value={formData.name} onChange={handleChange} />
 
-          <label htmlFor="bio">Bio:</label>
-          <textarea name="bio" id="bio" value={formData.bio} onChange={handleChange} />
+            <label htmlFor="bio">Bio:</label>
+            <textarea name="bio" id="bio" value={formData.bio} onChange={handleChange} />
 
-          <label htmlFor="date_of_birth">Date Of Birth:</label>
-          <input type="date" name="date_of_birth" id="date_of_birth" value={formData.date_of_birth} onChange={handleChange} />
+            <label htmlFor="date_of_birth">Date Of Birth:</label>
+            <input type="date" name="date_of_birth" id="date_of_birth" value={formData.date_of_birth} onChange={handleChange} />
 
-          <label htmlFor="phone_number">Phone Number:</label>
-          <input type="text" name="phone_number" id="phone_number" value={formData.phone_number} onChange={handleChange} />
+            <label htmlFor="phone_number">Phone Number:</label>
+            <input type="text" name="phone_number" id="phone_number" value={formData.phone_number} onChange={handleChange} />
 
-          <label htmlFor="city">City:</label>
-          <input type="text" name="city" id="city" value={formData.city} onChange={handleChange} />
+            <label htmlFor="city">City:</label>
+            <input type="text" name="city" id="city" value={formData.city} onChange={handleChange} />
 
-          <label htmlFor="country">Country:</label>
-          <input type="text" name="country" id="country" value={formData.country} onChange={handleChange} />
+            <label htmlFor="country">Country:</label>
+            <input type="text" name="country" id="country" value={formData.country} onChange={handleChange} />
 
-          <label htmlFor="postal_code">Postal Code:</label>
-          <input type="text" name="postal_code" id="postal_code" value={formData.postal_code} onChange={handleChange} />
+            <label htmlFor="postal_code">Postal Code:</label>
+            <input type="text" name="postal_code" id="postal_code" value={formData.postal_code} onChange={handleChange} />
 
-          <label htmlFor="availability_status">Availability Status:</label>
-          <select name="availability_status" id="availability_status" value={formData.availability_status} onChange={handleChange}>
-            <option value="not_looking">Not Looking</option>
-            <option value="actively_looking">Actively Looking</option>
-          </select>
+            <label htmlFor="availability_status">Availability Status:</label>
+            <select name="availability_status" id="availability_status" value={formData.availability_status} onChange={handleChange}>
+              <option value="not_looking">Not Looking</option>
+              <option value="actively_looking">Actively Looking</option>
+            </select>
 
-          <label htmlFor="resume_url">Resume URL:</label>
-          <input name="resume_url" id="resume_url" value={formData.resume_url} onChange={handleChange} />
+            <label htmlFor="current_position">Current Position:</label>
+            <input name="current_position" id="current_position" value={formData.current_position} onChange={handleChange} />
 
-          <label htmlFor="linkedin_url">LinkedIn URL:</label>
-          <input name="linkedin_url" id="linkedin_url" value={formData.linkedin_url} onChange={handleChange} />
+            <label htmlFor="company_name">Company Name:</label>
+            <input name="company_name" id="company_name" value={formData.company_name} onChange={handleChange} />
 
-          <label htmlFor="github_url">GitHub URL:</label>
-          <input name="github_url" id="github_url" value={formData.github_url} onChange={handleChange} />
+            <label htmlFor="industry">Industry:</label>
+            <input name="industry" id="industry" value={formData.industry} onChange={handleChange} />
 
+            <label htmlFor="years_of_experience">Years of Experience:</label>
+            <input type="number" name="years_of_experience" id="years_of_experience" value={formData.years_of_experience} onChange={handleChange} />
+
+            <label htmlFor="resume_url">Resume URL:</label>
+            <input name="resume_url" id="resume_url" value={formData.resume_url} onChange={handleChange} />
+
+            <label htmlFor="linkedin_url">LinkedIn URL:</label>
+            <input name="linkedin_url" id="linkedin_url" value={formData.linkedin_url} onChange={handleChange} />
+
+            <label htmlFor="github_url">GitHub URL:</label>
+            <input name="github_url" id="github_url" value={formData.github_url} onChange={handleChange} />
           </div>
+
           <h2>Education Details</h2>
           <div className="edit">
-            
-          <label htmlFor="tenth_grade">10th Grade:</label>
-          <input type="number" name="tenth_grade" value={formData1.tenth_grade} onChange={handleChange1} />
+            <label htmlFor="tenth_grade">10th Grade:</label>
+            <input type="number" name="tenth_grade" value={formData1.tenth_grade} onChange={handleChange1} />
 
-          <label htmlFor="tenth_board">10th Board:</label>
-          <input name="tenth_board" value={formData1.tenth_board} onChange={handleChange1} />
+            <label htmlFor="tenth_board">10th Board:</label>
+            <input name="tenth_board" value={formData1.tenth_board} onChange={handleChange1} />
 
-          <label htmlFor="tenth_school">10th School:</label>
-          <input name="tenth_school" value={formData1.tenth_school} onChange={handleChange1} />
+            <label htmlFor="tenth_school">10th School:</label>
+            <input name="tenth_school" value={formData1.tenth_school} onChange={handleChange1} />
 
-          <label htmlFor="twelveth_grade">12th Grade:</label>
-          <input type="number" name="twelveth_grade" value={formData1.twelveth_grade} onChange={handleChange1} />
+            <label htmlFor="twelveth_grade">12th Grade:</label>
+            <input type="number" name="twelveth_grade" value={formData1.twelveth_grade} onChange={handleChange1} />
 
-          <label htmlFor="twelveth_course_combination">12th Course Combination:</label>
-          <input name="twelveth_course_combination" value={formData1.twelveth_course_combination} onChange={handleChange1} />
+            <label htmlFor="twelveth_course_combination">12th Course Combination:</label>
+            <input name="twelveth_course_combination" value={formData1.twelveth_course_combination} onChange={handleChange1} />
 
-          <label htmlFor="twelveth_college">12th College:</label>
-          <input name="twelveth_college" value={formData1.twelveth_college} onChange={handleChange1} />
+            <label htmlFor="twelveth_college">12th College:</label>
+            <input name="twelveth_college" value={formData1.twelveth_college} onChange={handleChange1} />
 
-          <label htmlFor="degree_grade">Degree Grade:</label>
-          <input type="number" name="degree_grade" value={formData1.degree_grade} onChange={handleChange1} />
+            <label htmlFor="degree_grade">Degree Grade:</label>
+            <input type="number" name="degree_grade" value={formData1.degree_grade} onChange={handleChange1} />
 
-          <label htmlFor="degree_course">Degree Course:</label>
-          <input name="degree_course" value={formData1.degree_course} onChange={handleChange1} />
+            <label htmlFor="degree_course">Degree Course:</label>
+            <input name="degree_course" value={formData1.degree_course} onChange={handleChange1} />
 
-          <label htmlFor="degree_university">Degree University:</label>
-          <input name="degree_university" value={formData1.degree_university} onChange={handleChange1} />
+            <label htmlFor="degree_university">Degree University:</label>
+            <input name="degree_university" value={formData1.degree_university} onChange={handleChange1} />
 
-          <label htmlFor="postdegree_grade">Post Degree Grade:</label>
-          <input type="number" name="postdegree_grade" value={formData1.postdegree_grade} onChange={handleChange1} />
+            <label htmlFor="postdegree_grade">Post Degree Grade:</label>
+            <input type="number" name="postdegree_grade" value={formData1.postdegree_grade} onChange={handleChange1} />
 
-          <label htmlFor="postdegree_course">Post Degree Course:</label>
-          <input name="postdegree_course" value={formData1.postdegree_course} onChange={handleChange1} />
+            <label htmlFor="postdegree_course">Post Degree Course:</label>
+            <input name="postdegree_course" value={formData1.postdegree_course} onChange={handleChange1} />
 
-          <label htmlFor="postdegree_university">Post Degree University:</label>
-          <input name="postdegree_university" value={formData1.postdegree_university} onChange={handleChange1} />
+            <label htmlFor="postdegree_university">Post Degree University:</label>
+            <input name="postdegree_university" value={formData1.postdegree_university} onChange={handleChange1} />
 
-          <button className="user_save"type="submit">Save</button>
-          <button className="user_cancel" onClick={() => setEditMode(false)}>Cancel</button>
+            <button className="user_save" type="submit">Save</button>
+            <button className="user_cancel" onClick={() => setEditMode(false)}>Cancel</button>
           </div>
         </form>
       )}
-       <footer className="std-account-footer">
+      <footer className="std-account-footer">
         <p>&copy; 2025 SkillNet. All rights reserved.</p>
       </footer>
     </div>
   );
 };
 
-export default UserMain;
+export default WpProfile;

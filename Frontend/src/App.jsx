@@ -10,11 +10,12 @@ import StdPersonal from "./StdPersonal";
 import StdAccount from "./StdAccount";
 import WpPersonal from "./WpPersonal";
 import WpAccount from "./WpAccount";
-import UserMain from "./UserMain";
-import WpMain from "./WpMain";
+import StdProfile from "./StdProfile";
+import WpProfile from "./WpProfile";
 import Org from "./Org";
-import OrgMain from "./OrgMain";
+import OrgProfile from "./OrgProfile";
 import OrgJob from "./OrgJob";
+
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -53,10 +54,10 @@ function App() {
         {/* Separate dashboards */}
         <Route path="/user-dashboard" element={<ProtectedRoute element={<UserDashboard />} role="user" />} />
         <Route path="/org-dashboard" element={<ProtectedRoute element={<OrgDashboard />} role="org" />} />
-        <Route path="/user/main" element={<ProtectedRoute element={<UserMain />} />} />
-        <Route path="/Wp/main" element={<ProtectedRoute element={<WpMain />} />} />
-        <Route path="/org/main" element={<ProtectedRoute element={<Org />} />} />
-        <Route path="/org/profile" element={<ProtectedRoute element={<OrgMain />} />} />
+        <Route path="/std/profile" element={<ProtectedRoute element={<StdProfile />} />} />
+        <Route path="/wp/profile" element={<ProtectedRoute element={<WpProfile />} />} />
+        <Route path="/org/" element={<ProtectedRoute element={<Org />} />} />
+        <Route path="/org/profile" element={<ProtectedRoute element={<OrgProfile />} />} />
         <Route path="/org/job" element={<ProtectedRoute element={<OrgJob />} />} />
 
         
