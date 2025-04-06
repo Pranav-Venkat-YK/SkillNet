@@ -56,7 +56,7 @@ const StdAccount = () => {
   
           // Only navigate if the resume_url is not empty
           if (res.data.details.resume_url && res.data.details.resume_url.trim() !== "") {
-            navigate("/std/profile");
+            navigate("/std");
           }
         }
   
@@ -130,7 +130,7 @@ const StdAccount = () => {
       });
 
       toast.success("Details added successfully!");
-      navigate("/std/profile");
+      navigate("/std");
     } catch (error) {
       console.error("Error adding details:", error);
       toast.error("Failed to add details. Try again.");

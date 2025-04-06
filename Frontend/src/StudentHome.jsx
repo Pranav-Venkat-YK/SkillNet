@@ -1,217 +1,195 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './StudentHome.css';
 
 const StudentHome = () => {
-  // State variables for component
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const [activeNavItem, setActiveNavItem] = useState('Dashboard');
   const [activeJobTab, setActiveJobTab] = useState('All Jobs');
+  const [avatar, setAvatar] = useState("P");
   const [searchQuery, setSearchQuery] = useState('');
-  const [jobListings, setJobListings] = useState([
-    {
-      id: 1,
-      title: 'Senior Software Engineer',
-      match: 95,
-      company: 'TechSolutions Inc.',
-      logo: 'TS',
-      location: 'San Francisco, CA',
-      salary: '$120K - $150K',
-      type: 'Full-time',
-      isRemote: false,
-      postedDate: '2 weeks ago',
-      tags: ['JavaScript', 'React', 'Node.js', 'Cloud Computing', 'AWS'],
-      isBookmarked: false
-    },
-    {
-      id: 2,
-      title: 'Cloud Solutions Architect',
-      match: 89,
-      company: 'DataCloud Systems',
-      logo: 'DC',
-      location: 'Remote',
-      salary: '$130K - $170K',
-      type: 'Full-time',
-      isRemote: true,
-      postedDate: '1 week ago',
-      tags: ['AWS', 'Azure', 'DevOps', 'Kubernetes', 'Docker'],
-      isBookmarked: false
-    },
-    {
-      id: 3,
-      title: 'Frontend Developer',
-      match: 92,
-      company: 'WebDev Solutions',
-      logo: 'WD',
-      location: 'New York, NY',
-      salary: '$90K - $120K',
-      type: 'Full-time',
-      isRemote: false,
-      postedDate: '3 days ago',
-      tags: ['HTML', 'CSS', 'JavaScript', 'React', 'UI/UX'],
-      isBookmarked: false
-    }
-  ]);
-  const [interviews, setInterviews] = useState([
-    {
-      id: 1,
-      company: 'WebDev Solutions',
-      position: 'Frontend Developer Position',
-      type: 'video',
-      time: 'Tomorrow, 10:00 AM',
-      timeStatus: '',
-    },
-    {
-      id: 2,
-      company: 'DataCloud Systems',
-      position: 'Cloud Solutions Architect Position',
-      type: 'phone',
-      time: 'Apr 6, 2:30 PM',
-      timeStatus: '',
-    },
-    {
-      id: 3,
-      company: 'TechSolutions Inc.',
-      position: 'Senior Software Engineer Position',
-      type: 'users',
-      time: 'Apr 10, 11:00 AM',
-      timeStatus: '',
-    }
-  ]);
+  const [jobListings, setJobListings] = useState([]);
+  const [interviews, setInterviews] = useState([]);
   const [stats, setStats] = useState({
-    applications: 12,
-    savedJobs: 24,
-    interviews: 3,
-    offers: 1
+    applications: 0,
+    savedJobs: 0,
+    interviews: 0,
+    offers: 0
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
+  const [studentName, setStudentName] = useState('');
 
-  // Filter jobs based on active tab and search query
+  const fetchAllJobs = async (token) => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/student/jobs", {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return response.data.jobs;
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate('/login');
+      }
+      throw error;
+    }
+  };
+
+  const fetchStudentDetails = async (token) => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/student/details", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data.details;
+    } catch (error) {
+      console.error("Error fetching student details:", error);
+      throw error;
+    }
+  };
+
+  const fetchData = async () => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const [details, jobs] = await Promise.all([
+        fetchStudentDetails(token),
+        fetchAllJobs(token)
+      ]);
+
+      if (details) {
+        setAvatar(details.name[0].toUpperCase());
+        setStudentName(details.name);
+      }
+
+      setJobListings(jobs);
+      
+      const applicationsCount = jobs.filter(job => job.has_applied).length;
+      const savedJobsCount = jobs.filter(job => job.is_bookmarked).length;
+      
+      setStats({
+        applications: applicationsCount,
+        savedJobs: savedJobsCount,
+        interviews: 0,
+        offers: 0
+      });
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to load data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [token, navigate]);
+
   const filteredJobs = jobListings.filter(job => {
-    // First apply tab filter
-    if (activeJobTab === 'Remote' && !job.isRemote) return false;
-    if (activeJobTab === 'Recent' && !job.postedDate.includes('days')) return false;
-    if (activeJobTab === 'Matching Skills' && job.match < 90) return false;
+    if (activeJobTab === 'Remote' && !job.is_remote) return false;
+    if (activeJobTab === 'Recent') {
+      const postedDate = new Date(job.created_at);
+      const now = new Date();
+      const diffDays = Math.floor((now - postedDate) / (1000 * 60 * 60 * 24));
+      return diffDays <= 7;
+    }
     
-    // Then apply search filter if there's a query
     if (searchQuery.trim() !== '') {
       const query = searchQuery.toLowerCase();
-      const matchesTitle = job.title.toLowerCase().includes(query);
-      const matchesCompany = job.company.toLowerCase().includes(query);
-      const matchesTags = job.tags.some(tag => tag.toLowerCase().includes(query));
-      return matchesTitle || matchesCompany || matchesTags;
+      return (
+        job.title.toLowerCase().includes(query) ||
+        (job.company_name && job.company_name.toLowerCase().includes(query)) ||
+        (job.skills && job.skills.some(skill => skill.toLowerCase().includes(query))
+      ));
     }
     
     return true;
   });
 
-  // Navigation click handler
   const handleNavClick = (navItem) => {
     setActiveNavItem(navItem);
-    // In a real app, this would navigate to a new page
-    console.log(`Navigating to ${navItem} page`);
+    if (navItem === 'Job Search') navigate('/std/jobs');
+    else if (navItem === 'Applications') navigate('/std/applications');
+    else if (navItem === 'Interviews') navigate('/std/interviews');
+    else if (navItem === 'Profile') navigate('/std/profile');
+    else if (navItem === 'Saved Jobs') navigate('/std/saved-jobs');
   };
 
-  // Tab selection handler
-  const handleTabClick = (tab) => {
-    setActiveJobTab(tab);
+  const handleJobClick = (jobId) => {
+    navigate(`/std/jobs/${jobId}`);
   };
 
-  // Search handler
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
+  const toggleBookmark = async (jobId, e) => {
+    e.stopPropagation();
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/student/jobs/${jobId}/bookmark`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      setJobListings(prevJobs => 
+        prevJobs.map(job => 
+          job.job_id === jobId ? { 
+            ...job, 
+            is_bookmarked: response.data.bookmarked 
+          } : job
+        )
+      );
+      
+      setStats(prevStats => ({
+        ...prevStats,
+        savedJobs: response.data.bookmarked ? prevStats.savedJobs + 1 : prevStats.savedJobs - 1
+      }));
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+    }
   };
 
-  // Bookmark toggle handler
-  const toggleBookmark = (jobId) => {
-    setJobListings(prevJobs => 
-      prevJobs.map(job => 
-        job.id === jobId ? { ...job, isBookmarked: !job.isBookmarked } : job
-      )
-    );
-  };
-
-  // Apply button handler
-  const handleApply = (jobId) => {
-    const job = jobListings.find(job => job.id === jobId);
-    console.log(`Applied for ${job.title} at ${job.company}`);
-    
-    // Update application stat
-    setStats(prevStats => ({
-      ...prevStats,
-      applications: prevStats.applications + 1
-    }));
-  };
-
-  // Show filter modal handler
-  const showFilterModal = () => {
-    console.log('Filter modal opened');
-    // In a real app, this would show a modal using React components
-    // For this demo, we'll just log to console
-  };
-
-  // Welcome message with time-based greeting
   const getWelcomeMessage = () => {
     const hour = new Date().getHours();
     let greeting = 'Welcome back';
     
-    if (hour < 12) {
-      greeting = 'Good morning';
-    } else if (hour < 18) {
-      greeting = 'Good afternoon';
-    } else {
-      greeting = 'Good evening';
-    }
+    if (hour < 12) greeting = 'Good morning';
+    else if (hour < 18) greeting = 'Good afternoon';
+    else greeting = 'Good evening';
     
-    return `${greeting}, Alex!`;
+    return `${greeting}, ${studentName || 'Student'}!`;
   };
 
-  // Update interview countdowns
-  useEffect(() => {
-    const updateInterviewTimes = () => {
-      setInterviews(prevInterviews => {
-        return prevInterviews.map(interview => {
-          if (interview.time.includes('Tomorrow')) {
-            // Extract hour from time string
-            const timeParts = interview.time.split(', ')[1].split(':');
-            const hourStr = timeParts[0];
-            const minuteStr = timeParts[1].split(' ')[0];
-            const isPM = interview.time.includes('PM');
-            
-            let hour = parseInt(hourStr);
-            const minute = parseInt(minuteStr);
-            
-            if (isPM && hour !== 12) hour += 12;
-            if (!isPM && hour === 12) hour = 0;
-            
-            const now = new Date();
-            const tomorrow = new Date(now);
-            tomorrow.setDate(now.getDate() + 1);
-            tomorrow.setHours(hour);
-            tomorrow.setMinutes(minute);
-            
-            const hoursUntil = Math.floor((tomorrow - now) / (1000 * 60 * 60));
-            
-            if (hoursUntil < 24) {
-              return {
-                ...interview,
-                timeStatus: `In ${hoursUntil} hours`
-              };
-            }
-          }
-          return interview;
-        });
-      });
-    };
+  const formatInterviewTime = (time) => {
+    const now = new Date();
+    const interviewTime = new Date(time);
+    const diffHours = Math.floor((interviewTime - now) / (1000 * 60 * 60));
+    
+    if (diffHours < 24) {
+      return `In ${diffHours} hours`;
+    }
+    return interviewTime.toLocaleString();
+  };
 
-    // Initial update
-    updateInterviewTimes();
-    
-    // Set interval for updates
-    const intervalId = setInterval(updateInterviewTimes, 60000);
-    
-    // Cleanup on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
+  if (error) {
+    return (
+      <div className="error-container">
+        <div className="error-message">{error}</div>
+        <button onClick={fetchData} className="retry-button">Retry</button>
+      </div>
+    );
+  }
 
   return (
     <div className="container">
@@ -247,7 +225,7 @@ const StudentHome = () => {
               type="text" 
               placeholder="Search for jobs, companies, or skills..." 
               value={searchQuery}
-              onChange={handleSearch}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           
@@ -262,16 +240,16 @@ const StudentHome = () => {
               <div className="badge">4</div>
             </div>
             
-            <div className="avatar">
-              A
+            <div className="avatar" onClick={() => navigate("/std/profile")}>
+              {avatar}
             </div>
           </div>
         </div>
         
         <div className="welcome-card">
           <div className="welcome-text">
-            <h1>{getWelcomeMessage()}</h1>
-            <p>You have 3 interview invitations and 7 new job recommendations based on your profile.</p>
+            <h1><i>{getWelcomeMessage()}</i></h1>
+            <p>You have {interviews.length} upcoming interviews and {jobListings.length} job opportunities.</p>
           </div>
         </div>
         
@@ -293,148 +271,131 @@ const StudentHome = () => {
         </div>
         
         <div className="section-header">
-          <h2>Recommended Jobs</h2>
-          <div className="filter-button" onClick={showFilterModal}>
+          <h2>Available Jobs</h2>
+          <div className="filter-button">
             <i className="fas fa-filter"></i>
             Filters
           </div>
         </div>
         
         <div className="tabs">
-          {['All Jobs', 'Recent', 'Matching Skills', 'Remote'].map(tab => (
+          {['All Jobs', 'Recent', 'Remote'].map(tab => (
             <div 
               key={tab}
               className={`tab ${activeJobTab === tab ? 'active' : ''}`}
-              onClick={() => handleTabClick(tab)}
+              onClick={() => setActiveJobTab(tab)}
             >
               {tab}
             </div>
           ))}
         </div>
         
-        {filteredJobs.map(job => (
-          <div className="job-card" key={job.id}>
-            <div className="title-row">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div className="company-logo">{job.logo}</div>
+        {loading ? (
+          <div className="loading">Loading jobs...</div>
+        ) : filteredJobs.length === 0 ? (
+          <div className="no-jobs">No jobs found matching your criteria.</div>
+        ) : (
+          filteredJobs.map(job => (
+            <div 
+              className="job-card" 
+              key={job.job_id}
+              onClick={() => handleJobClick(job.job_id)}
+              style={{ cursor: 'pointer' }}
+            >
+              <div className="title-row">
                 <div className="title-company">
-                  <h3>{job.title} <span className="recommended">{job.match}% Match</span></h3>
-                  <div className="company-name">{job.company}</div>
+                  <h3>{job.title}</h3>
+                  <div className="company-name">{job.company_name || 'Unknown Company'}</div>
+                </div>
+                
+                <div className="action-buttons">
+                  <div 
+                    className="action-button" 
+                    onClick={(e) => toggleBookmark(job.job_id, e)}
+                  >
+                    <i className={job.is_bookmarked ? "fas fa-bookmark" : "far fa-bookmark"}></i>
+                  </div>
                 </div>
               </div>
               
-              <div className="action-buttons">
-                <div className="action-button" onClick={() => toggleBookmark(job.id)}>
-                  <i className={job.isBookmarked ? "fas fa-bookmark" : "far fa-bookmark"}></i>
+              <div className="details">
+                <div className="detail">
+                  <i className="fas fa-map-marker-alt"></i>
+                  {job.is_remote ? 'Remote' : job.location || 'Location not specified'}
+                </div>
+                
+                <div className="detail">
+                  <i className="fas fa-money-bill-wave"></i>
+                  {job.salary_min && job.salary_max 
+                    ? `${job.salary_currency} ${job.salary_min} - ${job.salary_currency} ${job.salary_max}`
+                    : 'Salary not specified'}
+                </div>
+                
+                <div className="detail">
+                  <i className="fas fa-clock"></i>
+                  {job.employment_type || 'Full-time'}
+                </div>
+                
+                <div className="detail">
+                  <i className="far fa-calendar-alt"></i>
+                  {job.application_deadline 
+                    ? `Deadline: ${new Date(job.application_deadline).toLocaleDateString()}` 
+                    : 'No deadline'}
                 </div>
               </div>
-            </div>
-            
-            <div className="details">
-              <div className="detail">
-                <i className="fas fa-map-marker-alt"></i>
-                {job.location}
+              
+              <div className="tags">
+                {job.skills && job.skills.map((skill, index) => (
+                  <div className="tag" key={index}>{skill}</div>
+                ))}
               </div>
               
-              <div className="detail">
-                <i className="fas fa-money-bill-wave"></i>
-                {job.salary}
-              </div>
-              
-              <div className="detail">
-                <i className="fas fa-clock"></i>
-                {job.type}
-              </div>
-              
-              <div className="detail">
-                <i className="far fa-calendar-alt"></i>
-                {'Posted ' + job.postedDate}
-              </div>
-            </div>
-            
-            <div className="tags">
-              {job.tags.map(tag => (
-                <div className="tag" key={tag}>{tag}</div>
-              ))}
-            </div>
-            
-            <div className="bottom-row">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div className="easy-apply">
-                  <i className="fas fa-bolt"></i>
-                  Easy Apply
+              <div className="bottom-row">
+                <div className="date">
+                  Posted {new Date(job.created_at).toLocaleDateString()}
                 </div>
-                <div className="date">{job.postedDate}</div>
+                
+                <button 
+                  className={`apply-button ${job.has_applied ? 'applied' : ''}`} 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleJobClick(job.job_id);
+                  }}
+                  disabled={job.has_applied}
+                >
+                  {job.has_applied ? 'Applied' : 'Apply Now'}
+                </button>
               </div>
-              
-              <button className="apply-button" onClick={() => handleApply(job.id)}>Apply Now</button>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         
         <div className="upcoming-interviews">
           <div className="section-header">
             <h2>Upcoming Interviews</h2>
           </div>
           
-          {interviews.map(interview => (
-            <div className="interview-item" key={interview.id}>
-              <div className="interview-icon">
-                <i className={`fas fa-${interview.type}`}></i>
+          {loading ? (
+            <div className="loading">Loading interviews...</div>
+          ) : interviews.length === 0 ? (
+            <div className="no-interviews">No upcoming interviews</div>
+          ) : (
+            interviews.map(interview => (
+              <div className="interview-item" key={interview.interview_id}>
+                <div className="interview-icon">
+                  <i className={`fas fa-${interview.interview_type === 'video' ? 'video' : interview.interview_type === 'phone' ? 'phone' : 'users'}`}></i>
+                </div>
+                <div className="interview-details">
+                  <h4>{interview.company_name || 'Company'}</h4>
+                  <p>{interview.job_title || 'Position'}</p>
+                </div>
+                <div className="interview-time">
+                  {formatInterviewTime(interview.scheduled_time)}
+                </div>
               </div>
-              <div className="interview-details">
-                <h4>{interview.company}</h4>
-                <p>{interview.position}</p>
-              </div>
-              <div className="interview-time" style={
-                interview.timeStatus ? { backgroundColor: '#ffe8ec', color: '#ff5252' } : {}
-              }>
-                {interview.timeStatus || interview.time}
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
-        
-        {showNotifications && (
-          <div className="notifications-panel">
-            <div className="panel-header">
-              <h3>Notifications</h3>
-            </div>
-            <div className="notification-item">
-              <div className="notification-title">New interview invitation</div>
-              <div className="notification-text">TechSolutions Inc. invited you to a final round interview</div>
-              <div className="notification-time">10 minutes ago</div>
-            </div>
-            <div className="notification-item">
-              <div className="notification-title">Application viewed</div>
-              <div className="notification-text">WebDev Solutions viewed your application</div>
-              <div className="notification-time">1 hour ago</div>
-            </div>
-          </div>
-        )}
-        
-        {showMessages && (
-          <div className="messages-panel">
-            <div className="panel-header">
-              <h3>Messages</h3>
-            </div>
-            <div className="message-item">
-              <div className="message-sender">Sarah Johnson (TechSolutions)</div>
-              <div className="message-preview">Hi Alex, we're excited to move forward with your application...</div>
-              <div className="message-time">25 minutes ago</div>
-            </div>
-            <div className="message-item">
-              <div className="message-sender">SkillNet Team</div>
-              <div className="message-preview">Congratulations on completing your profile! You've unlocked...</div>
-              <div className="message-time">Yesterday</div>
-            </div>
-            <div className="message-item">
-              <div className="message-sender">David Miller (WebDev)</div>
-              <div className="message-preview">Thanks for applying! We'd like to schedule an initial interview...</div>
-              <div className="message-time">2 days ago</div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

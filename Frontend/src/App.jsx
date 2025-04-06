@@ -12,10 +12,11 @@ import WpPersonal from "./WpPersonal";
 import WpAccount from "./WpAccount";
 import StdProfile from "./StdProfile";
 import WpProfile from "./WpProfile";
-import Org from "./Org";
+import OrgHome from "./OrgHome";
 import OrgProfile from "./OrgProfile";
 import OrgJob from "./OrgJob";
-
+import JobDetails from "./JobDetails";
+import StudentHome from "./StudentHome";
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -29,7 +30,7 @@ const ProtectedRoute = ({ element, role }) => {
   if (!token) return <Navigate to="/" />;
   
   if (role && userType !== role) {
-    return <Navigate to={`/${userType}-dashboard`} />;
+    return <Navigate to={`/${userType.toLowerCase()}-dashboard`} />;
   }
 
   return element;
@@ -56,10 +57,13 @@ function App() {
         <Route path="/org-dashboard" element={<ProtectedRoute element={<OrgDashboard />} role="org" />} />
         <Route path="/std/profile" element={<ProtectedRoute element={<StdProfile />} />} />
         <Route path="/wp/profile" element={<ProtectedRoute element={<WpProfile />} />} />
-        <Route path="/org/" element={<ProtectedRoute element={<Org />} />} />
+        <Route path="/org/" element={<ProtectedRoute element={<OrgHome />} />} />
         <Route path="/org/profile" element={<ProtectedRoute element={<OrgProfile />} />} />
         <Route path="/org/job" element={<ProtectedRoute element={<OrgJob />} />} />
-
+        
+        {/* Student routes */}
+        <Route path="/std/" element={<ProtectedRoute element={<StudentHome />} />} />
+        <Route path="/std/jobs/:jobId" element={<ProtectedRoute element={<JobDetails />} />} />
         
         {/* General dashboard route redirects based on user type */}
         <Route

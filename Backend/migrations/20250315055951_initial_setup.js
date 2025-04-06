@@ -103,10 +103,17 @@ exports.up = function (knex) {
             table.timestamp("applied_at").defaultTo(knex.fn.now());
             table.timestamp("updated_at").defaultTo(knex.fn.now());
             table.unique(["job_id", "user_id"]);
-        });
+        })
+        .createTable("bookmarks", function (table) {
+            table.increments("bookmark_id").primary();
+            table.integer("job_id").unsigned().references("job_id").inTable("jobs").notNullable();
+            table.integer("user_id").unsigned().references("id").inTable("users").notNullable();
+            table.timestamp("created_at").defaultTo(knex.fn.now());
+            table.unique(["job_id", "user_id"]);
+          });
         
 };
 
 exports.down = function (knex) {
-    return knex.schema.dropTableIfExists("applications") .dropTableIfExists("jobs").dropTableIfExists("education").dropTableIfExists("workingprofessional").dropTableIfExists("student").dropTableIfExists("organisations").dropTableIfExists("users");
+    return knex.schema.dropTableIfExists("bookmarks").dropTableIfExists("applications") .dropTableIfExists("jobs").dropTableIfExists("education").dropTableIfExists("workingprofessional").dropTableIfExists("student").dropTableIfExists("organisations").dropTableIfExists("users");
 };

@@ -9,13 +9,13 @@
     background-color: #f5f5f5;
   }
   
-  .container {
+  .oj-container {
     display: flex;
     min-height: 100vh;
   }
   
   /* Modal styles */
-  .modal-overlay {
+  .oj-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -28,7 +28,7 @@
     z-index: 1000;
   }
   
-  .modal {
+  .oj-modal {
     background-color: white;
     /* border-radius: 15px; */
     width: 90%;
@@ -38,7 +38,7 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   }
   
-  .modal-header {
+  .oj-modal-header {
     padding: 20px;
     border-bottom: 1px solid #eee;
     display: flex;
@@ -46,12 +46,12 @@
     align-items: center;
   }
   
-  .modal-header h2 {
+  .oj-modal-header h2 {
     color: #6046ea;
     font-size: 24px;
   }
   
-  .close-btn {
+  .oj-close-btn {
     background: none;
     border: none;
     font-size: 24px;
@@ -59,21 +59,21 @@
     color: #777;
   }
   
-  .modal-body {
+  .oj-modal-body {
     padding: 20px;
   }
   
-  .form-grid {
+  .oj-form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
   }
   
-  .form-group {
+  .oj-form-group {
     margin-bottom: 20px;
   }
   
-  .form-group.full-width {
+  .oj-form-group.oj-full-width {
     grid-column: span 2;
   }
   
@@ -97,17 +97,17 @@
     resize: vertical;
   }
   
-  .checkbox-group {
+  .oj-checkbox-group {
     display: flex;
     align-items: center;
   }
   
-  .checkbox-group input {
+  .oj-checkbox-group input {
     width: auto;
     margin-right: 10px;
   }
   
-  .modal-footer {
+  .oj-modal-footer {
     padding: 20px;
     border-top: 1px solid #eee;
     display: flex;
@@ -115,7 +115,7 @@
     gap: 15px;
   }
   
-  .btn {
+  .oj-btn {
     padding: 12px 25px;
     border-radius: 8px;
     font-size: 16px;
@@ -123,12 +123,12 @@
     border: none;
   }
   
-  .btn-cancel {
+  .oj-btn-cancel {
     background-color: #f0f0f0;
     color: #333;
   }
   
-  .btn-primary {
+  .oj-btn-primary {
     background-color: #6046ea;
     color: white;
   }

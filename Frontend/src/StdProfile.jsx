@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import "./StdProfile.css";
 
 const StdProfile = () => {
@@ -228,6 +228,7 @@ const StdProfile = () => {
           <p><strong>Post Degree University:</strong> {formData1.postdegree_university}</p>
 
           <button className="std-edit-btn" onClick={() => setEditMode(true)}>Edit</button>
+          <button className="std-goback-btn" onClick={() => navigate("/std")}>Go Back</button>
         </div></>
       ) : (
         <form onSubmit={handleSubmit} className="std-details-form">
@@ -315,8 +316,8 @@ const StdProfile = () => {
           </div>
         </form>
       )}
-       <footer className="std-account-footer">
-        <p>&copy; 2025 SkillNet. All rights reserved.</p>
+       <footer className="std-profile-account-footer">
+        <p >&copy; 2025 SkillNet. All rights reserved.</p>
       </footer>
     </div>
   );

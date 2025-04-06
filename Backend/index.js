@@ -1,19 +1,31 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const knex = require("./db"); // Ensure you have a `db.js` file for Knex setup
+const knex = require("./db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const SECRET_KEY = process.env.JWT_SECRET || "fallback-secret-key"; // Use .env file
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage: storage });
+
+const SECRET_KEY = process.env.JWT_SECRET || "fallback-secret-key";
 
 // 🔹 Middleware to verify token
 const authenticate = (req, res, next) => {
-  const token = req.header("Authorization")?.split(" ")[1]; // Expect "Bearer <token>"
+  const token = req.header("Authorization")?.split(" ")[1];
   if (!token) {
     return res.status(401).json({ message: "Unauthorized, token missing" });
   }
@@ -26,6 +38,21 @@ const authenticate = (req, res, next) => {
     res.status(401).json({ message: "Invalid or expired token" });
   }
 };
+
+// const authenticate = (req, res, next) => {
+//   const token = req.header("Authorization")?.split(" ")[1]; // Expect "Bearer <token>"
+//   if (!token) {
+//     return res.status(401).json({ message: "Unauthorized, token missing" });
+//   }
+
+//   try {
+//     const decoded = jwt.verify(token, SECRET_KEY);
+//     req.user = decoded;
+//     next();
+//   } catch (error) {
+//     res.status(401).json({ message: "Invalid or expired token" });
+//   }
+// };
 
 // 🔹 Register User
 app.post("/api/user/register", async (req, res) => {
@@ -97,7 +124,6 @@ app.get("/api/user/me", authenticate, async (req, res) => {
 app.post("/api/org/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
     const existingOrg = await knex("organisations").where({ email }).first();
     if (existingOrg) {
       return res.status(400).json({ message: "Email already in use" });
@@ -427,8 +453,284 @@ app.get("/api/org/jobs", authenticate, async (req, res) => {
   }
 });
 
+app.get("/api/student/jobs", authenticate, async (req, res) => {
+  // Ensure that only organization users can fetch jobs
 
 
-// 🔹 Start server
+  try {
+    // "id" column in jobs table references the organisation's id
+    const jobs = await knex("jobs");
+    res.status(200).json({ jobs });
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    res.status(500).json({ message: "Error fetching jobs." });
+  }
+});
+
+// 🔹 Get Job Details
+app.get("/api/jobs/:jobId", async (req, res) => {
+  try {
+    const job = await knex('jobs')
+      .where('jobs.job_id', req.params.jobId)
+      .join('organisations', 'jobs.id', 'organisations.id')
+      .select(
+        'jobs.*',
+        'organisations.name as company_name',
+        'organisations.Description as company_description',
+        'organisations.website_url as company_website',
+        'organisations.industry as company_industry'
+      )
+      .first();
+    
+    if (!job) {
+      return res.status(404).json({ error: 'Job not found' });
+    }
+    
+    res.json({ job });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch job details' });
+  }
+});
+
+// 🔹 Check Bookmark Status
+app.get("/api/jobs/:jobId/bookmark-status", authenticate, async (req, res) => {
+  try {
+    const bookmark = await knex('bookmarks')
+      .where({
+        job_id: req.params.jobId,
+        user_id: req.user.userId
+      })
+      .first();
+    
+    res.json({ isBookmarked: !!bookmark });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to check bookmark status' });
+  }
+});
+
+// 🔹 Toggle Bookmark
+app.post("/api/jobs/:jobId/bookmark", authenticate, async (req, res) => {
+  try {
+    const existing = await knex('bookmarks')
+      .where({
+        job_id: req.params.jobId,
+        user_id: req.user.userId
+      })
+      .first();
+
+    if (existing) {
+      await knex('bookmarks').where('bookmark_id', existing.bookmark_id).del();
+      return res.json({ bookmarked: false });
+    } else {
+      const [bookmark] = await knex('bookmarks').insert({
+        job_id: req.params.jobId,
+        user_id: req.user.userId
+      }).returning('*');
+      return res.json({ bookmarked: true });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to toggle bookmark' });
+  }
+});
+
+// 🔹 Check Application Status
+app.get("/api/jobs/:jobId/application-status", authenticate, async (req, res) => {
+  try {
+    const application = await knex('applications')
+      .where({
+        job_id: req.params.jobId,
+        user_id: req.user.userId
+      })
+      .first();
+    
+    res.json({ hasApplied: !!application });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to check application status' });
+  }
+});
+
+// 🔹 Submit Application
+app.post("/api/jobs/:jobId/apply", authenticate, upload.single('resume'), async (req, res) => {
+  try {
+    // Check if already applied
+    const existing = await knex('applications')
+      .where({
+        job_id: req.params.jobId,
+        user_id: req.user.userId
+      })
+      .first();
+
+    if (existing) {
+      return res.status(400).json({ error: 'Already applied to this job' });
+    }
+
+    // Save resume file and get URL
+    const resumeUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Create application
+    const [application] = await knex('applications').insert({
+      job_id: req.params.jobId,
+      user_id: req.user.userId,
+      resume_url: resumeUrl,
+      status: 'applied'
+    }).returning('*');
+
+    // Increment applications count
+    await knex('jobs')
+      .where('job_id', req.params.jobId)
+      .increment('applications_count', 1);
+
+    res.json({ success: true, application });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to submit application' });
+  }
+});
+
+// 🔹 Get Jobs with Application Status (for student dashboard)
+app.get("/api/student/jobs", authenticate, async (req, res) => {
+  try {
+    const jobs = await knex('jobs')
+      .leftJoin('applications', function() {
+        this.on('jobs.job_id', '=', 'applications.job_id')
+           .andOn('applications.user_id', '=', knex.raw('?', [req.user.userId]));
+      })
+      .leftJoin('bookmarks', function() {
+        this.on('jobs.job_id', '=', 'bookmarks.job_id')
+           .andOn('bookmarks.user_id', '=', knex.raw('?', [req.user.userId]));
+      })
+      .leftJoin('organisations', 'jobs.id', 'organisations.id')
+      .select(
+        'jobs.*',
+        'organisations.name as company_name',
+        'applications.application_id',
+        'applications.status as application_status',
+        knex.raw('CASE WHEN applications.job_id IS NOT NULL THEN true ELSE false END as has_applied'),
+        knex.raw('CASE WHEN bookmarks.job_id IS NOT NULL THEN true ELSE false END as is_bookmarked')
+      );
+
+    res.json({ jobs });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch jobs' });
+  }
+});
+
+// 🔹 Get Organization's Jobs
+app.get("/api/org/jobs", authenticate, async (req, res) => {
+  if (req.user.userType !== "org") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  try {
+    const jobs = await knex('jobs')
+      .where('id', req.user.orgId)
+      .leftJoin('applications', 'jobs.job_id', 'applications.job_id')
+      .select(
+        'jobs.*',
+        knex.raw('COUNT(applications.application_id) as applications_count')
+      )
+      .groupBy('jobs.job_id');
+
+    res.json({ jobs });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch organization jobs' });
+  }
+});
+
+// 🔹 Get Applications for a Job
+app.get("/api/jobs/:jobId/applications", authenticate, async (req, res) => {
+  if (req.user.userType !== "org") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  try {
+    // Verify the job belongs to the organization
+    const job = await knex('jobs')
+      .where({
+        job_id: req.params.jobId,
+        id: req.user.orgId
+      })
+      .first();
+
+    if (!job) {
+      return res.status(404).json({ error: 'Job not found or unauthorized' });
+    }
+
+    const applications = await knex('applications')
+      .where('job_id', req.params.jobId)
+      .join('users', 'applications.user_id', 'users.id')
+      .leftJoin('student', 'users.id', 'student.user_id')
+      .leftJoin('workingprofessional', 'users.id', 'workingprofessional.user_id')
+      .select(
+        'applications.*',
+        'users.name as applicant_name',
+        'users.email as applicant_email',
+        'student.resume_url as student_resume',
+        'workingprofessional.resume_url as professional_resume'
+      );
+
+    res.json({ applications });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch applications' });
+  }
+});
+
+// Get specific job details (for students)
+app.get("/api/student/jobs/:jobId", authenticate, async (req, res) => {
+  try {
+    const job = await knex('jobs')
+      .where('jobs.job_id', req.params.jobId)
+      .join('organisations', 'jobs.id', 'organisations.id')
+      .select(
+        'jobs.*',
+        'organisations.name as company_name',
+        'organisations.Description as company_description',
+        'organisations.website_url as company_website',
+        'organisations.industry as company_industry'
+      )
+      .first();
+
+    if (!job) {
+      return res.status(404).json({ error: 'Job not found' });
+    }
+
+    // Check if user has applied
+    const application = await knex('applications')
+      .where({
+        job_id: req.params.jobId,
+        user_id: req.user.userId
+      })
+      .first();
+
+    // Check if bookmarked
+    const bookmark = await knex('bookmarks')
+      .where({
+        job_id: req.params.jobId,
+        user_id: req.user.userId
+      })
+      .first();
+
+    res.json({ 
+      job: {
+        ...job,
+        has_applied: !!application,
+        is_bookmarked: !!bookmark
+      } 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch job details' });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

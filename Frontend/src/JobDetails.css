@@ -1,0 +1,494 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* Header styles */
+.jd-header {
+    background-color: #ffffff;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.jd-header-container {
+    max-width: 100vw;
+    margin: 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.jd-back-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.jd-back-button:hover {
+    background-color: #f3f4f6;
+}
+
+.jd-logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 700;
+    font-size: 1.75rem;
+    text-align: center;
+    color: #6e23ff;
+}
+
+.jd-icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.jd-icon-button:hover {
+    background-color: #f3f4f6;
+}
+
+/* Main content */
+main {
+    max-width: 1024px;
+    margin: 24px auto;
+    padding: 0 16px;
+    padding-bottom: 80px; /* Space for mobile bar */
+}
+
+/* Card styles */
+.jd-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    margin-bottom: 24px;
+    width: 1000px;
+}
+
+/* Job header */
+.jd-job-header {
+    display: flex;
+    align-items: flex-start;
+}
+
+.jd-company-logo {
+    background-color: #e5e7eb;
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-right: 16px;
+}
+
+.jd-job-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.jd-company-name {
+    color: #4b5563;
+    font-size: 1.125rem;
+    margin-bottom: 8px;
+}
+
+.jd-job-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    color: #6b7280;
+    margin-top: 8px;
+}
+
+.jd-meta-item {
+    display: flex;
+    align-items: center;
+    margin-right: 16px;
+    margin-bottom: 8px;
+}
+
+.jd-meta-icon {
+    margin-right: 8px;
+}
+
+.jd-action-buttons {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.jd-apply-button {
+    background-color: #6e23ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-right: 16px;
+    margin-bottom: 8px;
+}
+
+.jd-apply-button:hover {
+    background-color: #5a1cd9;
+}
+
+/* Section styles */
+.jd-section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.jd-section-content {
+    margin-bottom: 24px;
+}
+
+ul {
+    padding-left: 20px;
+    margin-bottom: 16px;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+/* Additional info grid */
+.jd-info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.jd-info-item-label {
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.jd-info-item-value {
+    font-weight: 500;
+}
+
+/* Company section */
+.jd-company-link {
+    display: flex;
+    align-items: center;
+    color: #6e23ff;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.jd-company-link:hover {
+    text-decoration: underline;
+}
+
+.jd-link-icon {
+    margin-left: 4px;
+}
+
+/* Mobile bottom bar */
+.jd-mobile-apply-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    padding: 16px;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+
+.jd-mobile-job-title {
+    font-weight: 600;
+}
+
+.jd-mobile-company-name {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.jd-mobile-apply-button {
+    background-color: #6e23ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.jd-mobile-apply-button:hover {
+    background-color: #5a1cd9;
+}
+
+/* Responsive styles */
+@media (min-width: 768px) {
+    .jd-info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .jd-mobile-apply-bar {
+        display: none;
+    }
+}
+
+/* Icons */
+.jd-icon {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    stroke-width: 2;
+    stroke: currentColor;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.jd-icon-small {
+    width: 16px;
+    height: 16px;
+}
+
+/* Application Popup Styles */
+.jd-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    display: none;
+}
+
+.jd-popup-overlay.jd-active {
+    display: flex;
+}
+
+.jd-application-popup {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.jd-popup-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.jd-popup-job-title {
+    margin: 0 0 5px 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.jd-popup-company-name {
+    font-size: 16px;
+    color: #666;
+}
+
+.jd-popup-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+}
+
+.jd-popup-close:hover {
+    color: #333;
+}
+
+.jd-popup-body {
+    padding: 20px;
+}
+
+.jd-form-group {
+    margin-bottom: 20px;
+}
+
+.jd-form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.jd-file-input-container {
+    display: flex;
+    align-items: center;
+}
+
+.jd-file-input {
+    display: none;
+}
+
+.jd-file-input-label {
+    background-color: #f0f0f0;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.jd-file-input-label:hover {
+    background-color: #e0e0e0;
+}
+
+.jd-file-selected {
+    margin-left: 10px;
+    color: #4caf50;
+    display: none;
+}
+
+.jd-file-selected.jd-active {
+    display: inline-block;
+}
+
+.jd-textarea-input {
+    width: 100%;
+    min-height: 120px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    font-size: 14px;
+}
+
+.jd-popup-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.jd-cancel-btn {
+    background: none;
+    border: none;
+    color: #666;
+    margin-right: 15px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.jd-cancel-btn:hover {
+    color: #333;
+}
+
+.jd-submit-btn {
+    background-color: #6e23ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 14px;
+}
+
+.jd-submit-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.jd-7;
+}
+
+.jd-submit-btn:not(:disabled):hover {
+    background-color: #5a1cd9;
+}
+
+.jd-error-message {
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.jd-error-message.jd-active {
+    display: block;
+}
+
+/* Success message */
+.jd-success-container {
+    text-align: center;
+    padding: 30px 20px;
+    display: none;
+}
+
+.jd-success-container.jd-active {
+    display: block;
+}
+
+.jd-success-icon {
+    font-size: 48px;
+    color: #4caf50;
+    margin-bottom: 15px;
+}
+
+.jd-success-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.jd-success-message {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.jd-success-btn {
+    background-color: #6e23ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.jd-success-btn:hover {
+    background-color: #5a1cd9;
+}

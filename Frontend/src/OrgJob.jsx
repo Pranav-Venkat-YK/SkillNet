@@ -62,17 +62,17 @@ const OrgJob = ({ organisationId }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <div className="modal-header">
+    <div className="oj-modal-overlay">
+      <div className="oj-modal">
+        <div className="oj-modal-header">
           <h2>Post New Job</h2>
-          <button className="close-btn" onClick={() => navigate("/org")}>&times;</button>
+          <button className="oj-close-btn" onClick={() => navigate("/org")}>&times;</button>
         </div>
         
-        <div className="modal-body">
+        <div className="oj-modal-body">
           <form id="job-form" onSubmit={handleSubmit}>
-            <div className="form-grid">
-              <div className="form-group full-width">
+            <div className="oj-form-grid">
+              <div className="oj-form-group oj-full-width">
                 <label htmlFor="title">Job Title *</label>
                 <input 
                   type="text" 
@@ -84,7 +84,7 @@ const OrgJob = ({ organisationId }) => {
                 />
               </div>
               
-              <div className="form-group full-width">
+              <div className="oj-form-group oj-full-width">
                 <label htmlFor="description">Job Description *</label>
                 <textarea 
                   id="description" 
@@ -95,7 +95,7 @@ const OrgJob = ({ organisationId }) => {
                 />
               </div>
               
-              <div className="form-group full-width">
+              <div className="oj-form-group oj-full-width">
                 <label htmlFor="requirements">Requirements</label>
                 <textarea 
                   id="requirements" 
@@ -105,7 +105,7 @@ const OrgJob = ({ organisationId }) => {
                 />
               </div>
               
-              <div className="form-group full-width">
+              <div className="oj-form-group oj-full-width">
                 <label htmlFor="responsibilities">Responsibilities</label>
                 <textarea 
                   id="responsibilities" 
@@ -115,7 +115,7 @@ const OrgJob = ({ organisationId }) => {
                 />
               </div>
           
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="location">Location</label>
                 <input 
                   type="text" 
@@ -126,8 +126,8 @@ const OrgJob = ({ organisationId }) => {
                 />
               </div>
           
-              <div className="form-group" id="is-remote">
-                <label className="checkbox-group">
+              <div className="oj-form-group" id="is-remote">
+                <label className="oj-checkbox-group">
                   <input 
                     type="checkbox" 
                     id="is_remote" 
@@ -139,7 +139,7 @@ const OrgJob = ({ organisationId }) => {
                 </label>
               </div>
               
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="salary_min">Minimum Salary</label>
                 <input 
                   type="number" 
@@ -150,7 +150,7 @@ const OrgJob = ({ organisationId }) => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="salary_max">Maximum Salary</label>
                 <input 
                   type="number" 
@@ -161,7 +161,7 @@ const OrgJob = ({ organisationId }) => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="salary_currency">Currency</label>
                 <select 
                   id="salary_currency" 
@@ -178,7 +178,7 @@ const OrgJob = ({ organisationId }) => {
                 </select>
               </div>
               
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="employment_type">Employment Type</label>
                 <select 
                   id="employment_type" 
@@ -191,7 +191,7 @@ const OrgJob = ({ organisationId }) => {
                 </select>
               </div>
               
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="experience_level">Experience Level</label>
                 <select 
                   id="experience_level" 
@@ -206,7 +206,7 @@ const OrgJob = ({ organisationId }) => {
                 </select>
               </div>
               
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="education_level">Education Level</label>
                 <select 
                   id="education_level" 
@@ -221,7 +221,7 @@ const OrgJob = ({ organisationId }) => {
                 </select>
               </div>
               
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="domain_of_study">Domain of Study</label>
                 <select 
                   id="domain_of_study" 
@@ -238,7 +238,7 @@ const OrgJob = ({ organisationId }) => {
                 </select>
               </div>
               
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="application_deadline">Application Deadline</label>
                 <input 
                   type="date" 
@@ -249,7 +249,7 @@ const OrgJob = ({ organisationId }) => {
                 />
               </div>
               
-              <div className="form-group">
+              <div className="oj-form-group">
                 <label htmlFor="status">Status</label>
                 <select 
                   id="status" 
@@ -265,9 +265,9 @@ const OrgJob = ({ organisationId }) => {
           </form>
         </div>
         
-        <div className="modal-footer">
-          <button className="btn btn-cancel" onClick={() => navigate("/org")}>Cancel</button>
-          <button className="btn btn-primary" onClick={handleSubmit}>Post Job</button>
+        <div className="oj-modal-footer">
+          <button className="oj-btn oj-btn-cancel" onClick={() => navigate("/org")}>Cancel</button>
+          <button className="oj-btn oj-btn-primary" onClick={handleSubmit}>Post Job</button>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
-.logo img{
+.lp-logo img{
   height: 70px;
   width:150px;
 }
@@ -21,7 +21,7 @@ body {
 }
 
 /* Container */
-.container {
+.lp-container {
   width: 100%;
   max-width: 100vw;
   /* padding: 0 20px; */
@@ -29,7 +29,7 @@ body {
 }
 
 /* Header Styling */
-.lpheader {
+.lp-header {
   width: 100%;
   padding: 20px;
   padding-left : 30px;
@@ -42,7 +42,7 @@ body {
   position: relative;
 }
 
-.logo {
+.lp-logo {
   font-size: 30px;
   font-weight: bold;
   color: #6c23ff;
@@ -76,7 +76,7 @@ nav ul li a:hover {
 }
 
 /* Main Section */
-.main {
+.lp-main {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -87,36 +87,36 @@ nav ul li a:hover {
 }
 
 /* Text Content */
-.text-content {
+.lp-text-content {
   /* max-width: 500px; */
   width: 50%;
 }
 
-.text-content h1 {
+.lp-text-content h1 {
   font-size: 45px;
   color: #333;
   font-weight: bold;
   line-height: 1.3;
 }
 
-.text-content h1 .highlight {
+.lp-text-content h1 .lp-highlight {
   color: #6c23ff;
 }
 
-.text-content p {
+.lp-text-content p {
   font-size: 22px;
   color: #444;
   margin: 20px 0;
   line-height: 1.6;
 }
 
-.text-content p .bold-text {
+.lp-text-content p .lp-bold-text {
   font-weight: bold;
   color: #6c23ff;
 }
 
 /* CTA Button */
-.get-started {
+.lp-get-started {
   background: #ffb705;
   color: white;
   padding: 14px 25px;
@@ -128,17 +128,17 @@ nav ul li a:hover {
   transition: background 0.3s ease, transform 0.2s;
 }
 
-.get-started:hover {
+.lp-get-started:hover {
   background: #e69b00;
   transform: scale(1.05);
 }
 
 /* Image Content */
-.image-content {
+.lp-image-content {
   max-width: 50%;
 }
 
-.image-content img {
+.lp-image-content img {
   width: 100%;
   height: auto;
   position: relative;
@@ -146,28 +146,28 @@ nav ul li a:hover {
   bottom: 4.5rem;
 }
 
-.description {
+.lp-description {
   padding-bottom: 2.5rem;
 }
 
 /* Responsive Styles */
 @media screen and (max-width: 992px) {
-  .text-content h1 {
+  .lp-text-content h1 {
       font-size: 36px;
   }
   
-  .text-content p {
+  .lp-text-content p {
       font-size: 18px;
   }
   
-  .image-content img {
+  .lp-image-content img {
       left: 1rem;
       bottom: 1.5rem;
   }
 }
 
 @media screen and (max-width: 1200px) {
-  .image-content img {
+  .lp-image-content img {
     left: 2rem;
     bottom: 4.5rem;
 }
@@ -176,7 +176,7 @@ nav ul li a:hover {
 
 
 @media screen and (max-width: 1024px) {
-  .header {
+  .lp-header {
       flex-direction: column;
       padding: 15px;
   }
@@ -186,22 +186,22 @@ nav ul li a:hover {
       margin-top: 15px;
   }
   
-  .main {
+  .lp-main {
       flex-direction: column;
       margin-top: 120px;
   }
   
-  .text-content, .image-content {
+  .lp-text-content, .lp-image-content {
       max-width: 100%;
       width: 100%;
       text-align: center;
   }
   
-  .text-content {
+  .lp-text-content {
       margin-bottom: 30px;
   }
   
-  .image-content img {
+  .lp-image-content img {
       left: 0;
       bottom: 0;
       max-width: 400px;
@@ -210,7 +210,7 @@ nav ul li a:hover {
 }
 
 @media screen and (max-width: 576px) {
-  .logo {
+  .lp-logo {
       font-size: 24px;
   }
   
@@ -218,15 +218,15 @@ nav ul li a:hover {
       gap: 10px;
   }
   
-  .text-content h1 {
+  .lp-text-content h1 {
       font-size: 28px;
   }
   
-  .text-content p {
+  .lp-text-content p {
       font-size: 16px;
   }
   
-  .get-started {
+  .lp-get-started {
       padding: 12px 20px;
       font-size: 14px;
   }
@@ -238,12 +238,12 @@ nav ul li a:hover {
       justify-content: center;
   }
   
-  .main {
+  .lp-main {
       margin-top: 150px;
   }
 }
 /* Mobile Menu Toggle */
-.mobile-menu-toggle {
+.lp-mobile-menu-toggle {
   display: none;
   flex-direction: column;
   justify-content: space-between;
@@ -253,7 +253,7 @@ nav ul li a:hover {
   z-index: 10;
 }
 
-.mobile-menu-toggle span {
+.lp-mobile-menu-toggle span {
   display: block;
   width: 100%;
   height: 3px;
@@ -262,7 +262,7 @@ nav ul li a:hover {
 }
 
 @media screen and (max-width: 1024px) {
-  .mobile-menu-toggle {
+  .lp-mobile-menu-toggle {
     display: flex;
     position: absolute;
     top: 20px;
@@ -284,7 +284,7 @@ nav ul li a:hover {
     justify-content: center;
   }
   
-  nav.active {
+  nav.lp-active {
     right: 0;
   }
   
