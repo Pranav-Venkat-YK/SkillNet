@@ -149,6 +149,7 @@ const OrgDashboard = () => {
 
   // Show the form to complete details
   return (
+    <div className="org-da">
     <div className="org-dashboard">
       <header className="dashboard-header">
         <div className="dashboard-logo">SkillNet</div>
@@ -234,6 +235,7 @@ const OrgDashboard = () => {
       <footer className="dashboard-footer">
         <p>&copy; 2025 SkillNet. All rights reserved.</p>
       </footer>
+    </div>
     </div>
   );
 };

@@ -72,7 +72,7 @@ exports.up = function (knex) {
             table.string("postdegree_course");
             table.string("postdegree_university");
         })
-          .createTable("jobs", function (table) {
+        .createTable("jobs", function (table) {
             table.increments("job_id").primary();
             table.integer("id").unsigned().references("id").inTable("organisations").notNullable();
             table.string("title").notNullable();
@@ -94,7 +94,7 @@ exports.up = function (knex) {
             table.integer("applications_count").defaultTo(0);
             table.timestamps(true, true);
         })
-           .createTable("applications", function (table) {
+        .createTable("applications", function (table) {
             table.increments("application_id").primary();
             table.integer("job_id").unsigned().references("job_id").inTable("jobs").notNullable();
             table.integer("user_id").unsigned().references("id").inTable("users").notNullable();
@@ -104,16 +104,38 @@ exports.up = function (knex) {
             table.timestamp("updated_at").defaultTo(knex.fn.now());
             table.unique(["job_id", "user_id"]);
         })
+        .createTable("interviews", function (table) {
+            table.increments("interview_id").primary();
+            table.integer("application_id").unsigned().references("application_id").inTable("applications").notNullable();
+            table.datetime("scheduled_time").notNullable();
+            table.integer("duration_minutes").notNullable();
+            table.enu("interview_type", ["phone", "video", "in_person"]);
+            table.string("location_or_link");
+            table.string("interviewer_name");
+            table.string("interviewer_position");
+            table.enu("status", ["scheduled", "completed", "cancelled", "rescheduled"]).defaultTo("scheduled");
+            table.text("feedback");
+            table.timestamp("created_at").defaultTo(knex.fn.now());
+            table.timestamp("updated_at").defaultTo(knex.fn.now());
+        })
         .createTable("bookmarks", function (table) {
             table.increments("bookmark_id").primary();
             table.integer("job_id").unsigned().references("job_id").inTable("jobs").notNullable();
             table.integer("user_id").unsigned().references("id").inTable("users").notNullable();
             table.timestamp("created_at").defaultTo(knex.fn.now());
             table.unique(["job_id", "user_id"]);
-          });
-        
+        });
 };
 
 exports.down = function (knex) {
-    return knex.schema.dropTableIfExists("bookmarks").dropTableIfExists("applications") .dropTableIfExists("jobs").dropTableIfExists("education").dropTableIfExists("workingprofessional").dropTableIfExists("student").dropTableIfExists("organisations").dropTableIfExists("users");
+    return knex.schema
+        .dropTableIfExists("bookmarks")
+        .dropTableIfExists("interviews")
+        .dropTableIfExists("applications")
+        .dropTableIfExists("jobs")
+        .dropTableIfExists("education")
+        .dropTableIfExists("workingprofessional")
+        .dropTableIfExists("student")
+        .dropTableIfExists("organisations")
+        .dropTableIfExists("users");
 };

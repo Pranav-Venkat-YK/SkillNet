@@ -140,7 +140,7 @@ const JobDetails = () => {
         </div>
       </div>
 
-      <main>
+      <div className="jd-main">
         <div className="jd-card">
           <div className="jd-job-header">
             <div className="jd-company-logo">
@@ -170,7 +170,7 @@ const JobDetails = () => {
           
           <div className="jd-action-buttons">
             <button 
-              className={`apply-button ${hasApplied ? 'applied' : ''}`} 
+              className={`jd-apply-button ${hasApplied ? 'applied' : ''}`} 
               onClick={openPopup}
               disabled={hasApplied}
             >
@@ -259,7 +259,7 @@ const JobDetails = () => {
     )}
   </div>
 )}
-      </main>
+      </div>
 
       <div className="jd-mobile-apply-bar">
         <div>
@@ -307,7 +307,7 @@ const JobDetails = () => {
                       onChange={handleFileChange}
                     />
                     <label htmlFor="resumeInput" className="jd-file-input-label">Upload Resume</label>
-                    <span className={`jd-file-selected ${fileSelected ? 'jd-active' : ''}`}>✓ File selected</span>
+                    <span className={`jd-file-selected ${fileSelected ? 'active' : ''}`}>✓ File selected</span>
                   </div>
                 </div>
               </div>

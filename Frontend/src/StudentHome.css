@@ -7,9 +7,13 @@
     font-family: Arial, sans-serif;
     text-align: left; /* Global left alignment */
 }
+.sh-main-content{
+  padding: 30px;
+  margin-left: 280px;
+}
 
   
-  .container {
+  .sh-container {
     display: flex;
     min-height: 100vh;
     margin-top: 0; /* Remove any top margin */
@@ -17,25 +21,26 @@
     background-color: #f5f5f5;
   }
   
-  .sidebar {
+  .sh-sidebar {
     width: 280px;
     background-color: white;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    text-align: left; /* Ensure left alignment in sidebar */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Left align sidebar items */
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
   }
   
-  .logo {
+  .sh-logo {
     color: #6046ea;
     font-size: 32px;
     font-weight: bold;
     margin-bottom: 40px;
   }
   
-  .nav-item {
+  .sh-nav-item {
     display: flex;
     align-items: center;
     padding: 12px 15px;
@@ -48,28 +53,28 @@
     text-align: left;
   }
   
-  .nav-item:hover {
+  .sh-nav-item:hover {
     background-color: #f0f0ff;
   }
   
-  .nav-item.active {
+  .sh-nav-item.active {
     background-color: #f0eaff;
     color: #6046ea;
     font-weight: 500;
   }
   
-  .nav-item i {
+  .sh-nav-item i {
     margin-right: 12px;
     font-size: 20px;
   }
   
-  .main-content {
+  .sh-main-content {
     flex: 1;
     padding: 20px 30px; /* Reduced top padding */
     margin-top: 0; /* Ensure no top margin */
   }
   
-  .header {
+  .sh-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -77,14 +82,14 @@
     margin-top: 0; /* Ensure no top margin */
   }
   
-  .search-bar {
+  .sh-search-bar {
     flex: 1;
     max-width: 500px;
     position: relative;
     margin-right: 20px;
   }
   
-  .search-bar input {
+  .sh-search-bar input {
     width: 100%;
     padding: 12px 20px;
     border-radius: 30px;
@@ -93,19 +98,19 @@
     text-align: left;
   }
   
-  .user-menu {
+  .sh-user-menu {
     display: flex;
     align-items: center;
   }
   
-  .user-menu .icon {
+  .sh-user-menu .sh-icon {
     margin-left: 20px;
     font-size: 22px;
     color: #555;
     position: relative;
   }
   
-  .user-menu .icon .badge {
+  .sh-user-menu .sh-icon .sh-badge {
     position: absolute;
     top: -8px;
     right: -8px;
@@ -120,7 +125,7 @@
     font-size: 12px;
   }
   
-  .avatar {
+  .sh-avatar {
     width: 45px;
     height: 45px;
     border-radius: 50%;
@@ -131,9 +136,10 @@
     justify-content: center;
     font-size: 18px;
     margin-left: 20px;
+    cursor: pointer;
   }
   
-  .welcome-card {
+  .sh-welcome-card {
     background-image: linear-gradient(to right, #6046ea, #8479e1);
     color: white;
     padding: 25px 30px; /* Adjusted padding */
@@ -145,20 +151,20 @@
     align-items: flex-start;
   }
   
-  .welcome-text {
+  .sh-welcome-text {
     flex: 1;
     text-align: left;
     width: 100%;
   }
   
-  .welcome-card h1 {
+  .sh-welcome-card h1 {
     font-size: 28px;
     margin-bottom: 15px;
     text-align: left;
     width: 100%;
   }
   
-  .user-name {
+  .sh-user-name {
     color: #fff;
     font-weight: 600;
     font-style: italic;
@@ -166,20 +172,20 @@
     text-align: left;
   }
   
-  .welcome-card p {
+  .sh-welcome-card p {
     font-size: 16px;
     opacity: 0.9;
     text-align: left;
     width: 100%;
   }
   
-  .stats-container {
+  .sh-stats-container {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px; /* Reduced from 30px */
+    margin-bottom: 30px; /* Reduced from 30px */
   }
   
-  .stat-card {
+  .sh-stat-card {
     background-color: white;
     border-radius: 15px;
     padding: 20px;
@@ -192,11 +198,11 @@
     text-align: left;
   }
   
-  .stat-card:last-child {
+  .sh-stat-card:last-child {
     margin-right: 0;
   }
   
-  .stat-card .icon {
+  .sh-stat-card .sh-icon {
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -208,41 +214,41 @@
     align-self: flex-start; /* Added for left alignment */
   }
   
-  .stat-card .applied {
+  .sh-stat-card .sh-applied {
     background-color: #e8f5ff;
     color: #2196f3;
   }
   
-  .stat-card .saved {
+  .sh-stat-card .sh-saved {
     background-color: #e6f9ff;
     color: #00bcd4;
   }
   
-  .stat-card .interviews {
+  .sh-stat-card .sh-interviews {
     background-color: #ffe8ec;
     color: #ff5252;
   }
   
-  .stat-card .offers {
+  .sh-stat-card .sh-offers {
     background-color: #e8f5e9;
     color: #4caf50;
   }
   
-  .stat-card h2 {
+  .sh-stat-card h2 {
     font-size: 32px;
     margin-bottom: 5px;
     text-align: center;
     width: 100%;
   }
   
-  .stat-card p {
+  .sh-stat-card p {
     color: #777;
     font-size: 14px;
     text-align: center;
     width: 100%;
   }
   
-  .section-header {
+  .sh-section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -251,13 +257,14 @@
     text-align: left;
   }
   
-  .section-header h2 {
+  .sh-section-header h2 {
     font-size: 20px;
     color: #333;
     text-align: left;
+    padding: 8px 16px;
   }
   
-  .section-header .filter-button {
+  /* .sh-section-header{
     background-color: #f0f0ff;
     color: #6046ea;
     border: 1px solid #e0e0fd;
@@ -267,22 +274,18 @@
     font-size: 14px;
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Ensure left alignment */
-    text-align: left;
-  }
+    justify-content: flex-start; 8*/
   
-  .filter-button i {
-    margin-right: 6px;
-  }
+
   
-  .tabs {
+  .sh-tabs {
     display: flex;
     border-bottom: 1px solid #ddd;
     margin-bottom: 15px; /* Reduced from 20px */
     width: 100%;
   }
   
-  .tab {
+  .sh-tab {
     padding: 12px 20px;
     cursor: pointer;
     position: relative;
@@ -290,12 +293,12 @@
     text-align: left;
   }
   
-  .tab.active {
+  .sh-tab.active {
     color: #6046ea;
     font-weight: 500;
   }
   
-  .tab.active::after {
+  .sh-tab.active::after {
     content: '';
     position: absolute;
     bottom: -1px;
@@ -305,7 +308,7 @@
     background-color: #6046ea;
   }
   
-  .job-card {
+  .sh-job-card {
     background-color: white;
     border-radius: 12px;
     padding: 20px;
@@ -319,12 +322,12 @@
     align-items: flex-start;
   }
   
-  .job-card:hover {
+  .sh-job-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
   
-  .job-card .title-row {
+  .sh-job-card .sh-title-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -333,7 +336,7 @@
     width: 100%;
   }
   
-  .job-card .company-logo {
+  .sh-job-card .sh-company-logo {
     width: 50px;
     height: 50px;
     border-radius: 10px;
@@ -346,7 +349,7 @@
     margin-right: 15px;
   }
   
-  .job-card .title-company {
+  .sh-job-card .sh-title-company {
     flex: 1;
     text-align: left;
     display: flex;
@@ -354,7 +357,7 @@
     align-items: flex-start;
   }
   
-  .job-card h3 {
+  .sh-job-card h3 {
     font-size: 18px;
     color: #333;
     margin-bottom: 5px;
@@ -362,19 +365,19 @@
     width: 100%;
   }
   
-  .job-card .company-name {
+  .sh-job-card .sh-company-name {
     color: #555;
     font-size: 14px;
     text-align: left;
     width: 100%;
   }
   
-  .job-card .action-buttons {
+  .sh-job-card .sh-action-buttons {
     display: flex;
     justify-content: flex-end; /* Right align action buttons */
   }
   
-  .action-button {
+  .sh-action-button {
     width: 38px;
     height: 38px;
     border-radius: 50%;
@@ -388,13 +391,13 @@
     transition: background-color 0.2s, color 0.2s;
   }
   
-  .action-button:hover {
+  .sh-action-button:hover {
     background-color: #f0eaff;
     color: #6046ea;
     border-color: #e0e0fd;
   }
   
-  .job-card .details {
+  .sh-job-card .sh-details {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -403,7 +406,7 @@
     width: 100%;
   }
   
-  .job-card .detail {
+  .sh-job-card .sh-detail {
     display: flex;
     align-items: center;
     color: #555;
@@ -411,12 +414,12 @@
     text-align: left;
   }
   
-  .job-card .detail i {
+  .sh-job-card .sh-detail i {
     margin-right: 6px;
     font-size: 16px;
   }
   
-  .job-card .tags {
+  .sh-job-card .sh-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -425,7 +428,7 @@
     width: 100%;
   }
   
-  .job-card .tag {
+  .sh-job-card .sh-tag {
     background-color: #f5f5f5;
     color: #555;
     padding: 6px 12px;
@@ -434,7 +437,7 @@
     text-align: left;
   }
   
-  .job-card .bottom-row {
+  .sh-job-card .sh-bottom-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -442,13 +445,13 @@
     width: 100%;
   }
   
-  .job-card .date {
+  .sh-job-card .sh-date {
     color: #777;
     font-size: 13px;
     text-align: left;
   }
   
-  .apply-button {
+  .sh-apply-button {
     background-color: #6046ea;
     color: white;
     border: none;
@@ -460,11 +463,11 @@
     text-align: center;
   }
   
-  .apply-button:hover {
+  .sh-apply-button:hover {
     background-color: #4e37ca;
   }
   
-  .easy-apply {
+  .sh-easy-apply {
     display: flex;
     align-items: center;
     background-color: #e8f5e9;
@@ -477,11 +480,11 @@
     text-align: left;
   }
   
-  .easy-apply i {
+  .sh-easy-apply i {
     margin-right: 5px;
   }
   
-  .recommended {
+  .sh-recommended {
     background-color: #fff3e0;
     color: #ff9800;
     padding: 2px 8px;
@@ -491,7 +494,7 @@
     font-weight: 500;
   }
   
-  .upcoming-interviews {
+  .sh-upcoming-interviews {
     background-color: white;
     border-radius: 12px;
     padding: 20px;
@@ -501,7 +504,7 @@
     text-align: left;
   }
   
-  .interview-item {
+  .sh-interview-item {
     display: flex;
     align-items: center;
     padding: 15px 0;
@@ -510,11 +513,11 @@
     width: 100%;
   }
   
-  .interview-item:last-child {
+  .sh-interview-item:last-child {
     border-bottom: none;
   }
   
-  .interview-icon {
+  .sh-interview-icon {
     width: 45px;
     height: 45px;
     border-radius: 10px;
@@ -527,7 +530,7 @@
     margin-right: 15px;
   }
   
-  .interview-details {
+  .sh-interview-details {
     flex: 1;
     text-align: left;
     display: flex;
@@ -535,7 +538,7 @@
     align-items: flex-start;
   }
   
-  .interview-details h4 {
+  .sh-interview-details h4 {
     font-size: 16px;
     color: #333;
     margin-bottom: 5px;
@@ -543,14 +546,14 @@
     width: 100%;
   }
   
-  .interview-details p {
+  .sh-interview-details p {
     color: #777;
     font-size: 14px;
     text-align: left;
     width: 100%;
   }
   
-  .interview-time {
+  .sh-interview-time {
     background-color: #f0f0ff;
     color: #6046ea;
     padding: 8px 15px;
@@ -592,7 +595,7 @@
 }
 
 /* Make sure the JobDetails component fits well in the modal */
-.modal-content .header {
+.modal-content .sh-header {
   position: sticky;
   top: 0;
   background: white;

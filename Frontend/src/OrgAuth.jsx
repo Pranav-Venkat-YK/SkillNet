@@ -58,7 +58,7 @@ const OrgAuth = () => {
       </header>
 
       {isRegistering ? (
-        <main>
+        <div className="uamain">
           <div className = "ualogin-container">
             <div className = "ualogin-header">
               <h2>Create Account</h2>
@@ -86,9 +86,9 @@ const OrgAuth = () => {
             </div>
             </form>
           </div>
-        </main>
+        </div>
       ) : (
-        <main>
+        <div className="uamain">
           <div className = "ualogin-container">
             <div className = "ualogin-header">
               <h2>Welcome Back</h2>
@@ -107,7 +107,7 @@ const OrgAuth = () => {
               <button className = "uabtn uabtn-secondary" onClick={() => setIsRegistering(true)}>Create Organization</button>
             </form>
           </div>
-        </main>
+        </div>
       )}
       <footer>
         <p>&copy; 2025 SkillNet. All rights reserved.</p>

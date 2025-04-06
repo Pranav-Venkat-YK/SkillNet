@@ -1,0 +1,353 @@
+
+.cp-body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #333;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.cp-modal {
+  background-color: white;
+  /* border-radius: 8px; */
+  width: 800px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.cp-modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 10;
+}
+.cp-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+.cp-close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #666;
+}
+.cp-modal-body {
+  padding: 20px;
+}
+.cp-candidate-header {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.cp-candidate-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: #757575;
+}
+.cp-candidate-info h2 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+}
+.cp-candidate-info p {
+  margin: 0 0 5px 0;
+  color: #666;
+}
+.cp-candidate-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.cp-status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.cp-status-applied {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+.cp-status-viewed {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+.cp-status-shortlisted {
+  background-color: #fff8e1;
+  color: #f57c00;
+}
+.cp-status-interviewing {
+  background-color: #e0f7fa;
+  color: #0097a7;
+}
+.cp-status-hired {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+.cp-status-rejected {
+  background-color: #ffebee;
+  color: #c62828;
+}
+.cp-status-withdrawn {
+  background-color: #f5f5f5;
+  color: #616161;
+}
+.cp-status-dropdown {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+.cp-tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px 8px 0 0;
+}
+.cp-tab {
+  padding: 12px 20px;
+  cursor: pointer;
+}
+.cp-tab.active {
+  border-bottom: 2px solid #5c6bc0;
+  font-weight: 500;
+  color: #5c6bc0;
+}
+.cp-tab-content {
+  margin-bottom: 30px;
+}
+.cp-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  color: #555;
+}
+.cp-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+.cp-detail-item {
+  margin-bottom: 10px;
+}
+.cp-detail-label {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 5px;
+}
+.cp-detail-value {
+  font-weight: 500;
+}
+.cp-skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.cp-skill-tag {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+.cp-notes-box {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+.cp-notes-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.cp-notes-content {
+  color: #666;
+  font-size: 14px;
+}
+.cp-add-note {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+.cp-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.cp-btn-primary {
+  background-color: #5c6bc0;
+  color: white;
+}
+.cp-btn-primary:hover {
+  background-color: #3f51b5;
+}
+.cp-btn-success {
+  background-color: #4caf50;
+  color: white;
+}
+.cp-btn-danger {
+  background-color: #f44336;
+  color: white;
+}
+.cp-modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+}
+.cp-resume-preview {
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 8px;
+  height: 300px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+.cp-interview-item {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+.cp-interview-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.cp-interview-title {
+  font-weight: 600;
+  margin: 0;
+}
+.cp-interview-schedule {
+  color: #666;
+  font-size: 14px;
+}
+.cp-interview-meta {
+  display: flex;
+  gap: 15px;
+  color: #666;
+  font-size: 14px;
+}
+.cp-application-meta {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+.cp-application-ids {
+  font-family: monospace;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+.cp-application-timeline {
+  margin-top: 20px;
+  position: relative;
+  padding-left: 20px;
+}
+.cp-timeline-item {
+  padding-bottom: 15px;
+  position: relative;
+}
+.cp-timeline-item:before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #5c6bc0;
+}
+.cp-timeline-item:after {
+  content: "";
+  position: absolute;
+  left: -15px;
+  top: 15px;
+  width: 1px;
+  height: calc(100% - 15px);
+  background-color: #ddd;
+}
+.cp-timeline-item:last-child:after {
+  display: none;
+}
+.cp-timeline-date {
+  font-size: 12px;
+  color: #888;
+}
+.cp-timeline-status {
+  font-weight: 500;
+  margin: 5px 0;
+}
+.cp-hidden {
+  display: none;
+}  
+
+/* Update the alignment of content inside the candidate avatar */
+.cp-candidate-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: flex-start;   /* Changed from center to flex-start */
+  justify-content: flex-start;  /* Changed from center to flex-start */
+  font-size: 36px;
+  color: #757575;
+  padding-left: 35px;  /* Add padding to center the text within the avatar */
+  padding-top: 25px;   /* Add padding to center the text within the avatar */
+}
+
+/* Ensure text content is left-aligned */
+.cp-candidate-info h2,
+.cp-candidate-info p,
+.cp-detail-value,
+.cp-detail-label,
+.cp-section-title,
+.cp-notes-content,
+.cp-timeline-status,
+.cp-timeline-note,
+p {
+  text-align: left;
+}
+
+/* Ensure the skills are left-aligned */
+.cp-skill-tags {
+  justify-content: flex-start;
+}
+
+/* Remove any potential center alignment from text areas */
+.cp-add-note {
+  text-align: left;
+}

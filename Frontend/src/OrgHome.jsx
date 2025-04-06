@@ -64,6 +64,7 @@ const OrgHome = () => {
   });
 
   return (
+    <div className='org-body1'>
     <div className="org-container">
       <div className="org-sidebar">
         <div className="org-logo">SkillNet</div>
@@ -98,7 +99,7 @@ const OrgHome = () => {
           Analytics
         </div>
         
-        <div className="org-nav-item">
+        <div className="org-nav-item"  onClick={() => navigate("/org/profile")}>
           <i className="fas fa-building"></i>
           Company Profile
         </div>
@@ -194,7 +195,12 @@ const OrgHome = () => {
           <div>No jobs found.</div>
         ) : (
           jobs.map((job) => (
-            <div key={job.job_id} className="org-job-card">
+            <div 
+              key={job.job_id} 
+              className="org-job-card"
+              onClick={() => navigate(`/org/jobs/${job.job_id}/applicants`)}
+              style={{ cursor: 'pointer' }} // Add pointer cursor to indicate clickable
+            >
               <div className="org-title-row">
                 <h3>{job.title}</h3>
                 <div className={`status ${job.status}`}>{job.status}</div>
@@ -239,6 +245,7 @@ const OrgHome = () => {
           ))
         )}
       </div>
+    </div>
     </div>
   );
 };

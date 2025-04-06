@@ -744,6 +744,195 @@ app.get("/api/student/jobs/:jobId", authenticate, async (req, res) => {
   }
 });
 
+// 🔹 Get Applicants for a Job
+app.get("/api/jobs/:jobId/applicants", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Verify the organization owns this job
+    const job = await knex('jobs')
+      .where('job_id', req.params.jobId)
+      .first();
+
+    if (!job) {
+      return res.status(404).json({ error: 'Job not found' });
+    }
+
+    // Get all applications for this job with user details
+    const applications = await knex('applications')
+      .where('job_id', req.params.jobId)
+      .join('users', 'applications.user_id', 'users.id')
+      .leftJoin('student', 'users.id', 'student.user_id')
+      .leftJoin('workingprofessional', 'users.id', 'workingprofessional.user_id')
+      .select(
+        'applications.*',
+        'users.name',
+        'users.email',
+        'student.resume_url as student_resume',
+        'workingprofessional.resume_url as professional_resume',
+        'workingprofessional.current_position',
+        'workingprofessional.company_name',
+        'workingprofessional.years_of_experience'
+      );
+
+    // Format the applicants data
+    const applicants = applications.map(app => ({
+      id: app.application_id,
+      name: app.name,
+      position: app.current_position || 'Student',
+      company: app.company_name || 'N/A',
+      experience: app.years_of_experience ? `${app.years_of_experience} years` : 'Student',
+      resume_url: app.student_resume || app.professional_resume,
+      appliedDate: new Date(app.applied_at).toLocaleDateString(),
+      status: app.status
+    }));
+
+    res.json({ applicants });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch applicants' });
+  }
+});
+
+
+// Get application details
+app.get('/api/applications/:applicationId', async (req, res) => {
+  try {
+    const application = await knex('applications')
+      .where('application_id', req.params.applicationId)
+      .join('users', 'applications.user_id', 'users.id')
+      .leftJoin('student', 'users.id', 'student.user_id')
+      .leftJoin('workingprofessional', 'users.id', 'workingprofessional.user_id')
+      .select(
+        'applications.*',
+        'users.name',
+        'users.email',
+        'student.phone_number',
+        'student.linkedin_url',
+        'student.github_url',
+        'student.resume_url',
+        'student.bio',
+        'workingprofessional.current_position as position',
+        'workingprofessional.company_name',
+        'workingprofessional.years_of_experience'
+      )
+      .first();
+
+    if (!application) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+
+    // Get status history
+    const statusHistory = await knex('applications')
+      .where('application_id', req.params.applicationId);
+
+    res.json({
+      application: {
+        ...application,
+        status_history: statusHistory
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch application details' });
+  }
+});
+
+// // Get application notes
+// app.get('/api/applications/:applicationId/notes', async (req, res) => {
+//   try {
+//     const notes = await knex('application_notes')
+//       .where('application_id', req.params.applicationId)
+//       .join('users', 'application_notes.author_id', 'users.id')
+//       .select(
+//         'application_notes.*',
+//         'users.name as author_name'
+//       )
+//       .orderBy('created_at', 'desc');
+
+//     res.json({ notes });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Failed to fetch notes' });
+//   }
+// });
+
+// // Add application note
+// app.post('/api/applications/:applicationId/notes', async (req, res) => {
+//   try {
+//     const token = req.headers.authorization?.split(' ')[1];
+//     if (!token) {
+//       return res.status(401).json({ error: 'Unauthorized' });
+//     }
+
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     const { content } = req.body;
+
+//     const [note] = await knex('application_notes')
+//       .insert({
+//         application_id: req.params.applicationId,
+//         author_id: decoded.id,
+//         content: content,
+//         created_at: new Date()
+//       })
+//       .returning('*');
+
+//     res.json({ note });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Failed to add note' });
+//   }
+// });
+
+// Get application interviews
+app.get('/api/applications/:applicationId/interviews', async (req, res) => {
+  try {
+    const interviews = await knex('interviews')
+      .where('application_id', req.params.applicationId)
+      .orderBy('scheduled_time', 'desc');
+
+    res.json({ interviews });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch interviews' });
+  }
+});
+
+// Update application status
+app.put('/api/applications/:applicationId', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const { status } = req.body;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Update application status
+    await knex('applications')
+      .where('application_id', req.params.applicationId)
+      .update({ status, updated_at: new Date() });
+
+    // Add to history
+    await knex('application_history')
+      .insert({
+        application_id: req.params.applicationId,
+        status: status,
+        changed_by: decoded.id,
+        timestamp: new Date()
+      });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update application status' });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

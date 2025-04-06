@@ -60,7 +60,7 @@ const UserAuth = () => {
 
       {isRegistering ? (
         <>
-          <main>
+          <div className="uamain">
             <div className="ualogin-container">
             <div className="ualogin-header">
             <h2>Create Account</h2>
@@ -91,11 +91,11 @@ const UserAuth = () => {
           </form>
           
             </div>
-          </main>
+          </div>
         </>
       ) : (
         <>
-        <main>
+        <div className="uamain">
           
         <div className="ualogin-container">
           <div className="ualogin-header">
@@ -116,7 +116,7 @@ const UserAuth = () => {
           </form>
           
           </div>
-        </main>
+        </div>
         </>
       )}
       <footer>

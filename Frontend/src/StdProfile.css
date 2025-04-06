@@ -53,7 +53,7 @@ html, body, #root {
 
 /* Main Content */
 .std-details-containers {
-  
+  background-color: #f9f8fa;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -250,6 +250,7 @@ html, body, #root {
   display: block;
   width: 100%;
   margin-top: 1.5rem;
+  text-align: center;
 }
 
 .user_save:hover{
@@ -270,6 +271,7 @@ html, body, #root {
   display: block;
   width: 100%;
   margin-top: 1.5rem;
+  text-align: center;
 }
 
 

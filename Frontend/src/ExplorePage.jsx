@@ -25,9 +25,9 @@ function ExplorePage() {
         </nav>
       </div>
 
-      <main>
+      <div className='epmain'> 
         <div className = "epchoice-header">
-          <h1>Choose Your <span className = "ephighlight">Path</span></h1>
+          <h1 className='eph1'>Choose Your <span className = "ephighlight">Path</span></h1>
           <p>Whether you're looking to hire top talent or advance your career, SkillNet has the tools you need to succeed in today's competitive landscape.</p>
         </div>
 
@@ -78,12 +78,12 @@ function ExplorePage() {
         </div>
 
         <button className = "epback-link" onClick={() => navigate("/")}>← Back to Home</button>
-      </main>
-
+      </div>
       <footer>
         <p>&copy; 2025 SkillNet. All rights reserved.</p>
       </footer>
     </div>
+
   );
 }
 
