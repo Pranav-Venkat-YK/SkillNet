@@ -203,6 +203,7 @@ html, body, #root {
   display: block;
   width: 100%;
   margin-top: 1.5rem;
+  text-align: center;
 }
 
 .org-edit-btn:hover {
@@ -223,6 +224,7 @@ html, body, #root {
   display: block;
   width: 100%;
   margin-top: 1.5rem;
+  text-align: center;
 }
 
 .org-goback-btn:hover {

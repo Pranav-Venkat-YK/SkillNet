@@ -175,3 +175,7 @@
     padding: 2rem;
     text-align: left; /* Align text properly */
   }
+
+  footer p{
+    text-align: center;
+  }

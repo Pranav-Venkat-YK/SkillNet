@@ -17,6 +17,7 @@ import OrgProfile from "./OrgProfile";
 import OrgJob from "./OrgJob";
 import JobDetails from "./JobDetails";
 import StudentHome from "./StudentHome";
+import WpHome from "./WpHome";
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -63,6 +64,7 @@ function App() {
         
         {/* Student routes */}
         <Route path="/std/" element={<ProtectedRoute element={<StudentHome />} />} />
+        <Route path="/wp/" element={<ProtectedRoute element={<WpHome />} />} />
         <Route path="/std/jobs/:jobId" element={<ProtectedRoute element={<JobDetails />} />} />
         
         {/* General dashboard route redirects based on user type */}

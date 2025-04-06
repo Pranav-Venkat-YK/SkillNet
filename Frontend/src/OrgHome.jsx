@@ -9,6 +9,7 @@ const OrgHome = () => {
   const token = localStorage.getItem("token");
   const [jobs, setJobs] = useState([]);
   const [avatar,setAvatar] = useState("P");
+  const [name,setName] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const OrgHome = () => {
         if (res.data.details) {
           const details = res.data.details;
           setAvatar(details.name[0].toUpperCase());
+          setName(details.name);
         //   console.log(details.name[0].toUpperCase());
           
         }
@@ -136,7 +138,7 @@ const OrgHome = () => {
         </div>
         
         <div className="org-welcome-card">
-          <h1>Welcome back, TechSolutions Inc.</h1>
+          <h1><i>Welcome back, {name}!!!</i></h1>
           <p>You have 32 new applications and 8 interviews scheduled this week.</p>
         </div>
         

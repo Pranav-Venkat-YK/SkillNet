@@ -13,6 +13,10 @@ html, body, #root {
   color: #333;
 }
 
+.std-profile-account-footer{
+  text-align: center;
+}
+
 /* Header - Normal Flow (Not Fixed) */
 .std-dashboard-header {
   width: 100%;
@@ -88,7 +92,7 @@ html, body, #root {
   font-weight: 600;
 }
 
-.std-details-view .edit-btn {
+.std-details-view .std-edit-btn {
   display: block;
   width: 100%;
   padding: 0.75rem;
@@ -104,9 +108,31 @@ html, body, #root {
   margin-top: 1.5rem;
 }
 
-.std-details-view .edit-btn:hover {
+.std-details-view .std-edit-btn:hover {
   background: #a23aff;
 }
+
+.std-goback-btn {
+  background: #f2f2f2;
+  color: #555;
+  border: none;
+  border-radius: 50px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.std-goback-btn:hover {
+  background: #e2e2e2;
+  transform: scale(1.03);
+}
+
 
 /* Edit Mode */
 .std-details-form {
