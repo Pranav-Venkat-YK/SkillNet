@@ -184,23 +184,23 @@ const WpHome = () => {
 
   if (error) {
     return (
-      <div className="error-container">
-        <div className="error-message">{error}</div>
-        <button onClick={fetchData} className="retry-button">Retry</button>
+      <div className="sh-error-container">
+        <div className="sh-error-message">{error}</div>
+        <button onClick={fetchData} className="sh-retry-button">Retry</button>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <div className="sidebar">
-        <div className="logo">SkillNet</div>
+    <div className="sh-container">
+      <div className="sh-sidebar">
+        <div className="sh-logo">SkillNet</div>
         
         {['Dashboard', 'Job Search', 'Saved Jobs', 'Applications', 'Interviews', 
-          'Career Path', 'Profile', 'Settings', 'Help Center'].map(item => (
+           'Profile'].map(item => (
           <div 
             key={item}
-            className={`nav-item ${activeNavItem === item ? 'active' : ''}`}
+            className={`sh-nav-item ${activeNavItem === item ? 'active' : ''}`}
             onClick={() => handleNavClick(item)}
           >
             <i className={`fas fa-${
@@ -208,19 +208,16 @@ const WpHome = () => {
               item === 'Job Search' ? 'briefcase' :
               item === 'Saved Jobs' ? 'bookmark' :
               item === 'Applications' ? 'file-alt' :
-              item === 'Interviews' ? 'calendar-alt' :
-              item === 'Career Path' ? 'chart-line' :
-              item === 'Profile' ? 'user' :
-              item === 'Settings' ? 'cog' : 'question-circle'
+              item === 'Interviews' ? 'calendar-alt' : 'user'
             }`}></i>
             {item}
           </div>
         ))}
       </div>
       
-      <div className="main-content">
-        <div className="header">
-          <div className="search-bar">
+      <div className="sh-main-content">
+        <div className="sh-header">
+          <div className="sh-search-bar">
             <input 
               type="text" 
               placeholder="Search for jobs, companies, or skills..." 
@@ -229,39 +226,34 @@ const WpHome = () => {
             />
           </div>
           
-          <div className="user-menu">
-            <div className="icon" onClick={() => setShowNotifications(!showNotifications)}>
+          <div className="sh-user-menu">
+            <div className="sh-icon" onClick={() => setShowNotifications(!showNotifications)}>
               <i className="far fa-bell"></i>
-              <div className="badge">2</div>
+              <div className="sh-badge">2</div>
             </div>
             
-            <div className="icon" onClick={() => setShowMessages(!showMessages)}>
-              <i className="far fa-envelope"></i>
-              <div className="badge">4</div>
-            </div>
-            
-            <div className="avatar" onClick={() => navigate("/std/profile")}>
+            <div className="sh-avatar" onClick={() => navigate("/wp/profile")}>
               {avatar}
             </div>
           </div>
         </div>
         
-        <div className="welcome-card">
-          <div className="welcome-text">
+        <div className="sh-welcome-card">
+          <div className="sh-welcome-text">
             <h1><i>{getWelcomeMessage()}</i></h1>
             <p>You have {interviews.length} upcoming interviews and {jobListings.length} job opportunities.</p>
           </div>
         </div>
         
-        <div className="stats-container">
+        <div className="sh-stats-container">
           {[
-            { name: 'Applications', icon: 'paper-plane', value: stats.applications, className: 'applied' },
-            { name: 'Saved Jobs', icon: 'bookmark', value: stats.savedJobs, className: 'saved' },
-            { name: 'Interviews', icon: 'calendar-check', value: stats.interviews, className: 'interviews' },
-            { name: 'Job Offers', icon: 'file-signature', value: stats.offers, className: 'offers' }
+            { name: 'Applications', icon: 'paper-plane', value: stats.applications, className: 'sh-applied' },
+            { name: 'Saved Jobs', icon: 'bookmark', value: stats.savedJobs, className: 'sh-saved' },
+            { name: 'Interviews', icon: 'calendar-check', value: stats.interviews, className: 'sh-interviews' },
+            { name: 'Job Offers', icon: 'file-signature', value: stats.offers, className: 'sh-offers' }
           ].map(stat => (
-            <div className="stat-card" key={stat.name}>
-              <div className={`icon ${stat.className}`}>
+            <div className="sh-stat-card" key={stat.name}>
+              <div className={`sh-icon ${stat.className}`}>
                 <i className={`fas fa-${stat.icon}`}></i>
               </div>
               <h2>{stat.value}</h2>
@@ -270,19 +262,19 @@ const WpHome = () => {
           ))}
         </div>
         
-        <div className="section-header">
+        <div className="sh-section-header">
           <h2>Available Jobs</h2>
-          <div className="filter-button">
+          <div className="sh-filter-button">
             <i className="fas fa-filter"></i>
             Filters
           </div>
         </div>
         
-        <div className="tabs">
+        <div className="sh-tabs">
           {['All Jobs', 'Recent', 'Remote'].map(tab => (
             <div 
               key={tab}
-              className={`tab ${activeJobTab === tab ? 'active' : ''}`}
+              className={`sh-tab ${activeJobTab === tab ? 'active' : ''}`}
               onClick={() => setActiveJobTab(tab)}
             >
               {tab}
@@ -291,26 +283,26 @@ const WpHome = () => {
         </div>
         
         {loading ? (
-          <div className="loading">Loading jobs...</div>
+          <div className="sh-loading">Loading jobs...</div>
         ) : filteredJobs.length === 0 ? (
-          <div className="no-jobs">No jobs found matching your criteria.</div>
+          <div className="sh-no-jobs">No jobs found matching your criteria.</div>
         ) : (
           filteredJobs.map(job => (
             <div 
-              className="job-card" 
+              className="sh-job-card" 
               key={job.job_id}
               onClick={() => handleJobClick(job.job_id)}
               style={{ cursor: 'pointer' }}
             >
-              <div className="title-row">
-                <div className="title-company">
+              <div className="sh-title-row">
+                <div className="sh-title-company">
                   <h3>{job.title}</h3>
-                  <div className="company-name">{job.company_name || 'Unknown Company'}</div>
+                  <div className="sh-company-name">{job.company_name || 'Unknown Company'}</div>
                 </div>
                 
-                <div className="action-buttons">
+                <div className="sh-action-buttons">
                   <div 
-                    className="action-button" 
+                    className="sh-action-button" 
                     onClick={(e) => toggleBookmark(job.job_id, e)}
                   >
                     <i className={job.is_bookmarked ? "fas fa-bookmark" : "far fa-bookmark"}></i>
@@ -318,25 +310,25 @@ const WpHome = () => {
                 </div>
               </div>
               
-              <div className="details">
-                <div className="detail">
+              <div className="sh-details">
+                <div className="sh-detail">
                   <i className="fas fa-map-marker-alt"></i>
                   {job.is_remote ? 'Remote' : job.location || 'Location not specified'}
                 </div>
                 
-                <div className="detail">
+                <div className="sh-detail">
                   <i className="fas fa-money-bill-wave"></i>
                   {job.salary_min && job.salary_max 
                     ? `${job.salary_currency} ${job.salary_min} - ${job.salary_currency} ${job.salary_max}`
                     : 'Salary not specified'}
                 </div>
                 
-                <div className="detail">
+                <div className="sh-detail">
                   <i className="fas fa-clock"></i>
                   {job.employment_type || 'Full-time'}
                 </div>
                 
-                <div className="detail">
+                <div className="sh-detail">
                   <i className="far fa-calendar-alt"></i>
                   {job.application_deadline 
                     ? `Deadline: ${new Date(job.application_deadline).toLocaleDateString()}` 
@@ -344,19 +336,19 @@ const WpHome = () => {
                 </div>
               </div>
               
-              <div className="tags">
+              <div className="sh-tags">
                 {job.skills && job.skills.map((skill, index) => (
-                  <div className="tag" key={index}>{skill}</div>
+                  <div className="sh-tag" key={index}>{skill}</div>
                 ))}
               </div>
               
-              <div className="bottom-row">
-                <div className="date">
+              <div className="sh-bottom-row">
+                <div className="sh-date">
                   Posted {new Date(job.created_at).toLocaleDateString()}
                 </div>
                 
                 <button 
-                  className={`apply-button ${job.has_applied ? 'applied' : ''}`} 
+                  className={`sh-apply-button ${job.has_applied ? 'applied' : ''}`} 
                   onClick={(e) => {
                     e.stopPropagation();
                     handleJobClick(job.job_id);
@@ -370,26 +362,26 @@ const WpHome = () => {
           ))
         )}
         
-        <div className="upcoming-interviews">
-          <div className="section-header">
+        <div className="sh-upcoming-interviews">
+          <div className="sh-section-header">
             <h2>Upcoming Interviews</h2>
           </div>
           
           {loading ? (
-            <div className="loading">Loading interviews...</div>
+            <div className="sh-loading">Loading interviews...</div>
           ) : interviews.length === 0 ? (
-            <div className="no-interviews">No upcoming interviews</div>
+            <div className="sh-no-interviews">No upcoming interviews</div>
           ) : (
             interviews.map(interview => (
-              <div className="interview-item" key={interview.interview_id}>
-                <div className="interview-icon">
+              <div className="sh-interview-item" key={interview.interview_id}>
+                <div className="sh-interview-icon">
                   <i className={`fas fa-${interview.interview_type === 'video' ? 'video' : interview.interview_type === 'phone' ? 'phone' : 'users'}`}></i>
                 </div>
-                <div className="interview-details">
+                <div className="sh-interview-details">
                   <h4>{interview.company_name || 'Company'}</h4>
                   <p>{interview.job_title || 'Position'}</p>
                 </div>
-                <div className="interview-time">
+                <div className="sh-interview-time">
                   {formatInterviewTime(interview.scheduled_time)}
                 </div>
               </div>

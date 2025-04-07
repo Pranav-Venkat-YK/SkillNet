@@ -168,7 +168,7 @@ const StudentHome = () => {
     else if (hour < 18) greeting = 'Good afternoon';
     else greeting = 'Good evening';
     
-    return `${greeting}, ${studentName || 'Student'}!`;
+    return `${greeting}, ${studentName || 'Student'}!!!`;
   };
 
   const formatInterviewTime = (time) => {
@@ -196,8 +196,7 @@ const StudentHome = () => {
       <div className="sh-sidebar">
         <div className="sh-logo">SkillNet</div>
         
-        {['Dashboard', 'Job Search', 'Saved Jobs', 'Applications', 'Interviews', 
-          'Career Path', 'Profile', 'Settings', 'Help Center'].map(item => (
+        {['Dashboard', 'Job Search', 'Saved Jobs', 'Applications', 'Interviews', 'Profile'].map(item => (
           <div 
             key={item}
             className={`sh-nav-item ${activeNavItem === item ? 'active' : ''}`}
@@ -208,10 +207,7 @@ const StudentHome = () => {
               item === 'Job Search' ? 'briefcase' :
               item === 'Saved Jobs' ? 'bookmark' :
               item === 'Applications' ? 'file-alt' :
-              item === 'Interviews' ? 'calendar-alt' :
-              item === 'Career Path' ? 'chart-line' :
-              item === 'Profile' ? 'user' :
-              item === 'Settings' ? 'cog' : 'question-circle'
+              item === 'Interviews' ? 'calendar-alt' :'user'
             }`}></i>
             {item}
           </div>
@@ -233,11 +229,6 @@ const StudentHome = () => {
             <div className="sh-icon" onClick={() => setShowNotifications(!showNotifications)}>
               <i className="far fa-bell"></i>
               <div className="sh-badge">2</div>
-            </div>
-            
-            <div className="sh-icon" onClick={() => setShowMessages(!showMessages)}>
-              <i className="far fa-envelope"></i>
-              <div className="sh-badge">4</div>
             </div>
             
             <div className="sh-avatar" onClick={() => navigate("/std/profile")}>

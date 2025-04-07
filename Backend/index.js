@@ -888,11 +888,80 @@ app.get('/api/applications/:applicationId', async (req, res) => {
 // });
 
 // Get application interviews
-app.get('/api/applications/:applicationId/interviews', async (req, res) => {
+// 🔹 Schedule an Interview
+app.post("/api/applications/:applicationId/interviews", async (req, res) => {
   try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const { 
+      scheduled_time, 
+      duration_minutes, 
+      interview_type, 
+      location_or_link,
+      interviewer_name,
+      interviewer_position,
+      notes
+    } = req.body;
+
+    // Validate required fields
+    if (!scheduled_time || !duration_minutes || !interview_type) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Check if application exists
+    const application = await knex('applications')
+      .where('application_id', req.params.applicationId)
+      .first();
+
+    if (!application) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+
+    // Insert the new interview
+    const [interviewId] = await knex('interviews').insert({
+      application_id: req.params.applicationId,
+      scheduled_time: new Date(scheduled_time),
+      duration_minutes,
+      interview_type,
+      location_or_link,
+      interviewer_name,
+      interviewer_position,
+      status: 'scheduled',
+      feedback: notes || ''
+    }).returning('interview_id');
+
+    // Optionally update application status to "interviewing"
+    if (req.body.update_status) {
+      await knex('applications')
+        .where('application_id', req.params.applicationId)
+        .update({ status: 'interviewing', updated_at: knex.fn.now() });
+    }
+
+    // TODO: Send email notification if requested
+
+    res.status(201).json({ 
+      message: 'Interview scheduled successfully',
+      interview_id: interviewId
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to schedule interview' });
+  }
+});
+// 🔹 Get Interviews for an Application
+app.get("/api/applications/:applicationId/interviews", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     const interviews = await knex('interviews')
       .where('application_id', req.params.applicationId)
-      .orderBy('scheduled_time', 'desc');
+      .orderBy('scheduled_time', 'asc');
 
     res.json({ interviews });
   } catch (err) {
@@ -902,7 +971,8 @@ app.get('/api/applications/:applicationId/interviews', async (req, res) => {
 });
 
 // Update application status
-app.put('/api/applications/:applicationId', async (req, res) => {
+// 🔹 Update Application Status
+app.put("/api/applications/:applicationId", async (req, res) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -910,26 +980,55 @@ app.put('/api/applications/:applicationId', async (req, res) => {
     }
 
     const { status } = req.body;
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Update application status
-    await knex('applications')
+    if (!status) {
+      return res.status(400).json({ error: 'Status is required' });
+    }
+
+    const validStatuses = ['applied', 'viewed', 'shortlisted', 'interviewing', 'hired', 'rejected'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status value' });
+    }
+
+    const updated = await knex('applications')
       .where('application_id', req.params.applicationId)
-      .update({ status, updated_at: new Date() });
-
-    // Add to history
-    await knex('application_history')
-      .insert({
-        application_id: req.params.applicationId,
-        status: status,
-        changed_by: decoded.id,
-        timestamp: new Date()
+      .update({ 
+        status,
+        updated_at: knex.fn.now() 
       });
 
-    res.json({ success: true });
+    if (!updated) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+
+    res.json({ message: 'Application status updated successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to update application status' });
+  }
+});
+
+// 🔹 Get Jobs for Working Professionals (with company names)
+app.get("/api/wp/jobs", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Get jobs with company names by joining with organisations table
+    const jobs = await knex('jobs')
+      .join('organisations', 'jobs.id', 'organisations.id')
+      .select(
+        'jobs.*',
+        'organisations.name as company_name'
+      )
+      .orderBy('jobs.created_at', 'desc');
+
+    res.json({ jobs });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch jobs' });
   }
 });
 

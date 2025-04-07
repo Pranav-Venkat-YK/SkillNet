@@ -96,9 +96,9 @@ const WpPersonal = () => {
 
   return (
     <div className="std-page">
-      <header className="dashboard-header">
-        <div className="dashboard-logo">SkillNet</div>
-        <button className="dashboard-logout-btn" onClick={() => { localStorage.clear(); navigate("/"); }}>
+      <header className="std-dashboard-header">
+        <div className="std-dashboard-logo">SkillNet</div>
+        <button className="std-dashboard-logout-btn" onClick={() => { localStorage.clear(); navigate("/"); }}>
           Logout
         </button>
       </header>
@@ -131,7 +131,7 @@ const WpPersonal = () => {
         </form>
       </div>
 
-      <footer className="dashboard-footer">
+      <footer className="std-dashboard-footer">
         <p>&copy; 2025 SkillNet. All rights reserved.</p>
       </footer>
     </div>

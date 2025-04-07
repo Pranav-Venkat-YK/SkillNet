@@ -238,6 +238,8 @@ const WpProfile = () => {
           <p><strong>Post Degree University:</strong> {formData1.postdegree_university}</p>
 
           <button className="std-edit-btn" onClick={() => setEditMode(true)}>Edit</button>
+          <button className="std-goback-btn" onClick={() => navigate("/wp/")}>Go Back</button>
+
         </div></>
       ) : (
         <form onSubmit={handleSubmit} className="std-details-form">
@@ -294,7 +296,7 @@ const WpProfile = () => {
           </div>
 
           <h2>Education Details</h2>
-          <div className="edit">
+          <div className="std-edit">
             <label htmlFor="tenth_grade">10th Grade:</label>
             <input type="number" name="tenth_grade" value={formData1.tenth_grade} onChange={handleChange1} />
 

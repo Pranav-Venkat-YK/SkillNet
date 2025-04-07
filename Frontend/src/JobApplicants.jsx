@@ -299,31 +299,31 @@ const JobApplicants = () => {
         <div className="ja-applicants-list">
           <div className="ja-tabs">
             <div 
-              className={`tab ${activeTab === 'all' ? 'active' : ''}`}
+              className={`ja-tab ${activeTab === 'all' ? 'active' : ''}`}
               onClick={() => setActiveTab('all')}
             >
               All ({stats.total})
             </div>
             <div 
-              className={`tab ${activeTab === 'applied' ? 'active' : ''}`}
+              className={`ja-tab ${activeTab === 'applied' ? 'active' : ''}`}
               onClick={() => setActiveTab('applied')}
             >
               Applied ({stats.applied})
             </div>
             <div 
-              className={`tab ${activeTab === 'reviewed' ? 'active' : ''}`}
+              className={`ja-tab ${activeTab === 'reviewed' ? 'active' : ''}`}
               onClick={() => setActiveTab('reviewed')}
             >
               Reviewed ({stats.reviewed})
             </div>
             <div 
-              className={`tab ${activeTab === 'shortlisted' ? 'active' : ''}`}
+              className={`ja-tab ${activeTab === 'shortlisted' ? 'active' : ''}`}
               onClick={() => setActiveTab('shortlisted')}
             >
               Shortlisted ({stats.shortlisted})
             </div>
             <div 
-              className={`tab ${activeTab === 'interviewing' ? 'active' : ''}`}
+              className={`ja-tab ${activeTab === 'interviewing' ? 'active' : ''}`}
               onClick={() => setActiveTab('interviewing')}
             >
               Interviewing ({stats.interviewing})
