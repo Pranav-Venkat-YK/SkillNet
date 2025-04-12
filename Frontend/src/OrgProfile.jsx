@@ -8,8 +8,8 @@ const OrgProfile = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
-    bio: "",
-    foundeddate: "",
+    Description: "",
+    founded_date: "",
     headquarters_address: "",
     city: "",
     state: "",
@@ -35,8 +35,7 @@ const OrgProfile = () => {
         console.log(res);
         if (res.data.details) {
           const details = res.data.details;
-          
-
+          console.log(details);
           setFormData(details);
         }
       } catch (error) {
@@ -66,6 +65,7 @@ const OrgProfile = () => {
   };
 
   return (
+    <div className="org-body2">
     <div className="org-details-container">
       <header className="org-dashboard-header">
         <div className="org-dashboard-logo">SkillNet</div>
@@ -99,10 +99,10 @@ const OrgProfile = () => {
           <input type="text" name="industry" id="industry" value={formData.industry} onChange={handleChange} />
 
           <label htmlFor="bio">Bio:</label>
-          <textarea name="bio" id="bio" value={formData.Description} onChange={handleChange} />
+          <textarea name="Description" id="bio" value={formData.Description} onChange={handleChange} />
           
           <label htmlFor="foundeddate">Founded Date:</label>
-          <input type="date" name="foundeddate" id="foundeddate" value={formData.founded_date} onChange={handleChange} />
+          <input type="date" name="founded_date" id="foundeddate" value={formData.founded_date} onChange={handleChange} />
 
           <label htmlFor="headquarters_address">Headquarters Address:</label>
           <textarea name="headquarters_address" id="headquarters_address" value={formData.headquarters_address} onChange={handleChange} />
@@ -127,6 +127,7 @@ const OrgProfile = () => {
       <footer className="org-dashboard-footer">
         <p>&copy; 2025 SkillNet. All rights reserved.</p>
       </footer>
+    </div>
     </div>
   );
 };
