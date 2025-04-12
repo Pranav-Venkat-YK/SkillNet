@@ -24,6 +24,7 @@ import InterSche from "./InterSche";
 import SavedJobs from "./SavedJobs";
 import StudentInterviews from "./StudentInterview";
 import StudentApplications from "./StudentApplications";
+import JobPostings from "./JobPostings";
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -90,6 +91,7 @@ function App() {
             )
           } 
         />
+          <Route path="/org/jobs" element = {<ProtectedRoute element={<JobPostings />} />}/>
       </Routes>
     </Router>
   );

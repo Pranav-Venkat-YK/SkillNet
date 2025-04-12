@@ -9,10 +9,12 @@ const OrgHome = () => {
   const token = localStorage.getItem("token");
   const [jobs, setJobs] = useState([]);
   const [avatar,setAvatar] = useState("P");
-  const [activeJobTab,setActiveJobTab]=useState("All Jobs")
+  const [activeJobTab,setActiveJobTab]=useState("All Jobs");
   const [name,setName] = useState("");
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeNavItem,setActiveNavItem] = useState('Dashboard');
+
 
   useEffect(() => {
     if (!token) {
@@ -63,7 +65,7 @@ const OrgHome = () => {
       return;
     }
 
-    const fetchStudentDetails = async () => {
+    const fetchOrgDetails = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/org/details", {
           headers: { Authorization: `Bearer ${token}` },
@@ -79,7 +81,7 @@ const OrgHome = () => {
         console.error("Error fetching student details:", error);
       }
     };
-    fetchStudentDetails();
+    fetchOrgDetails();
   });
 
   return (
@@ -93,32 +95,46 @@ const OrgHome = () => {
           Dashboard
         </div>
         
-        <div className="org-nav-item">
+        <div className="org-nav-item" onClick={()=>navigate("/org/jobs")}>
           <i className="fas fa-briefcase"></i>
           Job Postings
         </div>
         
-        <div className="org-nav-item">
+        <div className="org-nav-item" onClick={()=>navigate("/org/applications")}>
           <i className="fas fa-file-alt"></i>
           Applications
         </div>
         
-        <div className="org-nav-item">
+        <div className="org-nav-item" onClick={()=>navigate("/org/interviews")}>
           <i className="fas fa-calendar-alt"></i>
           Interviews
         </div>
         
-        <div className="org-nav-item">
-          <i className="fas fa-users"></i>
-          Candidates
-        </div>
-        
+       
         <div className="org-nav-item"  onClick={() => navigate("/org/profile")}>
           <i className="fas fa-building"></i>
           Company Profile
         </div>
       </div>
-      
+
+      {/* {['Dashboard', 'Job Postings', 'Applications', 'Interviews','Company Profile'].map(item => (
+          <div 
+            key={item}
+            className={`org-nav-item ${activeNavItem === item ? 'org-active' : ''}`}
+            onClick={() => handleNavClick(item)}
+            >
+            <i className={`fas fa-${
+              item === 'Dashboard' ? 'th-large' :
+              item === 'Job Postings' ? 'briefcase' :
+              item === 'Applications' ? 'file-alt' :
+              item === 'Interviews' ? 'calendar-alt' :'building'
+              // item === 'Candidates' ? 'users' : 'building'
+            }`}></i>
+            {item}
+          </div>
+        ))}
+      </div>
+     */}
       <div className="org-main-content">
         <div className="org-header">
           <div className="org-search-bar">
@@ -171,13 +187,13 @@ const OrgHome = () => {
             <p>Scheduled Interviews</p>
           </div>
           
-          <div className="org-stat-card">
+          {/* <div className="org-stat-card">
             <div className="org-icon org-hired">
               <i className="fas fa-user-check"></i>
             </div>
             <h2>5</h2>
             <p>Hired This Month</p>
-          </div>
+          </div> */}
         </div>
         
         <div className="org-section-header">
