@@ -454,30 +454,46 @@ app.get("/api/org/jobs", authenticate, async (req, res) => {
 });
 
 app.get("/api/student/jobs", authenticate, async (req, res) => {
-  // Ensure that only organization users can fetch jobs
-
-
   try {
-    // "id" column in jobs table references the organisation's id
-    const jobs = await knex("jobs");
+    const jobs = await knex('jobs')
+      .join('organisations', 'jobs.id', 'organisations.id') // Changed to leftJoin and correct join column
+      .select(
+        'jobs.*',
+        'organisations.name as company_name',
+        'organisations.Description as company_description',
+        'organisations.website_url as company_website',
+        'organisations.industry as company_industry'
+      );
+
     res.status(200).json({ jobs });
   } catch (error) {
     console.error("Error fetching jobs:", error);
-    res.status(500).json({ message: "Error fetching jobs." });
+    res.status(500).json({ 
+      message: "Error fetching jobs.",
+      error: error.message // Include error message in response
+    });
   }
 });
 
 app.get("/api/wp/jobs", authenticate, async (req, res) => {
-  // Ensure that only organization users can fetch jobs
-
-
   try {
-    // "id" column in jobs table references the organisation's id
-    const jobs = await knex("jobs");
+    const jobs = await knex('jobs')
+      .join('organisations', 'jobs.id', 'organisations.id') // Changed to leftJoin and correct join column
+      .select(
+        'jobs.*',
+        'organisations.name as company_name',
+        'organisations.Description as company_description',
+        'organisations.website_url as company_website',
+        'organisations.industry as company_industry'
+      );
+
     res.status(200).json({ jobs });
   } catch (error) {
     console.error("Error fetching jobs:", error);
-    res.status(500).json({ message: "Error fetching jobs." });
+    res.status(500).json({ 
+      message: "Error fetching jobs.",
+      error: error.message // Include error message in response
+    });
   }
 });
 

@@ -32,7 +32,7 @@ const JobDetails = () => {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
-
+        console.log(jobResponse.data.job);
         setJob(jobResponse.data.job);
         setIsBookmarked(bookmarkResponse.data.isBookmarked);
         setHasApplied(applicationResponse.data.hasApplied);
@@ -148,7 +148,7 @@ const JobDetails = () => {
             </div>
             <div>
               <h2 className="jd-job-title">{job.title}</h2>
-              <p className="jd-company-name">{job.organisations?.name || 'Unknown Company'}</p>
+              <p className="jd-company-name">{job.company_name|| 'Unknown Company'}</p>
               <div className="jd-job-meta">
                 <span className="jd-meta-item">
                   <span className="jd-meta-icon">📍</span>
@@ -232,22 +232,18 @@ const JobDetails = () => {
           </div>
         </div>
 
-        {job.organisations && (
+        { (
   <div className="jd-card">
-    <h3 className="jd-section-title">About {job.organisations.name}</h3>
+    <h3 className="jd-section-title">About {job.company_name}</h3>
     <p className="jd-section-content">
-      {job.organisations.Description || 'No company description available.'}
+      {job.company_description || 'No company description available.'}
     </p>
-    {job.organisations.website_url && (
+    {
+    // job.organisations.website_url &&
+     
       <a 
         className="jd-company-link" 
-        href={
-          job.organisations.website_url.startsWith('http') 
-            ? job.organisations.website_url 
-            : `https://${job.organisations.website_url}`
-        } 
-        target="_blank" 
-        rel="noopener noreferrer"
+        href={job.company_website} 
       >
         Visit company website
         <svg className="jd-icon jd-icon-small jd-link-icon" viewBox="0 0 24 24">
@@ -256,7 +252,7 @@ const JobDetails = () => {
           <line x1="10" y1="14" x2="21" y2="3"></line>
         </svg>
       </a>
-    )}
+    }
   </div>
 )}
       </div>

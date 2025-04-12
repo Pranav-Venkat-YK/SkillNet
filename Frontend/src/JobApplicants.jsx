@@ -204,7 +204,7 @@ const JobApplicants = () => {
         <div className="ja-header">
           <h1>Applicant Management</h1>
           <div className="ja-header-actions">
-            <button className="ja-btn ja-btn-primary" onClick={() => navigate(-1)}>
+            <button className="ja-btn ja-btn-primary" onClick={() => navigate('/org')}>
               Back to Jobs
             </button>
 

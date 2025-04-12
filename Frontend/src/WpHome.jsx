@@ -35,9 +35,12 @@ const WpHome = () => {
       return response.data.jobs;
     } catch (error) {
       console.error("Error fetching jobs:", error);
+      if (error.response) {
+        console.error("Server responded with:", error.response.data);
+      }
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
-        navigate('/');
+        navigate('/login');
       }
       throw error;
     }

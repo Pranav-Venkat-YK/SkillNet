@@ -1,5 +1,5 @@
 // Org.jsx
-import React, { useEffect, useState } from 'react';
+import React, { act, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import './OrgHome.css';
@@ -9,8 +9,10 @@ const OrgHome = () => {
   const token = localStorage.getItem("token");
   const [jobs, setJobs] = useState([]);
   const [avatar,setAvatar] = useState("P");
+  const [activeJobTab,setActiveJobTab]=useState("All Jobs")
   const [name,setName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (!token) {
@@ -34,6 +36,24 @@ const OrgHome = () => {
     fetchJobs();
   }, [token, navigate]);
 
+  const filterJobs = jobs.filter(job=>{
+    if (activeJobTab === "Active"){
+      return job.status ==="open"
+    }
+    if(activeJobTab === "Closed"){
+      return job.status === "closed"
+    }
+    if (searchQuery.trim() !== '') {
+      const query = searchQuery.toLowerCase();
+      return (
+        job.title.toLowerCase().includes(query) ||
+        (job.company_name && job.company_name.toLowerCase().includes(query)) ||
+        (job.skills && job.skills.some(skill => skill.toLowerCase().includes(query))
+      ));
+    }
+    return true;
+  })
+
 
   // const token1 = localStorage.getItem("token");
 
@@ -54,7 +74,6 @@ const OrgHome = () => {
           setAvatar(details.name[0].toUpperCase());
           setName(details.name);
         //   console.log(details.name[0].toUpperCase());
-          
         }
       } catch (error) {
         console.error("Error fetching student details:", error);
@@ -94,31 +113,20 @@ const OrgHome = () => {
           Candidates
         </div>
         
-        <div className="org-nav-item">
-          <i className="fas fa-chart-line"></i>
-          Analytics
-        </div>
-        
         <div className="org-nav-item"  onClick={() => navigate("/org/profile")}>
           <i className="fas fa-building"></i>
           Company Profile
-        </div>
-        
-        <div className="org-nav-item">
-          <i className="fas fa-cog"></i>
-          Settings
-        </div>
-        
-        <div className="org-nav-item">
-          <i className="fas fa-question-circle"></i>
-          Help Center
         </div>
       </div>
       
       <div className="org-main-content">
         <div className="org-header">
           <div className="org-search-bar">
-            <input type="text" placeholder="Search for candidates, jobs, or applications..." />
+            <input type="text" 
+            placeholder="Search for candidates, jobs, or applications..." 
+            value = {searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           
           <div className="org-user-menu">
@@ -126,12 +134,7 @@ const OrgHome = () => {
               <i className="far fa-bell"></i>
               <div className="org-badge">3</div>
             </div>
-            
-            <div className="org-icon">
-              <i className="far fa-envelope"></i>
-              <div className="org-badge">5</div>
-            </div>
-            
+
             <div className="org-avatar" onClick={() => navigate("/org/profile")}>
                 {avatar}
             </div>
@@ -183,18 +186,23 @@ const OrgHome = () => {
         </div>
         
         <div className="org-tabs">
-          <div className="org-tab org-active">All Jobs ({jobs.length})</div>
-          <div className="org-tab">Active</div>
-          <div className="org-tab">Closed</div>
-          <div className="org-tab">Drafts</div>
+          {["All Jobs",'Active','Closed'].map(tab=>(
+            <div 
+              key={tab}
+              className={`sh-tab ${activeJobTab === tab ? 'active' : ''}`}
+              onClick={() => setActiveJobTab(tab)}
+            >
+              {tab}
+              </div>
+          ))}
         </div>
         
         {loading ? (
           <div>Loading jobs...</div>
-        ) : jobs.length === 0 ? (
+        ) : filterJobs.length === 0 ? (
           <div>No jobs found.</div>
         ) : (
-          jobs.map((job) => (
+          filterJobs.map((job) => (
             <div 
               key={job.job_id} 
               className="org-job-card"
@@ -203,7 +211,7 @@ const OrgHome = () => {
             >
               <div className="org-title-row">
                 <h3>{job.title}</h3>
-                <div className={`status ${job.status}`}>{job.status}</div>
+                <div className={`status ${job.status}`}>   {job.status}</div>
               </div>
               
               <div className="org-details">

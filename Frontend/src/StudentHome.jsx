@@ -35,10 +35,24 @@ const StudentHome = () => {
       return response.data.jobs;
     } catch (error) {
       console.error("Error fetching jobs:", error);
+      if (error.response) {
+        console.error("Server responded with:", error.response.data);
+      }
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
         navigate('/login');
       }
+      throw error;
+    }
+  };
+  const fetchOrganisationDetails = async (jobId, token) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/jobs/${jobId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data.job; // Note: The API returns { job } object
+    } catch (error) {
+      console.error("Error fetching organisation details:", error);
       throw error;
     }
   };
@@ -60,7 +74,7 @@ const StudentHome = () => {
       navigate("/login");
       return;
     }
-
+  
     try {
       setLoading(true);
       setError(null);
@@ -68,13 +82,14 @@ const StudentHome = () => {
       const [details, jobs] = await Promise.all([
         fetchStudentDetails(token),
         fetchAllJobs(token)
+        // Removed fetchOrganisationDetails since we get org details with jobs
       ]);
-
+  
       if (details) {
         setAvatar(details.name[0].toUpperCase());
         setStudentName(details.name);
       }
-
+  
       setJobListings(jobs);
       
       const applicationsCount = jobs.filter(job => job.has_applied).length;
@@ -86,7 +101,7 @@ const StudentHome = () => {
         interviews: 0,
         offers: 0
       });
-
+  
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Failed to load data. Please try again.");
