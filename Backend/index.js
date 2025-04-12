@@ -452,17 +452,23 @@ app.get("/api/org/jobs", authenticate, async (req, res) => {
     res.status(500).json({ message: "Error fetching jobs." });
   }
 });
-
 app.get("/api/student/jobs", authenticate, async (req, res) => {
   try {
+    const userId = req.user.userId; // Get current user ID
+
     const jobs = await knex('jobs')
-      .join('organisations', 'jobs.id', 'organisations.id') // Changed to leftJoin and correct join column
+      .join('organisations', 'jobs.id', 'organisations.id')
+      .leftJoin('bookmarks', function() {
+        this.on('bookmarks.job_id', '=', 'jobs.job_id') // Correct job ID reference
+           .andOn('bookmarks.user_id', '=', userId) // Current user check
+      })
       .select(
         'jobs.*',
         'organisations.name as company_name',
         'organisations.Description as company_description',
         'organisations.website_url as company_website',
-        'organisations.industry as company_industry'
+        'organisations.industry as company_industry',
+        knex.raw('bookmarks.job_id IS NOT NULL as is_bookmarked') // Boolean bookmark status
       );
 
     res.status(200).json({ jobs });
@@ -470,21 +476,29 @@ app.get("/api/student/jobs", authenticate, async (req, res) => {
     console.error("Error fetching jobs:", error);
     res.status(500).json({ 
       message: "Error fetching jobs.",
-      error: error.message // Include error message in response
+      error: error.message
     });
   }
 });
 
+// Similarly update /api/wp/jobs endpoint
 app.get("/api/wp/jobs", authenticate, async (req, res) => {
   try {
+    const userId = req.user.userId;
+
     const jobs = await knex('jobs')
-      .join('organisations', 'jobs.id', 'organisations.id') // Changed to leftJoin and correct join column
+      .join('organisations', 'jobs.id', 'organisations.id')
+      .leftJoin('bookmarks', function() {
+        this.on('bookmarks.job_id', '=', 'jobs.job_id')
+           .andOn('bookmarks.user_id', '=', userId)
+      })
       .select(
         'jobs.*',
         'organisations.name as company_name',
         'organisations.Description as company_description',
         'organisations.website_url as company_website',
-        'organisations.industry as company_industry'
+        'organisations.industry as company_industry',
+        knex.raw('bookmarks.job_id IS NOT NULL as is_bookmarked')
       );
 
     res.status(200).json({ jobs });
@@ -492,11 +506,10 @@ app.get("/api/wp/jobs", authenticate, async (req, res) => {
     console.error("Error fetching jobs:", error);
     res.status(500).json({ 
       message: "Error fetching jobs.",
-      error: error.message // Include error message in response
+      error: error.message
     });
   }
 });
-
 // 🔹 Get Job Details
 app.get("/api/jobs/:jobId", async (req, res) => {
   try {
@@ -582,7 +595,141 @@ app.get("/api/jobs/:jobId/application-status", authenticate, async (req, res) =>
     res.status(500).json({ error: 'Failed to check application status' });
   }
 });
+// Get all saved jobs for a student
+app.get("/api/student/saved-jobs", authenticate, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    const savedJobs = await knex('bookmarks')
+      .where('bookmarks.user_id', userId)
+      .join('jobs', 'bookmarks.job_id', 'jobs.job_id')
+      .join('organisations', 'jobs.id', 'organisations.id')
+      .select(
+        'jobs.*',
+        'organisations.name as company_name',
+        'bookmarks.created_at as bookmarked_at'
+      )
+      .orderBy('bookmarks.created_at', 'desc');
 
+    // Check if user has applied to these jobs
+    const applications = await knex('applications')
+      .where('user_id', userId)
+      .select('job_id', 'status');
+
+    const jobsWithApplicationStatus = savedJobs.map(job => {
+      const application = applications.find(app => app.job_id === job.job_id);
+      return {
+        ...job,
+        has_applied: !!application,
+        application_status: application?.status || null
+      };
+    });
+
+    res.json({ 
+      success: true,
+      jobs: jobsWithApplicationStatus 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ 
+      error: 'Failed to fetch saved jobs',
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+});
+
+app.post("/api/student/jobs/:jobId/bookmark", authenticate, async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const userId = req.user.userId;
+
+    // Validate jobId is a number
+    if (isNaN(jobId)) {
+      return res.status(400).json({ error: 'Invalid job ID' });
+    }
+
+    // Check if the job exists
+    const jobExists = await knex('jobs').where('job_id', jobId).first();
+    if (!jobExists) {
+      return res.status(404).json({ error: 'Job not found' });
+    }
+
+    // Check if bookmark already exists
+    const existingBookmark = await knex('bookmarks')
+      .where({
+        job_id: jobId,
+        user_id: userId
+      })
+      .first();
+
+    if (existingBookmark) {
+      // Remove bookmark if it exists
+      await knex('bookmarks').where('bookmark_id', existingBookmark.bookmark_id).del();
+      return res.json({ 
+        success: true,
+        bookmarked: false,
+        message: 'Bookmark removed successfully'
+      });
+    } else {
+      // Add new bookmark
+      await knex('bookmarks').insert({
+        job_id: jobId,
+        user_id: userId
+      });
+      return res.json({ 
+        success: true,
+        bookmarked: true,
+        message: 'Bookmark added successfully'
+      });
+    }
+  } catch (err) {
+    console.error('Bookmark error:', err);
+    
+    if (err.code === '23503') { // Foreign key violation
+      return res.status(404).json({ error: 'Job or user not found' });
+    }
+    
+    if (err.code === '23505') { // Unique violation
+      return res.status(409).json({ error: 'Bookmark already exists' });
+    }
+    
+    res.status(500).json({ 
+      error: 'Failed to toggle bookmark',
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+});
+
+app.get("/api/student/interviews", authenticate, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const interviews = await knex('interviews')
+      .join('applications', 'interviews.application_id', 'applications.application_id')
+      .join('jobs', 'applications.job_id', 'jobs.job_id')
+      .join('organisations', 'jobs.job_id', 'organisations.id')
+      .where('applications.user_id', userId)
+      .select(
+        'interviews.interview_id',
+        'interviews.scheduled_time',
+        'interviews.duration_minutes',
+        'interviews.interview_type',
+        'interviews.location_or_link',
+        'interviews.interviewer_name',
+        'interviews.interviewer_position',
+        'interviews.status',
+        'interviews.feedback',
+        'jobs.title as job_title',
+        'organisations.name as organisation_name'
+      )
+      .orderBy('interviews.scheduled_time', 'asc');
+
+    res.json({ interviews });
+  } catch (error) {
+    console.error('Error fetching interviews:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 // 🔹 Submit Application
 app.post("/api/jobs/:jobId/apply", authenticate, upload.single('resume'), async (req, res) => {
   try {
@@ -986,6 +1133,50 @@ app.get("/api/applications/:applicationId/interviews", async (req, res) => {
   }
 });
 
+// 🔹 Update an Interview
+app.put("/api/interviews/:interviewId", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const { 
+      scheduled_time, 
+      duration_minutes, 
+      interview_type, 
+      location_or_link,
+      interviewer_name,
+      interviewer_position,
+      feedback
+    } = req.body;
+
+    // Validate required fields
+    if (!scheduled_time || !duration_minutes || !interview_type) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Update the interview
+    await knex('interviews')
+      .where('interview_id', req.params.interviewId)
+      .update({
+        scheduled_time: new Date(scheduled_time),
+        duration_minutes: duration_minutes,
+        interview_type,
+        location_or_link,
+        interviewer_name,
+        interviewer_position,
+        feedback,
+        updated_at: knex.fn.now()
+      });
+
+    res.json({ message: 'Interview updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update interview' });
+  }
+});
+
 // Update application status
 // 🔹 Update Application Status
 app.put("/api/applications/:applicationId", async (req, res) => {
@@ -1045,6 +1236,86 @@ app.get("/api/wp/jobs", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch jobs' });
+  }
+});
+
+app.get("/api/student/applications", authenticate, async (req, res) => {
+  try {
+    console.log(req.user);
+    const studentId = req.user.userId;
+
+    const applications = await knex('applications')
+      .join('jobs', 'applications.job_id', 'jobs.job_id')
+      .join('organisations', 'jobs.id', 'organisations.id')
+      .where('applications.user_id', studentId)
+      .select(
+        'applications.application_id',
+        'applications.job_id',
+        'applications.resume_url',
+        'applications.status',
+        'applications.applied_at',
+        'applications.updated_at',
+        'jobs.title as job_title',
+        'jobs.location',
+        'jobs.is_remote',
+        'jobs.employment_type',
+        'jobs.salary_min',
+        'jobs.salary_max',
+        'jobs.salary_currency',
+        'organisations.name'
+        // knex.raw('COALESCE(companies.name, organisations.name) as company_name')
+      )
+      .orderBy('applications.updated_at', 'desc');
+
+    res.json({ 
+      success: true, 
+      applications 
+    });
+
+  } catch (error) {
+    console.error("Error fetching applications:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch applications"
+    });
+  }
+});
+
+app.delete("/api/student/applications/:applicationId", authenticate, async (req, res) => {
+  try {
+    const studentId = req.user.id;
+    const applicationId = req.params.applicationId;
+
+    // Verify the application belongs to the student
+    const application = await knex('applications')
+      .where({ 
+        application_id: applicationId,
+        user_id: studentId
+      })
+      .first();
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found or not authorized'
+      });
+    }
+
+    await knex('applications')
+      .where({ application_id: applicationId })
+      .del();
+
+    res.json({
+      success: true,
+      message: 'Application withdrawn successfully'
+    });
+
+  } catch (error) {
+    console.error('Error withdrawing application:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to withdraw application'
+    });
   }
 });
 

@@ -35,9 +35,6 @@ const StudentHome = () => {
       return response.data.jobs;
     } catch (error) {
       console.error("Error fetching jobs:", error);
-      if (error.response) {
-        console.error("Server responded with:", error.response.data);
-      }
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
         navigate('/login');
@@ -45,15 +42,19 @@ const StudentHome = () => {
       throw error;
     }
   };
-  const fetchOrganisationDetails = async (jobId, token) => {
+
+  const fetchApplicationStatus = async (jobId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/jobs/${jobId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.get(`http://localhost:5000/api/jobs/${jobId}/application-status`, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
-      return response.data.job; // Note: The API returns { job } object
+      return response.data.hasApplied;
     } catch (error) {
-      console.error("Error fetching organisation details:", error);
-      throw error;
+      console.error("Error fetching application status:", error);
+      return false;
     }
   };
 
@@ -69,6 +70,18 @@ const StudentHome = () => {
     }
   };
 
+  const fetchInterviews = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/student/interviews", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data.interviews;
+    } catch (error) {
+      console.error("Error fetching interviews:", error);
+      return [];
+    }
+  };
+
   const fetchData = async () => {
     if (!token) {
       navigate("/login");
@@ -79,26 +92,35 @@ const StudentHome = () => {
       setLoading(true);
       setError(null);
       
-      const [details, jobs] = await Promise.all([
+      const [details, jobs, interviewData] = await Promise.all([
         fetchStudentDetails(token),
-        fetchAllJobs(token)
-        // Removed fetchOrganisationDetails since we get org details with jobs
+        fetchAllJobs(token),
+        fetchInterviews()
       ]);
   
       if (details) {
         setAvatar(details.name[0].toUpperCase());
         setStudentName(details.name);
       }
+
+      // Fetch application status for each job
+      const jobsWithStatus = await Promise.all(
+        jobs.map(async job => {
+          const hasApplied = await fetchApplicationStatus(job.job_id);
+          return { ...job, has_applied: hasApplied };
+        })
+      );
   
-      setJobListings(jobs);
+      setJobListings(jobsWithStatus);
+      setInterviews(interviewData);
       
-      const applicationsCount = jobs.filter(job => job.has_applied).length;
-      const savedJobsCount = jobs.filter(job => job.is_bookmarked).length;
+      const applicationsCount = jobsWithStatus.filter(job => job.has_applied).length;
+      const savedJobsCount = jobsWithStatus.filter(job => job.is_bookmarked).length;
       
       setStats({
         applications: applicationsCount,
         savedJobs: savedJobsCount,
-        interviews: 0,
+        interviews: interviewData.length,
         offers: 0
       });
   
@@ -114,6 +136,58 @@ const StudentHome = () => {
     fetchData();
   }, [token, navigate]);
 
+  const handleApplyJob = async (jobId, e) => {
+    e.stopPropagation();
+    
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      // Make API call to apply for the job
+      await axios.post(
+        `http://localhost:5000/api/student/jobs/${jobId}/apply`,
+        {},
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          } 
+        }
+      );
+      
+      // Update the job listings state
+      setJobListings(prevJobs => 
+        prevJobs.map(job => 
+          job.job_id === jobId ? { 
+            ...job, 
+            has_applied: true 
+          } : job
+        )
+      );
+      
+      // Update the applications count in stats
+      setStats(prevStats => ({
+        ...prevStats,
+        applications: prevStats.applications + 1
+      }));
+
+    } catch (error) {
+      console.error("Error applying for job:", error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate('/login');
+      } else {
+        setError("Failed to apply for job. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredJobs = jobListings.filter(job => {
     if (activeJobTab === 'Remote' && !job.is_remote) return false;
     if (activeJobTab === 'Recent') {
@@ -128,8 +202,8 @@ const StudentHome = () => {
       return (
         job.title.toLowerCase().includes(query) ||
         (job.company_name && job.company_name.toLowerCase().includes(query)) ||
-        (job.skills && job.skills.some(skill => skill.toLowerCase().includes(query))
-      ));
+        (job.skills && job.skills.some(skill => skill.toLowerCase().includes(query)))
+      );
     }
     
     return true;
@@ -137,8 +211,8 @@ const StudentHome = () => {
 
   const handleNavClick = (navItem) => {
     setActiveNavItem(navItem);
-    if (navItem === 'Job Search') navigate('/std/jobs');
-    else if (navItem === 'Applications') navigate('/std/applications');
+    // if (navItem === 'Job Search') navigate('/std/');
+    if (navItem === 'Applications') navigate('/std/applications');
     else if (navItem === 'Interviews') navigate('/std/interviews');
     else if (navItem === 'Profile') navigate('/std/profile');
     else if (navItem === 'Saved Jobs') navigate('/std/saved-jobs');
@@ -150,11 +224,22 @@ const StudentHome = () => {
 
   const toggleBookmark = async (jobId, e) => {
     e.stopPropagation();
+    
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
     try {
       const response = await axios.post(
         `http://localhost:5000/api/student/jobs/${jobId}/bookmark`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          } 
+        }
       );
       
       setJobListings(prevJobs => 
@@ -168,10 +253,19 @@ const StudentHome = () => {
       
       setStats(prevStats => ({
         ...prevStats,
-        savedJobs: response.data.bookmarked ? prevStats.savedJobs + 1 : prevStats.savedJobs - 1
+        savedJobs: response.data.bookmarked 
+          ? prevStats.savedJobs + 1 
+          : Math.max(0, prevStats.savedJobs - 1)
       }));
+
     } catch (error) {
       console.error("Error toggling bookmark:", error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate('/login');
+      } else {
+        setError("Failed to update bookmark. Please try again.");
+      }
     }
   };
 
@@ -211,7 +305,9 @@ const StudentHome = () => {
       <div className="sh-sidebar">
         <div className="sh-logo">SkillNet</div>
         
-        {['Dashboard', 'Job Search', 'Saved Jobs', 'Applications', 'Interviews', 'Profile'].map(item => (
+        {['Dashboard',
+        //  'Job Search',
+          'Saved Jobs', 'Applications', 'Interviews', 'Profile'].map(item => (
           <div 
             key={item}
             className={`sh-nav-item ${activeNavItem === item ? 'active' : ''}`}
@@ -219,7 +315,7 @@ const StudentHome = () => {
           >
             <i className={`fas fa-${
               item === 'Dashboard' ? 'th-large' :
-              item === 'Job Search' ? 'briefcase' :
+              // item === 'Job Search' ? 'briefcase' :
               item === 'Saved Jobs' ? 'bookmark' :
               item === 'Applications' ? 'file-alt' :
               item === 'Interviews' ? 'calendar-alt' :'user'
@@ -361,11 +457,13 @@ const StudentHome = () => {
                   className={`sh-apply-button ${job.has_applied ? 'applied' : ''}`} 
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleJobClick(job.job_id);
+                    if (!job.has_applied) {
+                      handleApplyJob(job.job_id, e);
+                    }
                   }}
-                  disabled={job.has_applied}
+                  disabled={job.has_applied || loading}
                 >
-                  {job.has_applied ? 'Applied' : 'Apply Now'}
+                  {job.has_applied ? '✓ Applied' : 'Apply Now'}
                 </button>
               </div>
             </div>

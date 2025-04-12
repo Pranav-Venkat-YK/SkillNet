@@ -12,8 +12,8 @@ dist
 dist-ssr
 *.local
 
-# db.js
-# knexfile.js
+db.js
+knexfile.js
 
 # Editor directories and files
 .vscode/*

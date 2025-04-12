@@ -21,6 +21,9 @@ import WpHome from "./WpHome";
 import JobApplicants from "./JobApplicants";
 import CandProf from "./CandProf";
 import InterSche from "./InterSche";
+import SavedJobs from "./SavedJobs";
+import StudentInterviews from "./StudentInterview";
+import StudentApplications from "./StudentApplications";
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -72,7 +75,9 @@ function App() {
         <Route path="/org/jobs/:jobId/applicants" element={<JobApplicants />} />
         <Route path="/org/jobs/:jobId/applicants/:applicationId" element={<CandProf />} />
         <Route path="/org/jobs/:jobId/applicants/:applicationId/schedule-interview" element={<InterSche />} /> 
-
+        <Route path="/std/saved-jobs" element={<ProtectedRoute element={<SavedJobs />} />} />
+        <Route path="/std/interviews" element={<ProtectedRoute element={<StudentInterviews />} />} />
+        <Route path="/std/applications" element={<ProtectedRoute element={<StudentApplications />} />} />
          {/* <Route path="/org/applications" element={<ProtectedRoute element={<JobApplicants />} />} />
         {/* General dashboard route redirects based on user type */}
         <Route

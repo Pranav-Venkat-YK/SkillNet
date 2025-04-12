@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './InterSche.css';
@@ -23,6 +23,51 @@ const InterSche = () => {
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [existingInterviews, setExistingInterviews] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [currentInterviewId, setCurrentInterviewId] = useState(null);
+
+  // Fetch existing interviews when component mounts
+  useEffect(() => {
+    const fetchInterviews = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/applications/${applicationId}/interviews`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        setExistingInterviews(response.data.interviews);
+        
+        // If there are existing interviews, pre-fill the form with the most recent one
+        if (response.data.interviews.length > 0) {
+          const latestInterview = response.data.interviews[0];
+          setIsEditMode(true);
+          setCurrentInterviewId(latestInterview.interview_id);
+          
+          const scheduledDate = new Date(latestInterview.scheduled_time);
+          const endTime = new Date(scheduledDate);
+          endTime.setMinutes(endTime.getMinutes() + latestInterview.duration_minutes);
+          
+          setFormData({
+            interview_type: latestInterview.interview_type,
+            scheduled_date: scheduledDate.toISOString().split('T')[0],
+            start_time: scheduledDate.toTimeString().substring(0, 5),
+            end_time: endTime.toTimeString().substring(0, 5),
+            location_or_link: latestInterview.location_or_link,
+            interviewer_name: latestInterview.interviewer_name,
+            interviewer_position: latestInterview.interviewer_position,
+            notes: latestInterview.feedback,
+            send_email: true,
+            update_status: false // Don't update status when rescheduling
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch interviews:", err);
+      }
+    };
+    
+    fetchInterviews();
+  }, [applicationId, token]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -46,20 +91,38 @@ const InterSche = () => {
       const end = new Date(`2000-01-01T${formData.end_time}`);
       const duration_minutes = (end - start) / (1000 * 60);
       
-      const response = await axios.post(
-        `http://localhost:5000/api/applications/${applicationId}/interviews`,
-        {
-          scheduled_time,
-          duration_minutes,
-          interview_type: formData.interview_type,
-          location_or_link: formData.location_or_link,
-          interviewer_name: formData.interviewer_name,
-          interviewer_position: formData.interviewer_position,
-          notes: formData.notes,
-          update_status: formData.update_status
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      if (isEditMode && currentInterviewId) {
+        // Update existing interview
+        await axios.put(
+          `http://localhost:5000/api/interviews/${currentInterviewId}`,
+          {
+            scheduled_time,
+            duration_minutes,
+            interview_type: formData.interview_type,
+            location_or_link: formData.location_or_link,
+            interviewer_name: formData.interviewer_name,
+            interviewer_position: formData.interviewer_position,
+            feedback: formData.notes
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } else {
+        // Create new interview
+        await axios.post(
+          `http://localhost:5000/api/applications/${applicationId}/interviews`,
+          {
+            scheduled_time,
+            duration_minutes,
+            interview_type: formData.interview_type,
+            location_or_link: formData.location_or_link,
+            interviewer_name: formData.interviewer_name,
+            interviewer_position: formData.interviewer_position,
+            notes: formData.notes,
+            update_status: formData.update_status
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
       
       // Redirect back to candidate profile
       navigate(`/org/jobs/${jobId}/applicants/${applicationId}`);
@@ -78,7 +141,9 @@ const InterSche = () => {
     <div className="is-body">
       <div className="is-modal">
         <div className="is-modal-header">
-          <h3 className="is-modal-title">Schedule Interview</h3>
+          <h3 className="is-modal-title">
+            {isEditMode ? 'Reschedule Interview' : 'Schedule Interview'}
+          </h3>
           <button className="is-close-btn" onClick={handleReturnToCandidateProfile}>&times;</button>
         </div>
        
@@ -192,31 +257,20 @@ const InterSche = () => {
               ></textarea>
             </div>
            
-            {/* <div className="is-checkbox-group">
-              <label className="is-checkbox-label">
-                <input 
-                  type="checkbox" 
-                  id="send-email"
-                  name="send_email"
-                  checked={formData.send_email}
-                  onChange={handleChange}
-                />
-                Send email notification to candidate
-              </label>
-            </div>
-            */}
-            <div className="is-checkbox-group">
-              <label className="is-checkbox-label">
-                <input 
-                  type="checkbox" 
-                  id="update-status"
-                  name="update_status"
-                  checked={formData.update_status}
-                  onChange={handleChange}
-                />
-                Update application status to "interviewing"
-              </label>
-            </div>
+            {!isEditMode && (
+              <div className="is-checkbox-group">
+                <label className="is-checkbox-label">
+                  <input 
+                    type="checkbox" 
+                    id="update-status"
+                    name="update_status"
+                    checked={formData.update_status}
+                    onChange={handleChange}
+                  />
+                  Update application status to "interviewing"
+                </label>
+              </div>
+            )}
            
             <div className="is-modal-footer">
               <button 
@@ -232,7 +286,8 @@ const InterSche = () => {
                 className="is-btn is-btn-primary"
                 disabled={loading}
               >
-                {loading ? 'Scheduling...' : 'Schedule Interview'}
+                {loading ? (isEditMode ? 'Updating...' : 'Scheduling...') : 
+                  (isEditMode ? 'Update Interview' : 'Schedule Interview')}
               </button>
             </div>
           </form>

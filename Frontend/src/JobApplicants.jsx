@@ -62,11 +62,10 @@ const JobApplicants = () => {
 
 
   // Handle scheduling an interview
-  const handleScheduleInterview = (candidate) => {
-    setSelectedCandidate(candidate);
-    setShowInterviewScheduler(true);
-  };
-
+  // In JobApplicants.js, update the handleScheduleInterview function:
+const handleScheduleInterview = (candidate) => {
+  navigate(`/org/jobs/${jobId}/applicants/${candidate.id}/schedule-interview`);
+};
   // Close all modals
   const closeModals = () => {
     setShowCandidateProfile(false);
