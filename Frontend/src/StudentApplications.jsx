@@ -256,6 +256,41 @@ const StudentApplications = () => {
             <p>You have {applications.length} job applications.</p>
           </div>
         </div>
+
+          <div className="sa-application-stats">
+            <div className="sa-stat-box">
+              <h4>Total Applications</h4>
+              <div className="sa-stat-value">{applications.length}</div>
+            </div>
+            
+            <div className="sa-stat-box">
+              <h4>Under Review</h4>
+              <div className="sa-stat-value">
+                {applications.filter(app => ['applied', 'viewed', 'shortlisted'].includes(app.status.toLowerCase())).length}
+              </div>
+            </div>
+            
+            <div className="sa-stat-box">
+              <h4>Interviewing</h4>
+              <div className="sa-stat-value">
+                {applications.filter(app => app.status.toLowerCase() === 'interviewing').length}
+              </div>
+            </div>
+            
+            <div className="sa-stat-box">
+              <h4>Offers</h4>
+              <div className="sa-stat-value">
+                {applications.filter(app => app.status.toLowerCase() === 'hired').length}
+              </div>
+            </div>
+            
+            <div className="sa-stat-box">
+              <h4>Rejected</h4>
+              <div className="sa-stat-value">
+                {applications.filter(app => app.status.toLowerCase() === 'rejected').length}
+              </div>
+            </div>
+          </div>
         
         <div className="sa-filter-options">
           <div className="sa-filter-label">Filter by status:</div>
@@ -354,42 +389,7 @@ const StudentApplications = () => {
           </div>
         )}
         
-        {filteredApplications.length > 0 && (
-          <div className="sa-application-stats">
-            <div className="sa-stat-box">
-              <h4>Total Applications</h4>
-              <div className="sa-stat-value">{applications.length}</div>
-            </div>
-            
-            <div className="sa-stat-box">
-              <h4>Under Review</h4>
-              <div className="sa-stat-value">
-                {applications.filter(app => ['applied', 'viewed', 'shortlisted'].includes(app.status.toLowerCase())).length}
-              </div>
-            </div>
-            
-            <div className="sa-stat-box">
-              <h4>Interviewing</h4>
-              <div className="sa-stat-value">
-                {applications.filter(app => app.status.toLowerCase() === 'interviewing').length}
-              </div>
-            </div>
-            
-            <div className="sa-stat-box">
-              <h4>Offers</h4>
-              <div className="sa-stat-value">
-                {applications.filter(app => app.status.toLowerCase() === 'hired').length}
-              </div>
-            </div>
-            
-            <div className="sa-stat-box">
-              <h4>Rejected</h4>
-              <div className="sa-stat-value">
-                {applications.filter(app => app.status.toLowerCase() === 'rejected').length}
-              </div>
-            </div>
-          </div>
-        )}
+        
       </div>
     </div>
   );
