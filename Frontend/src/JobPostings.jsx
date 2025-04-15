@@ -12,7 +12,14 @@ const JobPostings = ()=>{
     const [avatar,setAvatar] = useState("P");
     const [activeNavItem,setActiveNavItem] = useState('Job Postings');
 
-
+    const handleNavClick = (navItem) => {
+        setActiveNavItem(navItem);
+        if (navItem === 'Dashboard') navigate('/org');
+        else if (navItem === 'Job Postings') navigate('/org/jobs');
+        else if (navItem === 'Applications') navigate('/org/applications');
+        else if (navItem === 'Interviews') navigate('/org/interviews');
+        else if (navItem === 'Profile') navigate('/org/profile');
+      };
 
     useEffect(() => {
         if (!token) {
@@ -88,6 +95,10 @@ const JobPostings = ()=>{
               Interviews
             </div>
             
+            {/* <div className="org-nav-item">
+              <i className="fas fa-users"></i>
+              Candidates
+            </div> */}
             
             <div className="org-nav-item"  onClick={() => navigate("/org/profile")}>
               <i className="fas fa-building"></i>

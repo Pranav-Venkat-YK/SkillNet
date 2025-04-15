@@ -481,6 +481,8 @@ app.get("/api/student/jobs", authenticate, async (req, res) => {
   }
 });
 
+
+
 // Similarly update /api/wp/jobs endpoint
 app.get("/api/wp/jobs", authenticate, async (req, res) => {
   try {
@@ -712,6 +714,7 @@ app.get("/api/student/interviews", authenticate, async (req, res) => {
       .select(
         'interviews.interview_id',
         'interviews.scheduled_time',
+        'jobs.job_id',
         'interviews.duration_minutes',
         'interviews.interview_type',
         'interviews.location_or_link',
@@ -819,6 +822,135 @@ app.get("/api/org/jobs", authenticate, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch organization jobs' });
   }
 });
+app.get("/api/org/interviews", authenticate, async (req, res) => {
+  if (req.user.userType !== "org") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  try {
+    const interviews = await knex('interviews')
+      .join('applications', 'applications.application_id', 'interviews.application_id')
+      .join('jobs', 'applications.job_id', 'jobs.job_id')
+      .join('users', 'applications.user_id', 'users.id')
+      .leftJoin('student', 'users.id', 'student.user_id')
+      .leftJoin('workingprofessional', 'users.id', 'workingprofessional.user_id')
+      .where('jobs.id', req.user.orgId) 
+      .select(
+        'interviews.*',
+        'applications.*',
+        'jobs.title as job_title',
+        'users.name as student_name',
+        'users.email',
+        'student.phone_number',
+        'student.resume_url as student_resume',
+        'workingprofessional.resume_url as professional_resume',
+        'workingprofessional.current_position',
+        'workingprofessional.company_name as current_company',
+        'workingprofessional.years_of_experience'
+      )
+      .orderBy('applications.applied_at', 'desc');
+
+      if (!interviews) {
+        return res.status(404).json({ error: 'Interviews not found or unauthorized' });
+      }
+      res.json({ interviews });
+
+  } catch (error) {
+    console.error("Error fetching interviews:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+//Get Applications for a company
+app.get("/api/org/applications", authenticate, async (req, res) => {
+  if (req.user.userType !== "org") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  try {
+    // Get all applications for jobs posted by this organization
+    const applications = await knex('applications')
+      .join('jobs', 'applications.job_id', 'jobs.job_id')
+      .join('users', 'applications.user_id', 'users.id')
+      .leftJoin('student', 'users.id', 'student.user_id')
+      .leftJoin('workingprofessional', 'users.id', 'workingprofessional.user_id')
+      .where('jobs.id', req.user.orgId) // Filter by organization ID
+      .select(
+        'applications.*',
+        'jobs.title as job_title',
+        'users.name as student_name',
+        'users.email',
+        'student.phone_number',
+        'student.resume_url as student_resume',
+        'workingprofessional.resume_url as professional_resume',
+        'workingprofessional.current_position',
+        'workingprofessional.company_name as current_company',
+        'workingprofessional.years_of_experience'
+      )
+      .orderBy('applications.applied_at', 'desc');
+
+    // Format the response data
+    const formattedApplications = applications.map(app => ({
+      application_id: app.application_id,
+      job_id: app.job_id,
+      job_title: app.job_title,
+      student_name: app.student_name,
+      email: app.email,
+      phone: app.phone_number || 'Not provided',
+      resume_url: app.student_resume || app.professional_resume,
+      current_position: app.current_position || 'Student',
+      current_company: app.current_company || 'N/A',
+      experience: app.years_of_experience ? `${app.years_of_experience} years` : 'Student',
+      status: app.status,
+      applied_at: new Date(app.applied_at).toLocaleDateString(),
+    }));
+    if (!applications) {
+      return res.status(404).json({ error: 'Applications not found or unauthorized' });
+    }
+
+    res.json({ 
+      applications: formattedApplications,
+      total: formattedApplications.length
+    });
+  } catch (err) {
+    console.error("Error fetching organization applications:", err);
+    res.status(500).json({ error: 'Failed to fetch applications' });
+  }
+});
+
+// // In your interviews route file (e.g., routes/interviews.js)
+// app.put('/api/org/interviews/:interviewId/cancel', authenticate, async (req, res) => {
+//   try {
+//     await knex.transaction(async (trx) => {
+//       // 1. First get the application_id before deleting
+//       const interview = await trx('interviews')
+//         .where('interview_id', interviewId)
+//         .first();
+
+//       if (!interview) {
+//         throw new Error('Interview not found');
+//       }
+
+//       // 2. Delete the interview
+//       await trx('interviews')
+//         .where('interview_id', interviewId)
+//         .del();
+
+//       // 3. Update the application status back to 'applied'
+//       await trx('applications')
+//         .where('application_id', interview.application_id)
+//         .update({
+//           status: 'applied',
+//           updated_at: knex.fn.now()
+//         });
+//     });
+
+//     res.status(200).json({ message: 'Interview deleted successfully' });
+//   } catch (error) {
+//     console.error('Error deleting interview:', error);
+//     res.status(500).json({ error: 'Failed to delete interview' });
+//   }
+// });
 
 // 🔹 Get Applications for a Job
 app.get("/api/jobs/:jobId/applications", authenticate, async (req, res) => {

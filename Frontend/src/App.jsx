@@ -22,9 +22,14 @@ import JobApplicants from "./JobApplicants";
 import CandProf from "./CandProf";
 import InterSche from "./InterSche";
 import SavedJobs from "./SavedJobs";
+import SavedJobs_wp from "./SavedJobs_wp";
 import StudentInterviews from "./StudentInterview";
+import WPInterviews from "./WPInterview";
 import StudentApplications from "./StudentApplications";
+import WPApplications from "./WPApplications";
 import JobPostings from "./JobPostings";
+import OrgInterviews from "./OrgInterview";
+import OrgApplications from "./OrgApplications";
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -68,6 +73,7 @@ function App() {
         <Route path="/org/" element={<ProtectedRoute element={<OrgHome />} />} />
         <Route path="/org/profile" element={<ProtectedRoute element={<OrgProfile />} />} />
         <Route path="/org/job" element={<ProtectedRoute element={<OrgJob />} />} />
+        <Route path="/org/applications" element={<ProtectedRoute element={<OrgApplications />} />} />
         
         {/* Student routes */}
         <Route path="/std/" element={<ProtectedRoute element={<StudentHome />} />} />
@@ -77,8 +83,12 @@ function App() {
         <Route path="/org/jobs/:jobId/applicants/:applicationId" element={<CandProf />} />
         <Route path="/org/jobs/:jobId/applicants/:applicationId/schedule-interview" element={<InterSche />} /> 
         <Route path="/std/saved-jobs" element={<ProtectedRoute element={<SavedJobs />} />} />
+        <Route path="/wp/saved-jobs" element={<ProtectedRoute element={<SavedJobs_wp />} />} />
         <Route path="/std/interviews" element={<ProtectedRoute element={<StudentInterviews />} />} />
+        <Route path="/wp/interviews" element={<ProtectedRoute element={<WPInterviews />} />} />
         <Route path="/std/applications" element={<ProtectedRoute element={<StudentApplications />} />} />
+        <Route path="/wp/applications" element={<ProtectedRoute element={<WPApplications />} />} />
+        <Route path="/org/interviews" element={<ProtectedRoute element={<OrgInterviews />} />} />
          {/* <Route path="/org/applications" element={<ProtectedRoute element={<JobApplicants />} />} />
         {/* General dashboard route redirects based on user type */}
         <Route

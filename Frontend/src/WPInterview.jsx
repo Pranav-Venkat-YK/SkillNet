@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './StudentInterview.css'; // Reusing the same CSS
 
-const StudentInterviews = () => {
+const WPInterviews = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [activeNavItem, setActiveNavItem] = useState('Interviews');
@@ -16,7 +16,7 @@ const StudentInterviews = () => {
 
   const fetchStudentDetails = async (token) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/student/details", {
+      const response = await axios.get("http://localhost:5000/api/workingprofessional/details", {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data.details;
@@ -64,7 +64,7 @@ const StudentInterviews = () => {
         setAvatar(details.name[0].toUpperCase());
         setStudentName(details.name);
       }
-      console.log(interviewData);
+  
       setInterviews(interviewData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -92,11 +92,11 @@ const StudentInterviews = () => {
 
   const handleNavClick = (navItem) => {
     setActiveNavItem(navItem);
-    if (navItem === 'Dashboard') navigate('/std/');
+    if (navItem === 'Dashboard') navigate('/wp/');
     // else if (navItem === 'Job Search') navigate('/std/jobs');
-    else if (navItem === 'Applications') navigate('/std/applications');
-    else if (navItem === 'Saved Jobs') navigate('/std/saved-jobs');
-    else if (navItem === 'Profile') navigate('/std/profile');
+    else if (navItem === 'Applications') navigate('/wp/applications');
+    else if (navItem === 'Saved Jobs') navigate('/wp/saved-jobs');
+    else if (navItem === 'Profile') navigate('/wp/profile');
   };
 
   const formatInterviewTime = (time) => {
@@ -181,7 +181,7 @@ const StudentInterviews = () => {
               <div className="si-badge">2</div>
             </div>
             
-            <div className="si-avatar" onClick={() => navigate("/std/profile")}>
+            <div className="si-avatar" onClick={() => navigate("/wp/profile")}>
               {avatar}
             </div>
           </div>
@@ -289,4 +289,4 @@ const StudentInterviews = () => {
   );
 };
 
-export default StudentInterviews;
+export default WPInterviews;

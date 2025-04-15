@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './StudentApplications.css';
 
-const StudentApplications = () => {
+const WPApplications = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [activeNavItem, setActiveNavItem] = useState('Applications');
@@ -19,7 +19,7 @@ const StudentApplications = () => {
   // Fetch student details
   const fetchStudentDetails = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/student/details", {
+      const response = await axios.get("http://localhost:5000/api/workingprofessional/details", {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log(response.data.details.name);
@@ -46,7 +46,7 @@ const StudentApplications = () => {
       console.error("Error fetching applications:", error);
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
-        navigate('/');
+        navigate('/login');
       }
       throw error;
     }
@@ -55,7 +55,7 @@ const StudentApplications = () => {
   // Initial data loading
   const fetchData = async () => {
     if (!token) {
-      navigate("/");
+      navigate("/login");
       return;
     }
   
@@ -89,12 +89,12 @@ const StudentApplications = () => {
   // Handle navigation
   const handleNavClick = (navItem) => {
     setActiveNavItem(navItem);
-    if (navItem === 'Dashboard') navigate('/std/');
+    if (navItem === 'Dashboard') navigate('/wp/');
     // else if (navItem === 'Job Search') navigate('/std/');
-    else if (navItem === 'Applications') navigate('/std/applications');
-    else if (navItem === 'Interviews') navigate('/std/interviews');
-    else if (navItem === 'Profile') navigate('/std/profile');
-    else if (navItem === 'Saved Jobs') navigate('/std/saved-jobs');
+    else if (navItem === 'Applications') navigate('/wp/applications');
+    else if (navItem === 'Interviews') navigate('/wp/interviews');
+    else if (navItem === 'Profile') navigate('/wp/profile');
+    else if (navItem === 'Saved Jobs') navigate('/wp/saved-jobs');
   };
 
   // Navigate to job details
@@ -107,7 +107,7 @@ const StudentApplications = () => {
     e.stopPropagation();
     
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -244,7 +244,7 @@ const StudentApplications = () => {
           </div>
           
           <div className="sa-user-menu">
-            <div className="sa-avatar" onClick={() => navigate("/std/profile")}>
+            <div className="sa-avatar" onClick={() => navigate("/wp/profile")}>
               {avatar}
             </div>
           </div>
@@ -395,4 +395,4 @@ const StudentApplications = () => {
   );
 };
 
-export default StudentApplications;
+export default WPApplications;

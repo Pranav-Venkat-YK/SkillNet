@@ -144,7 +144,7 @@ const InterSche = () => {
           <h3 className="is-modal-title">
             {isEditMode ? 'Reschedule Interview' : 'Schedule Interview'}
           </h3>
-          <button className="is-close-btn" onClick={handleReturnToCandidateProfile}>&times;</button>
+          <button className="is-close-btn" onClick={()=>{navigate(-1)}}>&times;</button>
         </div>
        
         <div className="is-modal-body">
@@ -283,6 +283,7 @@ const InterSche = () => {
               </button>
               <button 
                 type="submit"
+                onClick={()=>{navigate(-1)}}
                 className="is-btn is-btn-primary"
                 disabled={loading}
               >

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './StudentHome.css'; // Reusing the same CSS
 
-const SavedJobs = () => {
+const SavedJobs_wp = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [activeNavItem, setActiveNavItem] = useState('Saved Jobs');
@@ -17,7 +17,7 @@ const SavedJobs = () => {
 
   const fetchStudentDetails = async (token) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/student/details", {
+      const response = await axios.get("http://localhost:5000/api/workingprofessional/details", {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data.details;
@@ -93,11 +93,11 @@ const SavedJobs = () => {
 
   const handleNavClick = (navItem) => {
     setActiveNavItem(navItem);
-    if (navItem === 'Dashboard') navigate('/std/');
+    if (navItem === 'Dashboard') navigate('/wp/');
     // else if (navItem === 'Job Search') navigate('/std/');
-    else if (navItem === 'Applications') navigate('/std/applications');
-    else if (navItem === 'Interviews') navigate('/std/interviews');
-    else if (navItem === 'Profile') navigate('/std/profile');
+    else if (navItem === 'Applications') navigate('/wp/applications');
+    else if (navItem === 'Interviews') navigate('/wp/interviews');
+    else if (navItem === 'Profile') navigate('/wp/profile');
   };
 
   const handleJobClick = (jobId) => {
@@ -108,7 +108,7 @@ const SavedJobs = () => {
     e.stopPropagation();
     
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -204,7 +204,7 @@ const SavedJobs = () => {
               <div className="sh-badge">2</div>
             </div>
             
-            <div className="sh-avatar" onClick={() => navigate("/std/profile")}>
+            <div className="sh-avatar" onClick={() => navigate("/wp/profile")}>
               {avatar}
             </div>
           </div>
@@ -314,4 +314,4 @@ const SavedJobs = () => {
   );
 };
 
-export default SavedJobs;
+export default SavedJobs_wp;

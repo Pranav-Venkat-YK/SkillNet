@@ -15,6 +15,14 @@ const OrgHome = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeNavItem,setActiveNavItem] = useState('Dashboard');
 
+  const handleNavClick = (navItem) => {
+    setActiveNavItem(navItem);
+    if (navItem === 'Dashboard') navigate('/org');
+    else if (navItem === 'Job Postings') navigate('/org/jobs');
+    else if (navItem === 'Applications') navigate('/org/applications');
+    else if (navItem === 'Interviews') navigate('/org/interviews');
+    else if (navItem === 'Profile') navigate('/org/profile');
+  };
 
   useEffect(() => {
     if (!token) {
@@ -90,7 +98,7 @@ const OrgHome = () => {
       <div className="org-sidebar">
         <div className="org-logo">SkillNet</div>
         
-        <div className="org-nav-item org-active">
+        {/* <div className="org-nav-item org-active">
           <i className="fas fa-th-large"></i>
           Dashboard
         </div>
@@ -110,14 +118,18 @@ const OrgHome = () => {
           Interviews
         </div>
         
-       
+        <div className="org-nav-item">
+          <i className="fas fa-users"></i>
+          Candidates
+        </div>
+        
         <div className="org-nav-item"  onClick={() => navigate("/org/profile")}>
           <i className="fas fa-building"></i>
           Company Profile
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
 
-      {/* {['Dashboard', 'Job Postings', 'Applications', 'Interviews','Company Profile'].map(item => (
+      {['Dashboard', 'Job Postings', 'Applications', 'Interviews','Company Profile'].map(item => (
           <div 
             key={item}
             className={`org-nav-item ${activeNavItem === item ? 'org-active' : ''}`}
@@ -134,7 +146,7 @@ const OrgHome = () => {
           </div>
         ))}
       </div>
-     */}
+    
       <div className="org-main-content">
         <div className="org-header">
           <div className="org-search-bar">

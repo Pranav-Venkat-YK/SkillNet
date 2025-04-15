@@ -238,7 +238,7 @@ const WpProfile = () => {
           <p><strong>Post Degree University:</strong> {formData1.postdegree_university}</p>
 
           <button className="std-edit-btn" onClick={() => setEditMode(true)}>Edit</button>
-          <button className="std-goback-btn" onClick={() => navigate("/wp/")}>Go Back</button>
+          <button className="std-goback-btn" onClick={() => navigate(-1)}>Go Back</button>
 
         </div></>
       ) : (
