@@ -41,9 +41,7 @@ const AboutUs = () => {
           <div className="about-logo">SkillNet</div>
           <nav className="about-nav">
             <a href="/">Home</a>
-            <a href="/about" className="active">About Us</a>
-            <a href="/work">Work</a>
-            <a href="/info">Info</a>
+            <a href="/aboutus" className="active">About Us</a>
           </nav>
         </header>
 
