@@ -298,7 +298,7 @@ const OrgHome = () => {
                 </div> */}
                 
                 <div className="org-stat">
-                  <h4>{applications.length}</h4>
+                  <h4>{job.applications_count}</h4>
                   <p>Applications</p>
                 </div>
               </div>
