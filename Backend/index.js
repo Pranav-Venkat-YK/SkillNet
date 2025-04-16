@@ -328,6 +328,27 @@ app.put("/api/student/details", authenticate, async (req, res) => {
   }
 });
 
+app.put("/api/workingprofessional/details", authenticate, async (req, res) => {
+  try {
+    const userId = req.user.userId; // Extract user ID from the token
+    const updatedData = req.body; // Get updated fields from request body
+
+    const workingprofessional = await knex("workingprofessional").where({ user_id: userId }).first();
+    if (!workingprofessional) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    await knex("workingprofessional").where({ user_id: userId }).update(updatedData);
+
+    const updatedStudent = await knex("workingprofessional").where({ user_id: userId }).first(); // Fetch updated record
+
+    res.status(200).json({ message: "Details updated successfully", details: updatedStudent });
+  } catch (error) {
+    console.error("Error updating workingprofessional details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 app.put("/api/student/education", authenticate, async (req, res) => {
   try {
@@ -928,7 +949,7 @@ app.get("/api/org/applications", authenticate, async (req, res) => {
         'users.name as student_name',
         'users.email',
         'student.phone_number',
-        'student.resume_url as student_resume',
+        'applications.resume_url as student_resume',
         'workingprofessional.resume_url as professional_resume',
         'workingprofessional.current_position',
         'workingprofessional.company_name as current_company',

@@ -44,6 +44,7 @@ const OrgApplications = () => {
         const response = await axios.get("http://localhost:5000/api/org/applications", {
           headers: { Authorization: `Bearer ${token}` }
         });
+        console.log(response.data.applications);
         setApplications(response.data.applications);
       } catch (error) {
         console.error("Error fetching applications:", error);
@@ -282,12 +283,20 @@ const OrgApplications = () => {
                   </div>
                   
                   <div className="org-application-actions">
-                    <button 
-                      className="org-view-resume-btn"
-                      onClick={() => window.open(application.resume_url, '_blank')}
-                    >
-                      <i className="fas fa-file-pdf"></i> View Resume
-                    </button>
+                  <button 
+  className="org-view-resume-btn"
+  onClick={() => {
+    const link = document.createElement('a');
+    link.href = `http://localhost:5000${application.resume_url}`;
+    link.download = application.resume_url; // This triggers the download
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }}
+>
+  <i className="fas fa-file-pdf"></i> View Resume
+</button>
                     
                    
                       {/* <button 
