@@ -292,11 +292,11 @@ const WpHome = () => {
           </div>
           
           <div className="sh-user-menu">
-            <div className="sh-icon" onClick={() => setShowNotifications(!showNotifications)}>
+            {/* <div className="sh-icon" onClick={() => setShowNotifications(!showNotifications)}>
               <i className="far fa-bell"></i>
               <div className="sh-badge">2</div>
             </div>
-            
+             */}
             <div className="sh-avatar" onClick={() => navigate("/wp/profile")}>
               {avatar}
             </div>

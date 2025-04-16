@@ -334,6 +334,18 @@
     gap: 10px;
 }
 
+.join-button{
+    background-color: #6046ea;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
 .si-interview-button {
     background-color: #6046ea;
     color: white;

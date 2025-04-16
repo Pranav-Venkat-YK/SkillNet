@@ -176,10 +176,10 @@ const StudentInterviews = () => {
           </div>
           
           <div className="si-user-menu">
-            <div className="si-icon">
+            {/* <div className="si-icon">
               <i className="far fa-bell"></i>
               <div className="si-badge">2</div>
-            </div>
+            </div> */}
             
             <div className="si-avatar" onClick={() => navigate("/std/profile")}>
               {avatar}
@@ -262,7 +262,7 @@ const StudentInterviews = () => {
                      interview.interview_type === 'phone' ? 'Phone Call' : 'In-Person'}
                   </div>
                   <div className="si-interview-actions">
-                    {interview.interview_type === 'video' && interview.location_or_link && (
+                    {/* {interview.interview_type === 'video' && interview.location_or_link && (
                       <a 
                         href={interview.location_or_link} 
                         target="_blank" 
@@ -271,7 +271,14 @@ const StudentInterviews = () => {
                       >
                         <i className="fas fa-video"></i> Join Meeting
                       </a>
-                    )}
+                    )} */}
+                    <button 
+            onClick={() => navigate(`/interview/SkillNet-${interview.interview_id}`)}
+            className="join-button"
+          >
+            Join Meeting
+          </button>
+
                     <button 
                       className="si-interview-button"
                       onClick={() => navigate(`/std/jobs/${interview.job_id}`)}

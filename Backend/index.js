@@ -5,6 +5,8 @@ const knex = require("./db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const path = require('path');
+
 
 const app = express();
 app.use(cors());
@@ -1495,6 +1497,27 @@ app.delete("/api/student/applications/:applicationId", authenticate, async (req,
     });
   }
 });
+
+// app.get('/api/student/interviews', authenticate, async (req, res) => {
+//   try {
+//     const interviews = await knex('interviews')
+//       .where('application_id', req.user.id) // Assuming student ID is in token
+//       .join('jobs', 'interviews.job_id', 'jobs.job_id')
+//       .join('organisations', 'jobs.org_id', 'organisations.id')
+//       .select(
+//         'interviews.*',
+//         'jobs.title as job_title',
+//         'organisations.name as company_name'
+//       );
+      
+//     res.json({ interviews });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Failed to fetch interviews' });
+//   }
+// });
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

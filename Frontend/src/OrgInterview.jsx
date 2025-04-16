@@ -183,10 +183,10 @@ const OrgInterviews = () => {
             </div>
             
             <div className="org-user-menu">
-              <div className="org-icon">
+              {/* <div className="org-icon">
                 <i className="far fa-bell"></i>
                 <div className="org-badge">3</div>
-              </div>
+              </div> */}
 
               <div className="org-avatar" onClick={() => navigate("/org/profile")}>
                 {avatar}
@@ -281,12 +281,21 @@ const OrgInterviews = () => {
                   </div>
                   
                   <div className="org-application-actions">
-                    <button 
-                      className="org-view-resume-btn"
-                      onClick={() => window.open(interview.student_resume || interview.professional_resume, '_blank')}
-                    >
-                      <i className="fas fa-file-pdf"></i> View Resume
-                    </button>
+                  <button 
+  className="org-view-resume-btn"
+  onClick={() => {
+    const link = document.createElement('a');
+    link.href = `http://localhost:5000${interview.resume_url}`;
+    link.download = interview.resume_url; // This triggers the download
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }}
+>
+  <i className="fas fa-file-pdf"></i> View Resume
+</button>
+
                     
                     <div className="org-status-actions">
                       {interview.status !== 'completed' && (
@@ -299,9 +308,9 @@ const OrgInterviews = () => {
                           </button> */}
                           <button 
                             className="org-status-btn reschedule-btn"
-                            onClick={() => navigate(`/org/jobs/${interview.job_id}/applicants/${interview.application_id}/schedule-interview`)}
+                            onClick={() => navigate(`/interview/SkillNet-${interview.interview_id}`)}
                           >
-                            Reschedule
+                           Start Interview
                           </button>
                           {/* <button 
                             className="org-status-btn cancel-btn"

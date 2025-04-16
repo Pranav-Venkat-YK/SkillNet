@@ -135,10 +135,10 @@ const JobPostings = ()=>{
               </div>
               
               <div className="org-user-menu">
-                <div className="org-icon">
+                {/* <div className="org-icon">
                   <i className="far fa-bell"></i>
                   <div className="org-badge">3</div>
-                </div>
+                </div> */}
     
                 <div className="org-avatar" onClick={() => navigate("/org/profile")}>
                     {avatar}

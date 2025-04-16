@@ -187,8 +187,7 @@ const StudentHome = () => {
 
   const handleNavClick = (navItem) => {
     setActiveNavItem(navItem);
-    if (navItem === 'Job Search') navigate('/std/jobs');
-    else if (navItem === 'Applications') navigate('/std/applications');
+    if (navItem === 'Applications') navigate('/std/applications');
     else if (navItem === 'Interviews') navigate('/std/interviews');
     else if (navItem === 'Profile') navigate('/std/profile');
     else if (navItem === 'Saved Jobs') navigate('/std/saved-jobs');
@@ -261,7 +260,9 @@ const StudentHome = () => {
       <div className="sh-sidebar">
         <div className="sh-logo">SkillNet</div>
         
-        {['Dashboard', 'Job Search', 'Saved Jobs', 'Applications', 'Interviews', 'Profile'].map(item => (
+        {['Dashboard'
+        // , 'Job Search'
+        , 'Saved Jobs', 'Applications', 'Interviews', 'Profile'].map(item => (
           <div 
             key={item}
             className={`sh-nav-item ${activeNavItem === item ? 'active' : ''}`}
@@ -291,10 +292,10 @@ const StudentHome = () => {
           </div>
           
           <div className="sh-user-menu">
-            <div className="sh-icon" onClick={() => setShowNotifications(!showNotifications)}>
+            {/* <div className="sh-icon" onClick={() => setShowNotifications(!showNotifications)}>
               <i className="far fa-bell"></i>
               <div className="sh-badge">2</div>
-            </div>
+            </div> */}
             
             <div className="sh-avatar" onClick={() => navigate("/std/profile")}>
               {avatar}

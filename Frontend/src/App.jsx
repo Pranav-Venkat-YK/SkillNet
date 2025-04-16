@@ -31,6 +31,8 @@ import JobPostings from "./JobPostings";
 import OrgInterviews from "./OrgInterview";
 import OrgApplications from "./OrgApplications";
 import AboutUs from "./AboutUs"; 
+import VideoCall from "./VideoCall";
+
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -60,6 +62,7 @@ function App() {
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/user-auth" element={<AuthRoute element={<UserAuth />} />} />
         <Route path="/org-auth" element={<AuthRoute element={<OrgAuth />} />} />
+        <Route path="/interview/:roomId" element={<ProtectedRoute element={<VideoCall />} />} />
         
         <Route path="/StdPersonal" element={<ProtectedRoute element={<StdPersonal />} />} />
         <Route path="/StdAccount" element={<ProtectedRoute element={<StdAccount />} />} />
