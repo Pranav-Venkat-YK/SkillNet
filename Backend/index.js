@@ -702,35 +702,80 @@ app.post("/api/student/jobs/:jobId/bookmark", authenticate, async (req, res) => 
   }
 });
 
+// app.get("/api/student/interviews", authenticate, async (req, res) => {
+//   try {
+//     const userId = req.user.userId;
+//     console.log(userId);
+
+//     const interviews = await knex('interviews')
+//       .join('applications', 'interviews.application_id', 'applications.application_id')
+//       .join('jobs', 'applications.job_id', 'jobs.job_id')
+//       .join('organisations', 'jobs.job_id', 'organisations.id')
+//       .where('applications.user_id', userId)
+//       .select(
+//         'interviews.interview_id',
+//         'interviews.scheduled_time',
+//         'jobs.job_id',
+//         'interviews.duration_minutes',
+//         'interviews.interview_type',
+//         'interviews.location_or_link',
+//         'interviews.interviewer_name',
+//         'interviews.interviewer_position',
+//         'interviews.status',
+//         'interviews.feedback',
+//         'jobs.title as job_title',
+//         'organisations.name as organisation_name'
+//       )
+//       .orderBy('interviews.scheduled_time', 'asc');
+
+//     res.json({ interviews });
+//   } catch (error) {
+//     console.error('Error fetching interviews:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+
 app.get("/api/student/interviews", authenticate, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    console.log(req.user);
+    const studentId = req.user.userId;
 
     const interviews = await knex('interviews')
-      .join('applications', 'interviews.application_id', 'applications.application_id')
+      .join('applications','interviews.application_id','applications.application_id')
       .join('jobs', 'applications.job_id', 'jobs.job_id')
-      .join('organisations', 'jobs.job_id', 'organisations.id')
-      .where('applications.user_id', userId)
+      .join('organisations', 'jobs.id', 'organisations.id')
+      .where('applications.user_id', studentId)
       .select(
-        'interviews.interview_id',
-        'interviews.scheduled_time',
-        'jobs.job_id',
-        'interviews.duration_minutes',
-        'interviews.interview_type',
-        'interviews.location_or_link',
-        'interviews.interviewer_name',
-        'interviews.interviewer_position',
-        'interviews.status',
-        'interviews.feedback',
+        'interviews.*',
+        'applications.application_id',
+        'applications.job_id',
+        'applications.resume_url',
+        'applications.status',
+        'applications.applied_at',
+        'applications.updated_at',
         'jobs.title as job_title',
-        'organisations.name as organisation_name'
+        'jobs.location',
+        'jobs.is_remote',
+        'jobs.employment_type',
+        'jobs.salary_min',
+        'jobs.salary_max',
+        'jobs.salary_currency',
+        'organisations.name'
+        // knex.raw('COALESCE(companies.name, organisations.name) as company_name')
       )
-      .orderBy('interviews.scheduled_time', 'asc');
+      .orderBy('applications.updated_at', 'desc');
 
-    res.json({ interviews });
+    res.json({ 
+      success: true, 
+      interviews 
+    });
+
   } catch (error) {
-    console.error('Error fetching interviews:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error fetching applications:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch applications"
+    });
   }
 });
 // 🔹 Submit Application

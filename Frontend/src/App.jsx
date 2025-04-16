@@ -30,6 +30,7 @@ import WPApplications from "./WPApplications";
 import JobPostings from "./JobPostings";
 import OrgInterviews from "./OrgInterview";
 import OrgApplications from "./OrgApplications";
+import AboutUs from "./AboutUs"; 
 
 const AuthRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -55,6 +56,7 @@ function App() {
       <Toaster />
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/aboutus" element ={<AboutUs/>}/>
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/user-auth" element={<AuthRoute element={<UserAuth />} />} />
         <Route path="/org-auth" element={<AuthRoute element={<OrgAuth />} />} />

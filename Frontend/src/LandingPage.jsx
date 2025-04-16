@@ -24,7 +24,7 @@ const LandingPage = () => {
         <nav className={menuOpen ? "active" : ""}>
           <ul>
             <li><a href="#">Home</a></li>
-            <li><a href="#">About Us</a></li>
+            <li><a href="/aboutus">About Us</a></li>
             <li><a href="#">Work</a></li>
             <li><a href="#">Info</a></li>
           </ul>

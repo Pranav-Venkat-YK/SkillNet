@@ -34,6 +34,8 @@ const WPInterviews = () => {
           'Content-Type': 'application/json'
         }
       });
+      console.log("hi");
+      console.log(response.data.interviews);
       return response.data.interviews;
     } catch (error) {
       console.error("Error fetching interviews:", error);

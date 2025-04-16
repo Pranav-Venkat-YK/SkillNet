@@ -8,6 +8,7 @@ const StudentHome = () => {
   const token = localStorage.getItem("token");
   const [activeNavItem, setActiveNavItem] = useState('Dashboard');
   const [activeJobTab, setActiveJobTab] = useState('All Jobs');
+  const [applications, setApplications] = useState([]);
   const [avatar, setAvatar] = useState("P");
   const [searchQuery, setSearchQuery] = useState('');
   const [jobListings, setJobListings] = useState([]);
@@ -40,7 +41,43 @@ const StudentHome = () => {
       }
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
-        navigate('/login');
+        navigate('/');
+      }
+      throw error;
+    }
+  };
+  const fetchApplications = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/student/applications", {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return response.data.applications;
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate('/');
+      }
+      throw error;
+    }
+  };
+  const fetchInterviews = async (token) => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/student/interviews", {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return response.data.interviews;
+    } catch (error) {
+      console.error("Error fetching interviews:", error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate('/');
       }
       throw error;
     }
@@ -68,10 +105,9 @@ const StudentHome = () => {
       throw error;
     }
   };
-
   const fetchData = async () => {
     if (!token) {
-      navigate("/login");
+      navigate("/");
       return;
     }
   
@@ -79,26 +115,40 @@ const StudentHome = () => {
       setLoading(true);
       setError(null);
       
-      const [details, jobs] = await Promise.all([
+      const [details, jobs, applications,interviews] = await Promise.all([
         fetchStudentDetails(token),
-        fetchAllJobs(token)
-        // Removed fetchOrganisationDetails since we get org details with jobs
+        fetchAllJobs(token),
+        fetchApplications(token),
+        fetchInterviews(token)
       ]);
   
       if (details) {
         setAvatar(details.name[0].toUpperCase());
         setStudentName(details.name);
       }
-  
-      setJobListings(jobs);
       
-      const applicationsCount = jobs.filter(job => job.has_applied).length;
+      // Create a Set of applied job IDs for quick lookup
+      const appliedJobIds = new Set(applications.map(app => app.job_id));
+      
+      // Mark jobs as applied if they're in the applications
+      const jobsWithAppliedStatus = jobs.map(job => ({
+        ...job,
+        has_applied: appliedJobIds.has(job.job_id)
+      }));
+      
+      setApplications(applications);
+      setJobListings(jobsWithAppliedStatus);
+      setInterviews(interviews);
+      
+      const applicationsCount = applications.length;
+      const interviewCount = interviews.length;
+      console.log(interviewCount);
       const savedJobsCount = jobs.filter(job => job.is_bookmarked).length;
       
       setStats({
         applications: applicationsCount,
         savedJobs: savedJobsCount,
-        interviews: 0,
+        interviews: interviewCount,
         offers: 0
       });
   
@@ -263,8 +313,9 @@ const StudentHome = () => {
           {[
             { name: 'Applications', icon: 'paper-plane', value: stats.applications, className: 'applied' },
             { name: 'Saved Jobs', icon: 'bookmark', value: stats.savedJobs, className: 'saved' },
-            { name: 'Interviews', icon: 'calendar-check', value: stats.interviews, className: 'interviews' },
-            { name: 'Job Offers', icon: 'file-signature', value: stats.offers, className: 'offers' }
+            { name: 'Interviews', icon: 'calendar-check', value: stats.interviews, className: 'interviews' }
+            // ,
+            // { name: 'Job Offers', icon: 'file-signature', value: stats.offers, className: 'offers' }
           ].map(stat => (
             <div className="sh-stat-card" key={stat.name}>
               <div className={`sh-icon sh-${stat.className}`}>
@@ -358,15 +409,15 @@ const StudentHome = () => {
                 </div>
                 
                 <button 
-                  className={`sh-apply-button ${job.has_applied ? 'applied' : ''}`} 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleJobClick(job.job_id);
-                  }}
-                  disabled={job.has_applied}
-                >
-                  {job.has_applied ? 'Applied' : 'Apply Now'}
-                </button>
+  className={`sh-apply-button ${job.has_applied ? 'applied' : ''}`} 
+  onClick={(e) => {
+    e.stopPropagation();
+    handleJobClick(job.job_id);
+  }}
+  disabled={job.has_applied}
+>
+  {job.has_applied ? 'Applied' : 'Apply Now'}
+</button>
               </div>
             </div>
           ))
