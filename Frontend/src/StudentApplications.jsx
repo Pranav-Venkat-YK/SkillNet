@@ -12,9 +12,8 @@ const StudentApplications = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [avatar, setAvatar] = useState("P");
-  const [filterStatus, setFilterStatus] = useState('All');
+  const [activeFilter, setActiveFilter] = useState(''); // Set default to lowercase 'applied'
   const [studentName, setStudentName] = useState('');
-  const [withdrawLoading, setWithdrawLoading] = useState({});
 
   // Fetch student details
   const fetchStudentDetails = async () => {
@@ -41,12 +40,13 @@ const StudentApplications = () => {
           'Content-Type': 'application/json'
         }
       });
+      console.log(response.data.applications);
       return response.data.applications;
     } catch (error) {
       console.error("Error fetching applications:", error);
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
-        navigate('/login');
+        navigate('/');
       }
       throw error;
     }
@@ -55,7 +55,7 @@ const StudentApplications = () => {
   // Initial data loading
   const fetchData = async () => {
     if (!token) {
-      navigate("/login");
+      navigate("/");
       return;
     }
   
@@ -67,13 +67,9 @@ const StudentApplications = () => {
         fetchStudentDetails(),
         fetchApplications()
       ]);
-  
-      // if (details) {
-      //   setAvatar(response.data.name[0].toUpperCase());
-      //   setStudentName(response.data.name);
-      // }
 
       setApplications(applicationData);
+      console.log(applicationData);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Failed to load applications. Please try again.");
@@ -90,7 +86,6 @@ const StudentApplications = () => {
   const handleNavClick = (navItem) => {
     setActiveNavItem(navItem);
     if (navItem === 'Dashboard') navigate('/std/');
-    // else if (navItem === 'Job Search') navigate('/std/');
     else if (navItem === 'Applications') navigate('/std/applications');
     else if (navItem === 'Interviews') navigate('/std/interviews');
     else if (navItem === 'Profile') navigate('/std/profile');
@@ -102,76 +97,15 @@ const StudentApplications = () => {
     navigate(`/std/jobs/${jobId}`);
   };
 
-  // Withdraw an application
-  const handleWithdrawApplication = async (applicationId, e) => {
-    e.stopPropagation();
-    
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    if (!window.confirm("Are you sure you want to withdraw this application?")) {
-      return;
-    }
-
-    try {
-      setWithdrawLoading(prev => ({ ...prev, [applicationId]: true }));
-      
-      await axios.delete(
-        `http://localhost:5000/api/student/applications/${applicationId}`,
-        { 
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          } 
-        }
-      );
-      
-      // Update the applications state
-      setApplications(prevApplications => 
-        prevApplications.filter(app => app.application_id !== applicationId)
-      );
-
-    } catch (error) {
-      console.error("Error withdrawing application:", error);
-      if (error.response?.status === 401) {
-        localStorage.removeItem("token");
-        navigate('/login');
-      } else {
-        setError("Failed to withdraw application. Please try again.");
-      }
-    } finally {
-      setWithdrawLoading(prev => ({ ...prev, [applicationId]: false }));
-    }
-  };
-
   // Get CSS class for status badge
-  const getStatusClass = (status) => {
-    switch (status.toLowerCase()) {
-      case 'applied':
-        return 'status-applied';
-      case 'viewed':
-        return 'status-viewed';
-      case 'shortlisted':
-        return 'status-shortlisted';
-      case 'interviewing':
-        return 'status-interviewing';
-      case 'hired':
-        return 'status-hired';
-      case 'rejected':
-        return 'status-rejected';
-      default:
-        return 'status-applied';
-    }
-  };
 
-  // Filter applications based on search and status
+
+  // Filter applications based on active filter and search
   const filteredApplications = applications.filter(app => {
-    // Filter by status
-    if (filterStatus !== 'All' && app.status.toLowerCase() !== filterStatus.toLowerCase()) {
-      return false;
-    }
+    // Only filter by status now (removed All Applications, Recent, Remote filters)
+    // if (activeFilter !== app.status.toLowerCase()) {
+    //   return false;
+    // }
     
     // Filter by search query
     if (searchQuery.trim() !== '') {
@@ -212,9 +146,7 @@ const StudentApplications = () => {
       <div className="sa-sidebar">
         <div className="sa-logo">SkillNet</div>
         
-        {['Dashboard', 
-        // 'Job Search', 
-        'Saved Jobs', 'Applications', 'Interviews', 'Profile'].map(item => (
+        {['Dashboard', 'Saved Jobs', 'Applications', 'Interviews', 'Profile'].map(item => (
           <div 
             key={item}
             className={`sa-nav-item ${activeNavItem === item ? 'active' : ''}`}
@@ -222,7 +154,6 @@ const StudentApplications = () => {
           >
             <i className={`fas fa-${
               item === 'Dashboard' ? 'th-large' :
-              // item === 'Job Search' ? 'briefcase' :
               item === 'Saved Jobs' ? 'bookmark' :
               item === 'Applications' ? 'file-alt' :
               item === 'Interviews' ? 'calendar-alt' : 'user'
@@ -257,21 +188,12 @@ const StudentApplications = () => {
           </div>
         </div>
         
-        <div className="sa-filter-options">
-          <div className="sa-filter-label">Filter by status:</div>
-          <div className="sa-status-filters">
-            {['All', 'Applied', 'Viewed', 'Shortlisted', 'Interviewing', 'Hired', 'Rejected'].map(status => (
-              <div 
-                key={status}
-                className={`sa-status-filter ${filterStatus === status ? 'active' : ''}`}
-                onClick={() => setFilterStatus(status)}
-              >
-                {status}
-              </div>
-            ))}
-          </div>
+        <div className="sa-section-header">
+          <h2>My Applications</h2>
         </div>
         
+        
+        {console.log(filteredApplications)}
         {loading ? (
           <div className="sa-loading">Loading applications...</div>
         ) : filteredApplications.length === 0 ? (
@@ -279,18 +201,7 @@ const StudentApplications = () => {
             <div className="sa-empty-state">
               <i className="fas fa-file-alt sa-empty-icon"></i>
               <h3>No applications found</h3>
-              {filterStatus !== 'All' ? (
-                <p>No applications with "{filterStatus}" status. Try a different filter.</p>
-              ) : searchQuery ? (
-                <p>No applications match your search query. Try a different search.</p>
-              ) : (
-                <div>
-                  <p>You haven't applied to any jobs yet.</p>
-                  <button className="sa-browse-jobs-btn" onClick={() => navigate('/std/jobs')}>
-                    Browse Jobs
-                  </button>
-                </div>
-              )}
+              <p>No applications with "{activeFilter}" status. Try a different filter.</p>
             </div>
           </div>
         ) : (
@@ -302,9 +213,6 @@ const StudentApplications = () => {
                 onClick={() => handleJobClick(app.job_id)}
                 style={{ cursor: 'pointer' }}
               >
-                <div className="sa-company-logo">
-                  {app.company_name}
-                </div>
                 
                 <div className="sa-application-details">
                   <h3>{app.job_title}</h3>
@@ -331,63 +239,12 @@ const StudentApplications = () => {
                 </div>
                 
                 <div className="sa-application-status">
-                  <div className={`sa-status-badge ${getStatusClass(app.status)}`}>
+                  {/* <div className={`sa-status-badge ${getStatusClass(app.status)}`}>
                     {app.status}
-                  </div>
-                  
-                  {['applied', 'viewed', 'shortlisted'].includes(app.status.toLowerCase()) && (
-                    <button 
-                      className="sa-withdraw-button"
-                      onClick={(e) => handleWithdrawApplication(app.application_id, e)}
-                      disabled={withdrawLoading[app.application_id]}
-                    >
-                      {withdrawLoading[app.application_id] ? (
-                        <i className="fas fa-spinner fa-spin"></i>
-                      ) : (
-                        'Withdraw'
-                      )}
-                    </button>
-                  )}
+                  </div> */}
                 </div>
               </div>
             ))}
-          </div>
-        )}
-        
-        {filteredApplications.length > 0 && (
-          <div className="sa-application-stats">
-            <div className="sa-stat-box">
-              <h4>Total Applications</h4>
-              <div className="sa-stat-value">{applications.length}</div>
-            </div>
-            
-            <div className="sa-stat-box">
-              <h4>Under Review</h4>
-              <div className="sa-stat-value">
-                {applications.filter(app => ['applied', 'viewed', 'shortlisted'].includes(app.status.toLowerCase())).length}
-              </div>
-            </div>
-            
-            <div className="sa-stat-box">
-              <h4>Interviewing</h4>
-              <div className="sa-stat-value">
-                {applications.filter(app => app.status.toLowerCase() === 'interviewing').length}
-              </div>
-            </div>
-            
-            <div className="sa-stat-box">
-              <h4>Offers</h4>
-              <div className="sa-stat-value">
-                {applications.filter(app => app.status.toLowerCase() === 'hired').length}
-              </div>
-            </div>
-            
-            <div className="sa-stat-box">
-              <h4>Rejected</h4>
-              <div className="sa-stat-value">
-                {applications.filter(app => app.status.toLowerCase() === 'rejected').length}
-              </div>
-            </div>
           </div>
         )}
       </div>

@@ -228,7 +228,7 @@ const StdProfile = () => {
           <p><strong>Post Degree University:</strong> {formData1.postdegree_university}</p>
 
           <button className="std-edit-btn" onClick={() => setEditMode(true)}>Edit</button>
-          <button className="std-goback-btn" onClick={() => navigate("/std")}>Go Back</button>
+          <button className="std-goback-btn" onClick={() =>{ navigate(-1)}}>Go Back</button>
         </div></>
       ) : (
         <form onSubmit={handleSubmit} className="std-details-form">

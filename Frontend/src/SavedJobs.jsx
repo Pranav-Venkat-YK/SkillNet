@@ -40,7 +40,7 @@ const SavedJobs = () => {
       console.error("Error fetching saved jobs:", error);
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
-        navigate('/login');
+        navigate('/');
       }
       throw error;
     }
@@ -48,7 +48,7 @@ const SavedJobs = () => {
 
   const fetchData = async () => {
     if (!token) {
-      navigate("/login");
+      navigate("/");
       return;
     }
   
@@ -133,7 +133,7 @@ const SavedJobs = () => {
       console.error("Error toggling bookmark:", error);
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
-        navigate('/login');
+        navigate('/');
       } else {
         setError("Failed to remove bookmark. Please try again.");
       }
@@ -199,10 +199,10 @@ const SavedJobs = () => {
           </div>
           
           <div className="sh-user-menu">
-            <div className="sh-icon">
+            {/* <div className="sh-icon">
               <i className="far fa-bell"></i>
               <div className="sh-badge">2</div>
-            </div>
+            </div> */}
             
             <div className="sh-avatar" onClick={() => navigate("/std/profile")}>
               {avatar}

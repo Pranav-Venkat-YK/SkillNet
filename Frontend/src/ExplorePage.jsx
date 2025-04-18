@@ -18,9 +18,7 @@ function ExplorePage() {
         <nav>
           <ul className={`menu ${isMenuActive ? 'active' : ''}`}>
             <li><a href="/">Home</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Work</a></li>
-            <li><a href="#">Info</a></li>
+            <li><a href="/aboutus">About Us</a></li>
           </ul>
         </nav>
       </div>

@@ -9,17 +9,53 @@ const OrgHome = () => {
   const token = localStorage.getItem("token");
   const [jobs, setJobs] = useState([]);
   const [avatar,setAvatar] = useState("P");
-  const [activeJobTab,setActiveJobTab]=useState("All Jobs")
+  const [activeJobTab,setActiveJobTab]=useState("All Jobs");
   const [name,setName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [applications, setApplications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [interviews, setInterviews] = useState([]);
+  const [activeNavItem,setActiveNavItem] = useState('Dashboard');
+
+  const handleNavClick = (navItem) => {
+    setActiveNavItem(navItem);
+    if (navItem === 'Dashboard') navigate('/org');
+    else if (navItem === 'Job Postings') navigate('/org/jobs');
+    else if (navItem === 'Applications') navigate('/org/applications');
+    else if (navItem === 'Interviews') navigate('/org/interviews');
+    else if (navItem === 'Profile') navigate('/org/profile');
+  };
 
   useEffect(() => {
     if (!token) {
       navigate("/");
       return;
     }
-
+    const fetchInterviews = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/org/interviews", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        console.log(response.data.interviews);
+        setInterviews(response.data.interviews || []);
+        setLoading(false); 
+      } catch (error) {
+        console.log("bye");
+        console.error("Error fetching interviews:", error);
+      } 
+    };
+    const fetchApplications = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/org/applications", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setApplications(response.data.applications);
+      } catch (error) {
+        console.error("Error fetching applications:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
     const fetchJobs = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/org/jobs", {
@@ -34,6 +70,8 @@ const OrgHome = () => {
     };
 
     fetchJobs();
+    fetchApplications();
+    fetchInterviews();
   }, [token, navigate]);
 
   const filterJobs = jobs.filter(job=>{
@@ -54,16 +92,13 @@ const OrgHome = () => {
     return true;
   })
 
-
-  // const token1 = localStorage.getItem("token");
-
   useEffect(() => {
     if (!token) {
       navigate("/");
       return;
     }
 
-    const fetchStudentDetails = async () => {
+    const fetchOrgDetails = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/org/details", {
           headers: { Authorization: `Bearer ${token}` },
@@ -79,7 +114,7 @@ const OrgHome = () => {
         console.error("Error fetching student details:", error);
       }
     };
-    fetchStudentDetails();
+    fetchOrgDetails();
   });
 
   return (
@@ -88,22 +123,22 @@ const OrgHome = () => {
       <div className="org-sidebar">
         <div className="org-logo">SkillNet</div>
         
-        <div className="org-nav-item org-active">
+        {/* <div className="org-nav-item org-active">
           <i className="fas fa-th-large"></i>
           Dashboard
         </div>
         
-        <div className="org-nav-item">
+        <div className="org-nav-item" onClick={()=>navigate("/org/jobs")}>
           <i className="fas fa-briefcase"></i>
           Job Postings
         </div>
         
-        <div className="org-nav-item">
+        <div className="org-nav-item" onClick={()=>navigate("/org/applications")}>
           <i className="fas fa-file-alt"></i>
           Applications
         </div>
         
-        <div className="org-nav-item">
+        <div className="org-nav-item" onClick={()=>navigate("/org/interviews")}>
           <i className="fas fa-calendar-alt"></i>
           Interviews
         </div>
@@ -116,9 +151,27 @@ const OrgHome = () => {
         <div className="org-nav-item"  onClick={() => navigate("/org/profile")}>
           <i className="fas fa-building"></i>
           Company Profile
-        </div>
-      </div>
-      
+        </div> */}
+      {/* </div> */}
+
+      {['Dashboard', 'Job Postings', 'Applications', 'Interviews','Company Profile'].map(item => (
+          <div 
+            key={item}
+            className={`org-nav-item ${activeNavItem === item ? 'org-active' : ''}`}
+            onClick={() => handleNavClick(item)}
+            >
+            <i className={`fas fa-${
+              item === 'Dashboard' ? 'th-large' :
+              item === 'Job Postings' ? 'briefcase' :
+              item === 'Applications' ? 'file-alt' :
+              item === 'Interviews' ? 'calendar-alt' :'building'
+              // item === 'Candidates' ? 'users' : 'building'
+            }`}></i>
+            {item}
+          </div>
+        ))}
+      </div>
+    
       <div className="org-main-content">
         <div className="org-header">
           <div className="org-search-bar">
@@ -130,10 +183,10 @@ const OrgHome = () => {
           </div>
           
           <div className="org-user-menu">
-            <div className="org-icon">
+            {/* <div className="org-icon">
               <i className="far fa-bell"></i>
               <div className="org-badge">3</div>
-            </div>
+            </div> */}
 
             <div className="org-avatar" onClick={() => navigate("/org/profile")}>
                 {avatar}
@@ -143,7 +196,7 @@ const OrgHome = () => {
         
         <div className="org-welcome-card">
           <h1><i>Welcome back, {name}!!!</i></h1>
-          <p>You have 32 new applications and 8 interviews scheduled this week.</p>
+          <p>You have {applications.length} new applications and {interviews.length} interviews scheduled this week.</p>
         </div>
         
         <div className="org-stats-container">
@@ -159,7 +212,7 @@ const OrgHome = () => {
             <div className="org-icon org-applications">
               <i className="fas fa-file-alt"></i>
             </div>
-            <h2>143</h2>
+            <h2>{applications.length}</h2>
             <p>Total Applications</p>
           </div>
           
@@ -167,17 +220,17 @@ const OrgHome = () => {
             <div className="org-icon org-interviews">
               <i className="fas fa-calendar-alt"></i>
             </div>
-            <h2>18</h2>
+            <h2>{interviews.length}</h2>
             <p>Scheduled Interviews</p>
           </div>
           
-          <div className="org-stat-card">
+          {/* <div className="org-stat-card">
             <div className="org-icon org-hired">
               <i className="fas fa-user-check"></i>
             </div>
             <h2>5</h2>
             <p>Hired This Month</p>
-          </div>
+          </div> */}
         </div>
         
         <div className="org-section-header">
@@ -239,10 +292,10 @@ const OrgHome = () => {
               </div>
               
               <div className="org-stats">
-                <div className="org-stat">
+                {/* <div className="org-stat">
                   <h4>{job.views_count}</h4>
                   <p>Views</p>
-                </div>
+                </div> */}
                 
                 <div className="org-stat">
                   <h4>{job.applications_count}</h4>
