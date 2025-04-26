@@ -5,9 +5,9 @@ module.exports = {
     client: 'pg',
     connection: {
       host: 'localhost',
-      user: 'myuser',          // Replace with your PostgreSQL username
-      password: 'password', // Replace with your PostgreSQL password
-      database: 'mydatabase'    // Replace with your database name
+      user: 'your_username_here',          // Replace with your PostgreSQL username
+      password: 'your_password_here', // Replace with your PostgreSQL password
+      database: 'your_database_here'    // Replace with your database name
     },
     migrations: {
       directory: './migrations'
